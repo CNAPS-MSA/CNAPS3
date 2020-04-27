@@ -96,6 +96,7 @@
     - API설계
     - 이벤트스토밍
     - 교육교재
+  - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
    
 
 
