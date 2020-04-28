@@ -65,7 +65,7 @@
 
     - 단순 CRUD구조와 도메인모델구조 선택가이드
   - API설계서
-    - [API설계란?](/APIdesing.md) 
+    - [API설계란?](/APIdesign.md) 
 
   - 도메인모델
     - DDD 전술적설계란?
