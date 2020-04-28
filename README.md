@@ -38,6 +38,7 @@
 
 # 핵심프로세스 설명 
 ## 설계/개발 공정도
+![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 
 ## 0.아키텍처정의 
 - 아키텍처 구성도
