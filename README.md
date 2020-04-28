@@ -55,6 +55,8 @@
   - 컨텍스트맵
     - DDD 전략적설계란?
     - 마이크로서비스 도출을 가장 쉽게 할 수 있는 방법 이벤트스토밍
+    ex>  ![bc](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bc.png)  
+
     
 - 마이크로서비스 설계하기 
   - 내부구조정의 
@@ -63,10 +65,16 @@
 
     - 단순 CRUD구조와 도메인모델구조 선택가이드
   - API설계서
-    - API설계란?  
+    - API설계란?
+     ![api](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/apiD.png)  
+
   - 도메인모델
     - DDD 전술적설계란?
+    ex>  ![domain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/class.png)  
+
   - 데이터모델
+    ex>  ![data](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/data.png)  
+
   
 
 ## 2.개발
