@@ -70,10 +70,10 @@
 
   - 도메인모델
     - DDD 전술적설계란?
-    ex> <img src="/img/class.png" width="50%">
+    <img src="/img/class.png" width="50%">
    
   - 데이터모델
-    ex> <img src="/img/data.png" width="50%">
+   <img src="/img/data.png" width="50%">
 
   
 
