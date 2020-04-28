@@ -59,6 +59,8 @@
 - 마이크로서비스 설계하기 
   - 내부구조정의 
     - 헥사고널 아키텍처 적용 패키지구조
+    ![패키지](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/package.png)  
+
     - 단순 CRUD구조와 도메인모델구조 선택가이드
   - API설계서
     - API설계란?  
