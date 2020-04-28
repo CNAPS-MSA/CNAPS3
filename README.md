@@ -70,10 +70,10 @@
 
   - 도메인모델
     - DDD 전술적설계란?
-    ex>  ![domain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/class.png){: width="60%" height="60%"} 
+    ex>  ![domain](/img/class.png){:width="300" height="300"} 
 
   - 데이터모델
-    ex>  ![data](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/data.png){: width="60%" height="60%ㄴ"}
+    ex>  ![data](/img/data.png){: width="60%" height="60%ㄴ"}
 
   
 
