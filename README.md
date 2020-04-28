@@ -66,10 +66,8 @@
   - 외부영역개발
   - EDA구현
   - CQRS구현
-
-
     
-## 3.통합 및 배포
+## 3.(CI/CD) 통합 및 배포
 - 도커라이징
   - DockerFile
 - 컨테이너라이징
@@ -78,6 +76,9 @@
 - 배포파이프라인구축
   - 애저
   - AWS
+
+## 4.SAMPLE
+- 도서대여시스템
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
