@@ -55,22 +55,22 @@
   - 컨텍스트맵
     - DDD 전략적설계란?
     - 마이크로서비스 도출을 가장 쉽게 할 수 있는 방법 이벤트스토밍
-    ex>  ![bc](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bc.png)  
+    ex>  ![bc](/img/bc.png)  
 
     
 - 마이크로서비스 설계하기 
   - 내부구조정의 
     - 헥사고널 아키텍처 적용 패키지구조
-    ![패키지](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/package.png)  
+    ![패키지](/img/package.png)  
 
     - 단순 CRUD구조와 도메인모델구조 선택가이드
   - API설계서
     - API설계란?
-     ![api](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/apiD.png)  
+     ![api](/img/apiD.png)  
 
   - 도메인모델
     - DDD 전술적설계란?
-    ex>  ![domain](/img/class.png){:width="300" height="300"} 
+    ex>  ![domain](/img/class.png){ width="300" height="300"} 
 
   - 데이터모델
     ex>  ![data](/img/data.png){: width="60%" height="60%ㄴ"}
