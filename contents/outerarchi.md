@@ -1,4 +1,4 @@
-# 외부아키텍처정의
+# 0.외부아키텍처정의
 
 - [내외부아키텍처란?](https://engineering-skcc.github.io/microservice%20%EA%B0%9C%EB%85%90/modern-relactive/) 
     - [인프라 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-architecture-1/)
@@ -18,7 +18,7 @@
     - [분산트랜젝션이슈-SAGA](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-saga/)
     - [CQRS](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-cqrs/)
     - [이벤트소싱](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-Event-Sourcing/)
-## 1.아키텍처정의 샘플
+## 1.샘플
     
 - 배포 구성도 
 - 쿠버네티스 기반
