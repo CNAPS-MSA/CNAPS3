@@ -47,6 +47,8 @@
     - 쿠버네티스 기반 
   - 내부 아키텍처 
     - 헥사고널 & 클린아키텍처 이해하기
+    ![백엔드아키텍처](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/BackEndA.png)  
+
 
 ## 1.설계
 - 마이크로서비스 도출하기
