@@ -1,6 +1,7 @@
-# 시냅스 방법론 3.0
-> 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
-
+# 내부아키텍처정의
+- [기존아키텍처문제점인식](https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-1/)
+- [클린아키텍처와헥사고널](https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/)
+- [마이크로서비스내부구조](https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/)
 ## 1.설계
     
 - 아키텍처 정의 
