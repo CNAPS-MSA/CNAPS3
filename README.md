@@ -41,51 +41,33 @@
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 
 ## 0.아키텍처정의 
-- 아키텍처 구성도
-  - 외부 아키텍처
-    - 배포 구성도 
-    - 쿠버네티스 기반 
-  - 내부 아키텍처 
-    - 헥사고널 & 클린아키텍처 이해하기
-    ![백엔드아키텍처](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/BackEndA.png)  
-
+- [외부아키텍처정의](/contents/outerarchi.md) 
+- [내부아키텍처정의](/contents/innerarchi.md)  
+ 
 
 ## 1.설계
-- 마이크로서비스 도출하기
-  - 컨텍스트맵
-    - DDD 전략적설계란?
-    - 마이크로서비스 도출을 가장 쉽게 할 수 있는 방법 이벤트스토밍
-    ex>  ![bc](/img/bc.png)  
-
-    
+- [마이크로서비스 도출하기](/contents/ddd.md) 
 - 마이크로서비스 설계하기 
-  - 내부구조정의 
-    - 헥사고널 아키텍처 적용 패키지구조
-    ![패키지](/img/package.png)  
-
-    - 단순 CRUD구조와 도메인모델구조 선택가이드
-  - API설계서
-    - [API설계란?](/contents/API.md) 
-
-  - 도메인모델
-    - [DDD 전술적설계란?](/contents/domain.md) 
-   
-  - [데이터모델](/contents/data.md) 
-
-  
+  - [내부구조정의](/contents/mspackage.md) 
+  - [API설계](/contents/API.md) 
+  - [도메인모델링](/contents/domain.md) 
+  - [데이터모델링](/contents/data.md) 
 
 ## 2.개발
-- 내부영역개발
-  - 도메인 구현
-  - 레파지토리 구현
-  - 서비스 구현
-  - 도메인이벤트 구현
-- 외부영역개발
-  - 컨트롤러 구현
-- EDA구현
-  - 도메인이벤트 어댑터 구현
-    - 카프카 설치
-- CQRS구현
+
+- [BackEnd개발(도메인모델&JPA)](/contents/backEnddomain.md) 
+  - 내부영역개발  
+  - 외부영역개발
+  - EDA구현
+  - CQRS구현
+
+- [BackEnd개발(데이터모델&MyBatis)](/contents/backEnddata.md) 
+  - 내부영역개발  
+  - 외부영역개발
+  - EDA구현
+  - CQRS구현
+
+
     
 ## 3.통합 및 배포
 - 도커라이징
