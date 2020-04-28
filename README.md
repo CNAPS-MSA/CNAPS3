@@ -65,15 +65,12 @@
 
     - 단순 CRUD구조와 도메인모델구조 선택가이드
   - API설계서
-    - [API설계란?](/APIdesign.md) 
+    - [API설계란?](/contents/API.md) 
 
   - 도메인모델
-    - DDD 전술적설계란?
-    - 도메인모델
-    <img src="/img/class.png" width="50%">
+    - [DDD 전술적설계란?](/contents/domain.md) 
    
-  - 데이터모델
-   <img src="/img/data.png" width="50%">
+  - [데이터모델](/contents/data.md) 
 
   
 
