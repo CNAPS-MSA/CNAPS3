@@ -10,7 +10,7 @@
 - AWS도구
 - Azure
 
-## 1.샘플
+## 2.샘플
 - DockerFile
 
 
