@@ -18,6 +18,13 @@
     - [분산트랜젝션이슈-SAGA](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-saga/)
     - [CQRS](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-cqrs/)
     - [이벤트소싱](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-Event-Sourcing/)
+## 1.유형
+- AWS EKS
+- [Azure AKS](https://docs.microsoft.com/ko-kr/azure/aks/)
+- SK zcp 
+- 통신부분 
+
+
 ## 1.샘플
     
 - 배포 구성도 
