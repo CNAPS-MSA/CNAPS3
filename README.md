@@ -56,16 +56,7 @@
 ## 2.개발
 
 - [BackEnd개발(도메인모델&JPA)](/contents/backEnddomain.md) 
-  - 내부영역개발  
-  - 외부영역개발
-  - EDA구현
-  - CQRS구현
-
 - [BackEnd개발(데이터모델&MyBatis)](/contents/backEnddata.md) 
-  - 내부영역개발  
-  - 외부영역개발
-  - EDA구현
-  - CQRS구현
     
 ## 3.(CI/CD) 통합 및 배포
 - 지속적통합
