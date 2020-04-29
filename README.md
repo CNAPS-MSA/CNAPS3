@@ -47,16 +47,16 @@
 
 ## 1.설계
 - [마이크로서비스 도출하기](/contents/ddd.md) 
-- 마이크로서비스 설계하기 
+- BackEnd 설계하기 
   - [내부구조정의](/contents/mspackage.md) 
   - [API설계](/contents/API.md) 
   - [도메인모델링](/contents/domain.md) 
   - [데이터모델링](/contents/data.md) 
-
+ - FrontEnd 설계하기
 ## 2.개발
-
 - [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
 - [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
+- FrontEnd개발
     
 ## 3.(CI/CD) 통합 및 배포
 - [지속적통합](/contents/ci.md)
