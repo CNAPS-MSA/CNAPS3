@@ -55,15 +55,15 @@
 
 ## 2.개발
 
-- [BackEnd개발(도메인모델&JPA)](/contents/backEnddomain.md) 
-- [BackEnd개발(데이터모델&MyBatis)](/contents/backEnddata.md) 
+- [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
+- [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
     
 ## 3.(CI/CD) 통합 및 배포
-- 지속적통합
-- 지속적배포 
+- [지속적통합](/contents/ci.md)
+- [지속적배포](/contents/cd.md) 
 
 ## 4.SAMPLE
-- 도서대여시스템
+- [도서대여시스템](/contents/sample.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
