@@ -19,11 +19,14 @@
     - [CQRS](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-cqrs/)
     - [이벤트소싱](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-Event-Sourcing/)
 ## 1.유형
-- AWS EKS
+### 쿠버네티스기반 아키텍처기반
+- [AWS EKS](https://aws.amazon.com/ko/eks/)
 - [Azure AKS](https://docs.microsoft.com/ko-kr/azure/aks/)
 - SK zcp 
 - 통신부분 
 
+### spring cloud + netfilOSS기반
+- [spring cloud](https://spring.io/projects/spring-cloud)
 
 ## 1.샘플
     
