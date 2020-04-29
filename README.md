@@ -36,8 +36,8 @@
 ||릴리즈|- 릴리즈수행|운영환경|
 
 
-# 핵심프로세스 설명 
-## 설계/개발 공정도
+# Cloud Native 핵심프로세스 설명 
+## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 
 ## 0.아키텍처정의 
