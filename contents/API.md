@@ -1,23 +1,8 @@
-# 시냅스 방법론 3.0
-> 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
+# API설계
+- REST API란?
+- REST API성숙도모델
+- REST API설계가 필요한 이유?
 
-## 1.설계
-    
-- 마이크로서비스 설계하기 
-  - 내부구조정의 
-    - 헥사고널 아키텍처 적용 패키지구조
-    ![패키지](/img/package.png)  
-
-    - 단순 CRUD구조와 도메인모델구조 선택가이드
-  - API설계서
-  <img src="/img/api.png" width="50%">
-
-  - 도메인모델
-    - DDD 전술적설계란?
-    - 도메인모델
-    <img src="/img/class.png" width="50%">
-   
-  - 데이터모델
-   <img src="/img/data.png" width="50%">
-
+## 1.API설계서    
+ <img src="/img/api.png" width="50%">
  
