@@ -156,6 +156,7 @@ admin은 관리자 권한을 가지고 있으며, admin으로 로그인 시 상�
 
 1. book 폴더 생성
 2. book 폴더를 jhipster 프로젝트로 변경
+
 ![image](https://user-images.githubusercontent.com/18453570/81146423-38052280-8fb3-11ea-8397-bd615fa6f08b.png)
 
 ```
@@ -164,7 +165,9 @@ cd book
 jhipster
 ```
 3. 옵션 선택
+
 **port설정과 package 설정을 잊지말자**
+
 ![image](https://user-images.githubusercontent.com/18453570/81146788-ec9f4400-8fb3-11ea-90ee-5e3f5a4d860a.png)
 
 -------------------------옵션선택 설명--------------------
@@ -172,6 +175,7 @@ jhipster
 ### core service 2 : user
 
 core service 1의 book과 같은 방식으로 user service를 생성한다.
+
 **port설정과 package 설정을 잊지말자**
 
 ```
@@ -188,6 +192,7 @@ jhipster
 ### core service 3 : rental
 
 core service 1의 book과 같은 방식으로 rental service를 생성한다.
+
 **port설정과 package 설정을 잊지말자**
 
 ```
