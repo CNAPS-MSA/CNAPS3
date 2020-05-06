@@ -37,18 +37,27 @@ Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과
   
 # Jhipster 환경구축
 
-Jhipster 설치 전, 아래 항목의 설치가 완료되어야한다.
+1. Java 11 설치 ->  [AdoptOpenJDK builds](https://adoptopenjdk.net/)
+2. Node.js 설치 -> **반드시 LTS 64-bit version 설치** [Node.js website](https://nodejs.org/en/) 
+3. JHipster 설치 -> npm install -g generator-jhipster
 
-1. Java(필수)
-2. Node.js(필수)
-3. Git(선택)
-4. Maven/Gradle(선택) - Jhipster가 자동으로 설치해줌
-5. Docker(선택) - Docke환경이 필요한 경우에만 설치
+외에 Git, Docker은 애플리케이션 실행 및 사용환경에 따라 필요한 경우에 설치한다.
+
+- git : https://git-scm.com/
+- Docker : https://www.docker.com/products/docker-desktop
 
 ## MacOS
 
+Mac을 사용하는 경우 brew를 사용하여 설치할 수 있다. 
+
+```
+brew install jhipster
+```
+
 
 ## Windows
+
+> 참조 : [Jhipster공식 설치가이드 링크](https://www.jhipster.tech/installation/)
 
 # Jhipster로 개발 시작하기
 
