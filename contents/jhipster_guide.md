@@ -138,11 +138,73 @@ admin은 관리자 권한을 가지고 있으며, admin으로 로그인 시 상�
 
 ## Service 만들기
 
+먼저, 도서대여시스템의 core service 인 book, user, rental 서비스부터 생성한다.
+
+이때 service를 만드는 방식은 동일하나, port와 package명을 다르게 해야한다.
+
+- book :
+  - port: 8081
+  - package : com.skcc.book
+- user :
+  - port : 8082
+  - package : com.skcc.user
+- rental :
+  - port : 8083
+  - package : com.skcc.rental
+
 ### core service 1 : book
+
+1. book 폴더 생성
+2. book 폴더를 jhipster 프로젝트로 변경
+![image](https://user-images.githubusercontent.com/18453570/81146423-38052280-8fb3-11ea-8397-bd615fa6f08b.png)
+
+```
+mkdir book
+cd book
+jhipster
+```
+3. 옵션 선택
+**port설정과 package 설정을 잊지말자**
+![image](https://user-images.githubusercontent.com/18453570/81146788-ec9f4400-8fb3-11ea-90ee-5e3f5a4d860a.png)
+
+-------------------------옵션선택 설명--------------------
 
 ### core service 2 : user
 
+core service 1의 book과 같은 방식으로 user service를 생성한다.
+**port설정과 package 설정을 잊지말자**
+
+```
+mkdir user
+cd user
+jhipster
+```
+
+- 옵션 선택
+
+![image](https://user-images.githubusercontent.com/18453570/81147097-8c5cd200-8fb4-11ea-98b4-88dfae9d1059.png)
+
+
 ### core service 3 : rental
+
+core service 1의 book과 같은 방식으로 rental service를 생성한다.
+**port설정과 package 설정을 잊지말자**
+
+```
+mkdir rental
+cd rental
+jhipster
+```
+
+![image](https://user-images.githubusercontent.com/18453570/81147568-861b2580-8fb5-11ea-8f0c-545d23d60041.png)
+
+## service 실행시키기
+
+이제 생성했던 서비스들을 실행시켜 registry를 확인해 정상적으로 동작하는지 확인해본다.
+
+아래의 이미지처럼 각 서비스의 Directory에 들어가 `./mvnw`를 입력해 서비스를 실행시킨다.
+
+![image](https://user-images.githubusercontent.com/18453570/81147751-f2962480-8fb5-11ea-9283-0aa58fbd15c6.png)
 
 ## 생성한 service에 Entity를 추가하기
 
