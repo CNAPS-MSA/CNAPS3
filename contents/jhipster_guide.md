@@ -231,4 +231,10 @@ jhipster
 
 ## 생성한 service에 Entity를 추가하기
 
+1. book service에 book entity 생성
+
+```
+jhipster entity book
+```
+
 ## 추가한 entity를 gateway에 등록시키기
