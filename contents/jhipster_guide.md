@@ -13,7 +13,7 @@
 
 ## Jhipster의 Goal
 
-완전하고 현대적인 웹 애플리케이션과 마이크로서비스 아키텍처의 생성이며 다음과 같은 항목들을 통합하는 것이 목표이다.
+Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과 마이크로서비스 아키텍처의 생성이며 다음과 같은 항목들을 통합하는 것이 목표이다.
 
 - 광범위한 테스트를 커버할 수 있는 우수한 성능으 강력한 서버 스택
 - 세련되고 현대적인 모바일 친화적 UI를 위한 Angular, React, Vue + Bootstrap를 갖춘 CSS
@@ -34,11 +34,19 @@
 
 - Front-End : src / main /webapp 폴더에 존재하고, Angular JS 모듈의 대부분을 포함한다.
 
-이제 Jhipster를 활용해 마이크로서비스 애플리케이션 샘플을 개발해보자. 
   
 # Jhipster 환경구축
 
+Jhipster 설치 전, 아래 항목의 설치가 완료되어야한다.
+
+1. Java(필수)
+2. Node.js(필수)
+3. Git(선택)
+4. Maven/Gradle(선택) - Jhipster가 자동으로 설치해줌
+5. Docker(선택) - Docke환경이 필요한 경우에만 설치
+
 ## MacOS
+
 
 ## Windows
 
