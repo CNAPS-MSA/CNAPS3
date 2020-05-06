@@ -34,7 +34,11 @@ Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과
 
 - Front-End : src / main /webapp 폴더에 존재하고, Angular JS 모듈의 대부분을 포함한다.
 
-  
+## Jhipster Architecture
+
+![image](https://user-images.githubusercontent.com/18453570/81143306-806d1200-8fac-11ea-9c7f-3506f51fccd8.png)
+
+
 # Jhipster 환경구축 (Mac & Windows 동일)
 
 1. Java 11 설치 ->  [AdoptOpenJDK builds](https://adoptopenjdk.net/)
@@ -64,7 +68,7 @@ brew install jhipster
 Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
 
 1. gateway 만들기
-  1-1. Registry 만들기
+  1. Registry 만들기
 2. Microservice 만들기
 3. 생성한 Microservice에 Entity 생성하기
 4. 생성된 Entity를 gateway가 인식할 수 있도록 gateway에 등록하기
@@ -91,6 +95,45 @@ jhipster
 ![image](https://user-images.githubusercontent.com/18453570/81142883-c2e21f00-8fab-11ea-80eb-dee5b067068a.png)
 
 ---------------------- 옵션 설명 ------------------------
+
+## Registry 실행 및 gateway 실행
+
+gateway Directory 내에서 아래 Command를 실행시킨다.
+
+```
+docker-compose -f src/main/docker/jhipster-registry.yml up
+```
+아래 이미지처럼 실행되었다면 정상이다.
+이미지에서 보이는 주소로 접속해 Registry가 정상적으로 작동하는지 확인해본다.
+
+![image](https://user-images.githubusercontent.com/18453570/81143823-b8c12000-8fad-11ea-83a3-112844067438.png)
+
+localhost:8761로 접속해보면, 로그인 창이 뜨는데 이때 Id와 Pw는 둘다 `admin`을 입력한다.
+
+![image](https://user-images.githubusercontent.com/18453570/81143960-0b9ad780-8fae-11ea-9f6f-8d358c46547d.png)
+
+위 이미지처럼 보인다면 Registry가 정상적으로 등록된 것이다.
+
+이제 gateway를 실행시켜보자.
+build tool을 maven으로 선택하였기 때문에 gateway Directory 내에서 아래 command를 입력한다. (Registry가 실행중인 창은 닫지 않고, 새 창을 열어 입력한다.)
+
+```
+./mvnw
+```
+아래 이미지처럼 실행되었다면 정상이다. 
+이미지에 보이는 주소로 접속해 gateway가 정상적으로 작동하는지 확인해본다.
+![image](https://user-images.githubusercontent.com/18453570/81144345-cb882480-8fae-11ea-8417-967b21ece2f4.png)
+
+localhost:8080으로 접속한다. 
+
+![image](https://user-images.githubusercontent.com/18453570/81144436-02f6d100-8faf-11ea-8cbe-359bdbdd828a.png)
+
+Registry와 마찬가지로 Id와 Pw 둘다 `admin`을 입력해 로그인이 가능하다.
+admin은 관리자 권한을 가지고 있으며, admin으로 로그인 시 상단 메뉴 바가 아래 이미지처럼 변경된다.
+
+![image](https://user-images.githubusercontent.com/18453570/81144563-4e10e400-8faf-11ea-81c2-e1e5d463ad7a.png)
+
+메뉴를 탐색해보면, Entities에 아무것도 등록되지 않았을 것이다. 아직 마이크로서비스와 엔티티를 생성/등록하지 않았기 때문이다. 이제 마이크로서비스를 만들고 entity를 등록해보자.
 
 
 ## Service 만들기
