@@ -35,11 +35,14 @@ Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과
 - Front-End : src / main /webapp 폴더에 존재하고, Angular JS 모듈의 대부분을 포함한다.
 
   
-# Jhipster 환경구축
+# Jhipster 환경구축 (Mac & Windows 동일)
 
 1. Java 11 설치 ->  [AdoptOpenJDK builds](https://adoptopenjdk.net/)
 2. Node.js 설치 -> **반드시 LTS 64-bit version 설치** [Node.js website](https://nodejs.org/en/) 
-3. JHipster 설치 -> npm install -g generator-jhipster
+3. JHipster 설치 -> 
+```
+npm install -g generator-jhipster
+```
 
 외에 Git, Docker은 애플리케이션 실행 및 사용환경에 따라 필요한 경우에 설치한다.
 
@@ -54,14 +57,41 @@ Mac을 사용하는 경우 brew를 사용하여 설치할 수 있다.
 brew install jhipster
 ```
 
-
-## Windows
-
 > 참조 : [Jhipster공식 설치가이드 링크](https://www.jhipster.tech/installation/)
 
 # Jhipster로 개발 시작하기
 
+Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
+
+1. gateway 만들기
+  1-1. Registry 만들기
+2. Microservice 만들기
+3. 생성한 Microservice에 Entity 생성하기
+4. 생성된 Entity를 gateway가 인식할 수 있도록 gateway에 등록하기
+
+따라서, Sample 프로젝트에서는 book, user, rental 3개의 Microservie를 생성하고 gateway에 등록해 Simple CRUD게시판까지 연결해보자.
+
+> 참고 : 개발 환경은 MacOS이며, java 11 사용
+
 ## Gateway 만들기
+
+1. gateway 폴더 생성
+2. gateway 폴더를 jhipster 프로젝트로 변경
+
+![image](https://user-images.githubusercontent.com/18453570/81142695-42232300-8fab-11ea-88a2-50a2cf6d900b.png)
+
+```
+mkdir gateway
+cd gateway
+jhipster
+```
+
+3. 옵션 선택
+
+![image](https://user-images.githubusercontent.com/18453570/81142883-c2e21f00-8fab-11ea-80eb-dee5b067068a.png)
+
+---------------------- 옵션 설명 ------------------------
+
 
 ## Service 만들기
 
