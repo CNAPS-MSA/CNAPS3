@@ -211,6 +211,24 @@ jhipster
 
 ![image](https://user-images.githubusercontent.com/18453570/81147751-f2962480-8fb5-11ea-9283-0aa58fbd15c6.png)
 
+먼저, 각 서비스의 Directory에 아래와 같은 이미지가 뜨면 정상적으로 실행된 것이다.
+
+1. book
+
+![image](https://user-images.githubusercontent.com/18453570/81148014-69cbb880-8fb6-11ea-93c2-16c1aaa9aa49.png)
+
+2. user
+
+![image](https://user-images.githubusercontent.com/18453570/81148038-7b14c500-8fb6-11ea-8f54-dc98ec8851a5.png)
+
+3. rental
+
+![image](https://user-images.githubusercontent.com/18453570/81148066-88ca4a80-8fb6-11ea-9cb4-797e8061408a.png)
+
+그 다음, localhost:8761에 접속해 Registry를 확인해보면 gateway, book, user, rental 서비스가 등록되어있는 것을 볼 수 있다.
+
+![image](https://user-images.githubusercontent.com/18453570/81148406-2faee680-8fb7-11ea-92dc-22cfcaeee6ae.png)
+
 ## 생성한 service에 Entity를 추가하기
 
 ## 추가한 entity를 gateway에 등록시키기
