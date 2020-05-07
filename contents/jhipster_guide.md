@@ -231,10 +231,103 @@ jhipster
 
 ## 생성한 service에 Entity를 추가하기
 
+생성한 service에 Entity를 추가하는 방법은 크게 2가지로 나눌 수 있다.
+
+- [Jhipster Online](https://start.jhipster.tech/#/) 을 통해 Entity 및 Relationship을 설정할 수 있다.
+- Terminal에 command를 입력해 Entity 및 Relationship을 설정할 수 있다. 
+
+
 1. book service에 book entity 생성
 
+book Directory에 들어가 아래 command를 입력하여 book Entity를 생성한다.
+생성 시, author, title, description으로 책 저자, 책 이름, 책 설명을 변수로 선언하고 이는 반드시 입력되어야하는 값이기 때문에 required로 하였다.
+
 ```
+cd book
 jhipster entity book
+```
+
+그 다음 entity에 추가할 변수와 그 변수의 자료형, 옵션, 다른 entity와의 관계를 설정할 수 있다. 
+
+![image](https://user-images.githubusercontent.com/18453570/81156459-ecf20c00-8fc0-11ea-92ad-6e33ce9753ad.png)
+
+entity생성과 변수 설정 완료 후, 추가적인 옵션을 선택할 수 있는데 그 선택은 아래와 같이 한다. 
+
+![image](https://user-images.githubusercontent.com/18453570/81157507-0182d400-8fc2-11ea-94c6-a707e2595ebd.png)
+
+마지막으로 master.xml을 overwrite할 것이냐는 옵션이 나오는데, 이때 y를 선택해야한다.
+
+![image](https://user-images.githubusercontent.com/18453570/81157614-1ceddf00-8fc2-11ea-8a41-34def05dcb46.png)
+
+2. user service에 user entity 생성
+
+book service와 마찬가지로 진행한다.
+Entity 생성 시, 변수로는 name과 email을 선언했다.
+
+```
+cd user
+jhipster entity user
+```
+
+3. rental service에 rental entity와 rentalItem entity생성
+
+이번에는 terminal이 아닌 Jhipster Online에서 entity와 relationship을 설정해보았다.
+
+- rental Entity 생성 시, 변수로 userId, rentalCnt,  rentalStatus를 선언하였다. rentalStatus는 rental의 상태를 나타내는 값으로 enum으로 처리했다.
+- rentalItem Entity 생성 시, 변수로 bookId와 rentalItemStatus를 선언하였다. rentalItemStuts는 현재 대출 중인 책의 상태를 나타내는 값으로 enum 처리하였다.
+
+이때, rental 과 rentalItem은 oneToMany관계인데, 이를 rentalItem과 rental 관계로 바꿔 ManyToOne으로 설정하였다.
+
+
+Jhipster Online에 접속해 `Design Entities`을 클릭-> `Create a new JDL model`버튼을 클릭하여 JDL studio에 접속해 아래와 같이 코드를 입력한다.
+
+```
+entity Rental{
+	id Long,
+	userId Long,
+    rentalItemCnt Integer ,
+    rentalStatus RentalStatus
+}
+
+entity RentalItem {
+	id Long,
+    bookId Long,
+    rentalItemStatus RentalItemStatus
+}
+
+
+enum RentalStatus {
+    OK, RENTALED, OVERDUE
+}
+
+enum RentalItemStatus{
+	RENTALED, OVERDUE
+}
+
+// defining ManyToOne relationships
+
+
+relationship ManyToOne {
+	RentalItem{rental(rentalId)} to Rental
+}
+
+// Set pagination options
+paginate * with pagination 
+
+// Use Data Transfert Objects (DTO)
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl 
+
+```
+
+코드를 저장한 후, 해당 파일을 내려받아 rental Directory의 최상위로 옮긴다.
+
+그 다음 terminal에서 아래 command를 입력해 import 한다.
+
+```
+jhipster import-jdl ./my-jdl-file.jdl --force
 ```
 
 ## 추가한 entity를 gateway에 등록시키기
