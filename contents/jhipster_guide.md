@@ -308,7 +308,7 @@ enum RentalItemStatus{
 
 
 relationship ManyToOne {
-	RentalItem{rental(rentalId)} to Rental
+	RentalItem{rental} to Rental
 }
 
 // Set pagination options
@@ -331,3 +331,83 @@ jhipster import-jdl ./my-jdl-file.jdl --force
 ```
 
 ## 추가한 entity를 gateway에 등록시키기
+
+마지막으로 지금까지 추가한 entity들을 gateway에 등록시켜야한다.
+book, user, rental, rentalItem을 차례로 등록시킨다.
+
+
+```
+cd gateway
+jhipster entity book
+```
+위 command입력을 통해 book entity를 gateway에 추가시킬 수 있다.
+
+입력 후, 몇가지 옵션을 선택하게 되는데 아래 이미지와 같이 선택한다.
+
+이때 Entity의 path는 각 microservice가 존재하는 path로 수정해야한다. 
+
+![image](https://user-images.githubusercontent.com/18453570/81278941-60634e80-9091-11ea-8e61-ac87302aa29a.png)
+
+이후, overwrite하겠냐는 질문에는 `a`를 입력해야한다.
+
+
+# 재실행 후, 테스트
+
+이제 entity 생성까지 모두 마쳤으니, 다시 모든 application을 재실행시켜 제대로 동작하는지 확인한다.
+
+먼저 gateway 폴더에서 아래와 같은 command를 입력한다.
+
+```
+docker-compose -f src/main/docker/jhipster-registry.yml up
+```
+
+새로운 terminal 창에서 다시 gateway 폴더에 들어가 아래 command를 입력한다.
+
+```
+./mvnw
+```
+
+book, user, rental 서비스 또한 실행시켜준다.
+
+```
+cd book
+./mvnw
+
+cd user
+./mvnw
+
+cd rental
+./mvnw
+```
+
+이제 모두 잘 동작하는지 확인해본다.
+
+1. Jhipster Registry 확인
+
+- localhost:8761에 접속하여 아래 이미지처럼 뜨는지 확인
+
+![image](https://user-images.githubusercontent.com/18453570/81279412-12027f80-9092-11ea-95f5-cfe93233ab99.png)
+
+2. Gateway 확인
+
+- localhost:8080에 접속하여 `admin`으로 접속하고, 아래 이미지처럼 뜨는지 확인
+
+![image](https://user-images.githubusercontent.com/18453570/81279558-44ac7800-9092-11ea-9bcc-8a3d574f9b86.png)
+![image](https://user-images.githubusercontent.com/18453570/81279591-4d9d4980-9092-11ea-9eed-8a2b0d79fb2c.png)
+![image](https://user-images.githubusercontent.com/18453570/81279612-555cee00-9092-11ea-857a-9498192eeb25.png)
+![image](https://user-images.githubusercontent.com/18453570/81279633-5beb6580-9092-11ea-8b51-dd705a32d9bc.png)
+![image](https://user-images.githubusercontent.com/18453570/81279659-6443a080-9092-11ea-8636-62698889edd5.png)
+
+위 이미지처럼 Jhipster가 Fake DB를 repository에 저장하여 화면을 보여준다. 물론, FakeDB는 추후 삭제할 수 있다.
+또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.
+
+**끝!**
+
+----------------------추가해야될 내용-------------------
+
+- Jhipster Registry에서 확인할 수 있는 내용 & 왜 사용해야하는지 
+- Jhipster 프로젝트 생성 후 내부 구조 및 클래스, config 내용 설명, 정제해야될 파일 확인
+- JDL 문법 정리
+- Jhipster 프로젝트 내에 Business Logic 처리 방법 
+
+
