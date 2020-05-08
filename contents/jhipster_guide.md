@@ -15,7 +15,7 @@
 
 Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과 마이크로서비스 아키텍처의 생성이며 다음과 같은 항목들을 통합하는 것이 목표이다.
 
-- 광범위한 테스트를 커버할 수 있는 우수한 성능으 강력한 서버 스택
+- 광범위한 테스트를 커버할 수 있는 우수한 성능의 강력한 서버 스택
 - 세련되고 현대적인 모바일 친화적 UI를 위한 Angular, React, Vue + Bootstrap를 갖춘 CSS
 - Webpack 및 Maven 또는 Gradle을 사용하여 애플리케이션을 빌드하는 강력한 워크 플로우
 - 클라우드에 빠르게 배포할 수있는 코드 기반 인프라
@@ -113,6 +113,10 @@ localhost:8761로 접속해보면, 로그인 창이 뜨는데 이때 Id와 Pw는
 ![image](https://user-images.githubusercontent.com/18453570/81143960-0b9ad780-8fae-11ea-9f6f-8d358c46547d.png)
 
 위 이미지처럼 보인다면 Registry가 정상적으로 등록된 것이다.
+
+Jhipster Registry가 무엇인지는 아래 링크를 통해 설명하였다.
+
+- [Jhipster Registry 알아보기](/contents/jhipster_registry.md)
 
 이제 gateway를 실행시켜보자.
 build tool을 maven으로 선택하였기 때문에 gateway Directory 내에서 아래 command를 입력한다. (Registry가 실행중인 창은 닫지 않고, 새 창을 열어 입력한다.)
