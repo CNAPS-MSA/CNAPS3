@@ -28,20 +28,20 @@ Jhipster Registry를 실행한 후, localhost:8761로 접속하면 현재 동작
 
 ### Jhipster Registry's Spring cloud config
 
+Jhipster Registry에서 제공하는 Spring cloud config는 Spring에서 제공하는 Spring cloud config와 동일하다. (Spring cloud config에 관한 자세한 설명은 생략)
 
-The JHipster Registry is a Spring Config Server: when applications are launched they will first connect to the JHipster Registry to get their configuration. This is true for both gateways and microservices.
+Jhipster는 프로젝트 생성 시, configuration에 필요한 application-*.yml file들을 모두 생성해준다.
+생성되는 yml파일은 아래와 같다.
 
-This configuration is a Spring Boot configuration, like the one found in the JHipster application-*.yml files, but it is stored in a central server, so it is easier to manage.
+- application.yml
+- application-dev.yml
+- application-prod.yml
+- application-tls.yml
+- bootstrap.yml
+- bootstrap-prod.yml
 
-On startup, your gateways and microservices app will query the Registry’s config server and overwrite their local properties with the ones defined there.
+Jhipster Registry와 Spring cloud config는, application이 실행되었을 때 Jhipster Registry에 연결하여 application의 configuration을 가져오는 방식으로 동작한다. 
 
-Two kinds of configurations sources are available (defined by the spring.cloud.config.server.composite property):
-
-A native configuration, which is used by default in development (using the JHipster dev profile), and which uses the local filesystem.
-A Git configuration, which is used by default in production (using the JHipster prod profile), and which stores the configuration in a Git server. This allows to tag, branch or rollback configurations using the usual Git tools, which are very powerful in this use-case.
-To manage your centralized configuration you need to add appname-profile.yml files in your configuration source where appname and profile correspond to the application’s name and current profile of the service that you want to configure. For example, adding properties in a gateway-prod.yml file will set those properties only for the application named gateway started with a prod profile. Moreover, properties defined in application[-dev|prod].yml will be set for all your applications.
-
-As the Gateway routes are configured using Spring Boot, they can also be managed using the Spring Config Server, for example you could map application app1-v1 to the /app1 URL in your v1 branch, and map application app1-v2 to the /app1 URL in your v2 branch. This is a good way of upgrading microservices without any downtime for end-users.
 
 
 >참조: [Jhipster Registry 공식문서](https://www.jhipster.tech/jhipster-registry/)
