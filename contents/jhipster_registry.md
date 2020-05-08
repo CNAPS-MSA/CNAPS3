@@ -1,6 +1,7 @@
 # Jhipster Registry 소개
 
 Jhipster Registry는 Jhipster 개발자들이 제공하는 runtime application이다. Jhipster Registry도 Jhipster처럼 오픈소스이며, 현재 소스는 github을 통해 사용가능하다. -> [jhipster registry source](https://github.com/jhipster/jhipster-registry)
+
 Jhipster는 프로젝트에 사용되는 모든 애플리케이션을 등록하고 애플리케이션의 configuration을 가져온다. 또한, 애플리케이션의 상태를 모니터링 할 수 있는 dashboard도 포함되어있다.
 
 또한, Jhipster Registry는 코드를 수정할 필요없이, registry가 실행 중인 상태에서 gateway를 먼저 동작시키고 service application들을 띄우면 Jhipster Registry가 해당 service들을 **자동으로** 등록한다. 
