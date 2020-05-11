@@ -409,7 +409,6 @@ cd rental
 
 ----------------------추가해야될 내용-------------------
 
-- Jhipster Registry에서 확인할 수 있는 내용 & 왜 사용해야하는지 
 - Jhipster 프로젝트 생성 후 내부 구조 및 클래스, config 내용 설명, 정제해야될 파일 확인
 - JDL 문법 정리
 - Jhipster 프로젝트 내에 Business Logic 처리 방법 
