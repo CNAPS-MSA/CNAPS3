@@ -405,6 +405,8 @@ cd rental
 위 이미지처럼 Jhipster가 Fake DB를 repository에 저장하여 화면을 보여준다. 물론, FakeDB는 추후 삭제할 수 있다.
 또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.
 
+
+> [Jhipster Details](/contents/jhipster_details.md): 서비스 생성 시 선택한 옵션 및 Jhipster 코드 상세 Detail 설명을 확인할 수 있다.
 **끝!**
 
 
