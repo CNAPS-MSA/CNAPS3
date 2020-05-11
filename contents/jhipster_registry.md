@@ -42,6 +42,40 @@ Jhipster는 프로젝트 생성 시, configuration에 필요한 application-*.ym
 
 Jhipster Registry와 Spring cloud config는, application이 실행되었을 때 Jhipster Registry에 연결하여 application의 configuration을 가져오는 방식으로 동작한다. 
 
+### Monitoring Dashboard
 
+Jhipster Registry는 모든 타입의 application에 관리자용 Dashboards를 제공한다. Application이 Eureka server에 등록되면 바로 dashboard에서 확인이 가능하다.
+
+이 dashboard에는 애플리케이션의 중요한 정보들을 포함하고 있는데, 이 정보들에 접근하기 위해 Jhipster Registry는 JWT 토큰을 사용한다. JWT 토큰은 애플리케이션 생성 시, 옵션에서 선택할 수 있다. 따라서, Jhipster Registry를 사용하기 위해선 JWT토큰 옵션 사용에 동의해야만 한다.
+
+
+1. The metrics dashboard
+
+![image](https://www.jhipster.tech/images/jhipster-registry-metrics.png)
+
+The metrics dashboard에서 제공하는 세부정보는 아래와 같다.
+
+- JVM
+- HTTP Requests
+- cache usage
+- database connection pool
+
+2. The health dashboard
+
+![image](https://www.jhipster.tech/images/jhipster-registry-health.png)
+
+The health dashboard는 Spring Boot Actuator의 health 엔드 포인트를 사용하여 애플리케이션의 다양한 부분에 대한 health 정보를 제공한다. Spring Boot Actuator는 많은 상태 점검을 기본적으로 제공하며 애플리케이션 별 상태 점검을 추가 할 수 있다.
+
+3. The configuration dashboard
+
+![image](https://www.jhipster.tech/images/jhipster-registry-configuration.png)
+
+The configuration dashboard는 Spring Boot Actuator의 configuration 엔드 포인트를 사용하여 현재 애플리케이션의 Spring configuration에 대한 전체정보를 제공한다.
+
+4. The logs dashboard
+
+![image](https://www.jhipster.tech/images/jhipster-registry-logs.png)
+
+The logs dashboard를 사용하면 런타임 시 실행 중인 application의 Logback configuration을 관리 할 수 있다. 버튼을 클릭하여 Java 패키지의 로그 레벨을 변경할 수 있고, 개발 및 프로덕션 상태에서 유용하게 활용할 수 있는 기능이다.
 
 >참조: [Jhipster Registry 공식문서](https://www.jhipster.tech/jhipster-registry/)
