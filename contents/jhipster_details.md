@@ -79,10 +79,10 @@
           ![image](https://user-images.githubusercontent.com/18453570/81539844-c0b50180-93ab-11ea-8a2a-cc33c10a82c2.png)
           위 이미지는 Rental과 RentalItem간 관계를 추가했을 때 생성된 정보이다. Entity간 Relationship을 추가했을 때 생성되는 index와 정보를 포함하고 있음을 확인할 수 있다.
       - fake-data : Application을 최초 실행시켰을 때, DB를 추가하지 않았음에도 dummy DB가 들어가 있는 것을 확인했을 것이다. 이 dummy DB는 src/main/resourecs/config/liquibase/fake-data/에서 확인할 수 있다.
-  - Entity
-  - Repository
-  - DTO
-  - Mapstruct
+  - Entity : /src/main/java/com/skcc/rental/domain에서 확인할 수 있다. Enum은 domain 폴더 하위에 enumeration 폴더에 생성된다. 
+  - Repository : /src/main/java/com/skcc/rental/repository에서 확인할 수 있다. JPA repository로 생성되는데, 기본 CRUD 외의 database queries는 없는 상태로 생성된다.
+  - DTO : /src/main/java/com/skcc/rental/service/dto에서 확인할 수 있다. 
+    - Mapstruct : Mapstruct는 JPA entities와 DTOs간의 번역하는 라이브러리 역할을 한다. Mapstruct의 경우 EntityNameMapper의 형식으로 생성되며, /src/main/java/com/skcc/rental/service/mapper에서 확인할 수 있다.
   - Service interface
   - Service implementation
   - Rest Controller
