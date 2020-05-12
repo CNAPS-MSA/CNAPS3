@@ -407,6 +407,12 @@ cd rental
 또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.
 
 
+# Jhipster Project Business Logic
+
+Jhipster를 활용해 기본적인 CQRS와 화면구성까지 완료하였다. 이제 각 service와 service간의 Business Logic을 추가해보자.
+
+-> [Jhipster Business Logic추가](/contents/jhipster_businesslogic.md)
+
 
 **끝!**
 
