@@ -21,8 +21,9 @@ Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과
 - 클라우드에 빠르게 배포할 수있는 코드 기반 인프라
   
 실제로 Jhipster는 설치가 간편하고, Directory 생성 후 몇가지 옵션을 선택하면 바로 실행가능한 웹 애플리케이션으로 만들어진다. 모놀리틱, 마이크로서비스, 게이트웨이를 선택할 수 있고 그 외에 Swagger나 Docker, kafka, JPA 등 현대적인 애플리케이션 개발에 필요한 환경설정과 라이브러리를 자동으로 설치해준다. 또한 기본적인 인증처리, Rest API를 이용한 통신 내용이 포함되어있다.
+## Jhipster Microservice Architecture
 
-## Jhipster 프로젝트의 Microservice 구성요소
+![image](https://user-images.githubusercontent.com/18453570/81143306-806d1200-8fac-11ea-9c7f-3506f51fccd8.png)
 
 - JHipster 레지스트리 : MSA의 필수요소, 다른 모든 구성요소를 서로 연결하고 서로 통신할 수 있게 함
 
@@ -34,9 +35,9 @@ Jhipster 사용의 목적은 완전하고 현대적인 웹 애플리케이션과
 
 - Front-End : src / main /webapp 폴더에 존재하고, Angular JS 모듈의 대부분을 포함한다.
 
-## Jhipster Architecture
+-----------상세내용추가-----------
 
-![image](https://user-images.githubusercontent.com/18453570/81143306-806d1200-8fac-11ea-9c7f-3506f51fccd8.png)
+> [Jhipster Details](/contents/jhipster_details.md): 서비스 생성 시 선택한 옵션 및 Jhipster 코드 상세 Detail 설명을 확인할 수 있다.
 
 
 # Jhipster 환경구축 (Mac & Windows 동일)
@@ -406,7 +407,6 @@ cd rental
 또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.
 
 
-> [Jhipster Details](/contents/jhipster_details.md): 서비스 생성 시 선택한 옵션 및 Jhipster 코드 상세 Detail 설명을 확인할 수 있다.
 
 **끝!**
 
