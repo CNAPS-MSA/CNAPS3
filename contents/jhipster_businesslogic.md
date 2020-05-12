@@ -1,0 +1,1 @@
+# Jhipster Business Logic 
