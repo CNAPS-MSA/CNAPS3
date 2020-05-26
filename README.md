@@ -48,29 +48,28 @@
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 - [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
 
-## 0.아키텍처정의 
+## SPRINT0 - 아키텍처정의& 마이크로서비스도출 
 - [외부아키텍처정의](/contents/outerarchi.md) 
 - [내부아키텍처정의](/contents/innerarchi.md)  
- 
-
-## 1.설계
 - [마이크로서비스 도출하기](/contents/ddd.md) 
+
+## SPRINT#1 - 설계
 - BackEnd 설계하기 
   - [내부구조정의](/contents/mspackage.md) 
   - [API설계](/contents/API.md) 
   - [도메인모델링](/contents/domain.md) 
   - [데이터모델링](/contents/data.md) 
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
-## 2.개발
+## SPRINT#1 - 개발
 - [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
 - [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
 - FrontEnd개발
     
-## 3.(CI/CD) 통합 및 배포
+## SPRINT#1 - (CI/CD) 통합 및 배포
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
 
-## 4.SAMPLE
+## SAMPLE
 - [도서대여시스템](/contents/sample.md)
  - 도서대여시스템 사용하기
 - [Jhipster Sample](/contents/jhipster_guide.md)
