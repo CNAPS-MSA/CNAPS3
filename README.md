@@ -60,8 +60,7 @@
   - [API설계](/contents/API.md) 
   - [도메인모델링](/contents/domain.md) 
   - [데이터모델링](/contents/data.md) 
- - FrontEnd 설계하기
-  - [FrontEnd모델링](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
+ - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## 2.개발
 - [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
 - [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
