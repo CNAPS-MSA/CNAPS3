@@ -1,6 +1,6 @@
 # 도메인모델링
-- DDD전술적설계
-- Aggregate와 도메인이벤트
+- [DDD전술적설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-domainModeling/)
+- [Aggregate와 도메인이벤트](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-domainModeling/)
 
 ## 1.도메인모델
 * 마이크로서비스별로 작성
@@ -9,4 +9,3 @@
 
 <img src="/img/class.png" width="50%">
 
- 
