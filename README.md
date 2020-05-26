@@ -1,4 +1,4 @@
-# 시냅스 방법론 3.0
+# 시냅스(CNAPS)방법론 3.0
 > 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
 
 
@@ -8,11 +8,11 @@
 
 
 
-# 네이티브 공정도
+# 네이티브(NATIVE)공정도
 
 ![공정도](https://github.com/cnaps/main/blob/master/img/%EA%B3%B5%EC%A0%95%EB%8F%84.png)  
 
-# 프렉티스 별 주요활동 & 산출물 
+# 프렉티스별 주요활동 & 산출물 
 
 <details>
 <summary>산출물목록</summary>
