@@ -13,6 +13,9 @@
 ![공정도](https://github.com/cnaps/main/blob/master/img/%EA%B3%B5%EC%A0%95%EB%8F%84.png)  
 
 # 프렉티스 별 주요활동 & 산출물 
+
+<details><summary>산출물목록</summary>
+```
 |Phase|Practice | Step | Output |
 |------|------|---|---|
 |Sprint0|**외부아키텍처정의**|- 인프라정의<br>- 플랫폼정의<br>- 백엔드서비스정의<br>- 통신방법정의<br>- 배포정책정의|인프라구성도<br>아키텍처구성도<br>배포구성도|
@@ -35,6 +38,9 @@
 ||데이터이행|- 기초데이터이행<br>- 본데이터이행||
 ||릴리즈|- 릴리즈수행|운영환경|
 
+
+```
+</details>
 
 # Cloud Native 핵심프로세스 설명 
 ## Cloud Native 개발공정도
