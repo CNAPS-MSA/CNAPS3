@@ -1,7 +1,6 @@
 # API설계
-- REST API란?
-- REST API성숙도모델
-- REST API설계가 필요한 이유?
+- [REST API란?](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
+- [REST API성숙도모델](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
 
 ## 1.API설계서    
  * 마이크로서비스별로 작성
@@ -10,3 +9,4 @@
  * 엑셀작성시 엑셀파일명이 서비스명, Sheet당 1개의 API
  <img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/apiD.png" width="50%">
  
+
