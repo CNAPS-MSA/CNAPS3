@@ -39,7 +39,7 @@
 # Cloud Native 핵심프로세스 설명 
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
-- [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/msa%20pattern/inner-architecture-1/)
+- [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
 
 ## 0.아키텍처정의 
 - [외부아키텍처정의](/contents/outerarchi.md) 
