@@ -4,8 +4,8 @@
     - [인프라 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-architecture-1/)
     - [클라우드플랫폼의 이해](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-architecture-2/)
 - 플랫폼패턴
-    - [다양한 서비스 등록, 탐색 위한 Service registry , Service discovery 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-registry/)
-    - [서비스 단일 진입을 위한 API 게이트웨이(gateway) 패턴 & BFF(Backend For Frontend) 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-api-gw/)
+    - [다양한 서비스 등록, 탐색 위한 Service registry , Service discovery 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-registry/)
+    - [서비스 단일 진입을 위한 API 게이트웨이(gateway) 패턴 & BFF(Backend For Frontend) 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-api-gw/)
     - [외부 구성 저장소 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-config/)
     - [마이크로서비스 인증/인가 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-Auth/)
     - [장애 및 실패 처리를 위한 서킷 브레이크 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-Circuit-breaker/)
