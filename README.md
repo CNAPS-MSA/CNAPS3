@@ -85,7 +85,7 @@
     - 도메인주도설계
       - [전략적설계](https://engineering-skcc.github.io/microservice%20modeling/ddd-Srategic-design/)
       - [전술적설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-domainModeling/)
-    - [API설계](hhttps://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
+    - [API설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
     - [이벤트스토밍](https://engineering-skcc.github.io/microservice%20modeling/Event-Storming/)
     - 교육교재
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
