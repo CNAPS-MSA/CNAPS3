@@ -1,4 +1,5 @@
 # 외부아키텍처정의
+- 외부아키텍처 변화흐름
 ![ms3.0](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/MSA3.0.png)  
 
 - [내외부아키텍처란?](https://engineering-skcc.github.io/microservice%20%EA%B0%9C%EB%85%90/modern-relactive/) 
