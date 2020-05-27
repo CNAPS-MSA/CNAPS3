@@ -1,5 +1,5 @@
 # 외부아키텍처정의
-![ms3.0](https://github.com/cnaps/main/blob/master/img/msa3.0.png)  
+![ms3.0](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/MSA3.0.png)  
 
 - [내외부아키텍처란?](https://engineering-skcc.github.io/microservice%20%EA%B0%9C%EB%85%90/modern-relactive/) 
     - [인프라 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-architecture-1/)
