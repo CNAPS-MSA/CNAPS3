@@ -11,7 +11,7 @@
     - [장애 및 실패 처리를 위한 서킷 브레이크 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-Circuit-breaker/)
     - [모니터링과 추적 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-monitoring/) 
     - [중앙화된 로그 집계 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-log/) 
-    - [서비스 매시(Service Mesh) 패턴](https://engineering-skcc.github.io/msa%20pattern/outer-arch-Service-Mesh/)
+    - [서비스 매시(Service Mesh) 패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/outer-arch-Service-Mesh/)
 - 마이크로서비스관계 패턴
     - [UI패턴](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-1/)
     - [통신패턴과 EDA](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-conn/)
