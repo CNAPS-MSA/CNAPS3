@@ -19,17 +19,25 @@
     - [CQRS](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-cqrs/)
     - [이벤트소싱](https://engineering-skcc.github.io/microservice%20outer%20achitecture/inner-architecture-Event-Sourcing/)
 ## 1.유형
-### 쿠버네티스기반 아키텍처기반
+### Public 클라우드서비스
+VM 및 자체컨테이너기반 솔루션
+- [AWS](https://aws.amazon.com/ko/?nc2=h_lg)
+- [Azure](https://azure.microsoft.com/ko-kr/)
+- [GCP](https://cloud.google.com/)
+
+### K8s기반
+관리형 쿠버네티스
 - [AWS EKS](https://aws.amazon.com/ko/eks/)
 - [Azure AKS](https://docs.microsoft.com/ko-kr/azure/aks/)
-- SK zcp 
+- [Google GKE](https://cloud.google.com/kubernetes-engine?hl=ko)
+- [CloudZ](https://www.cloudz.co.kr/product/cloudZcp)
 - 통신부분 
 
-### spring cloud + netfilOSS기반
+### spring cloud + netflix OSS기반
+어플리케이션을 통한 MSA아키텍처 구성
 - [spring cloud](https://spring.io/projects/spring-cloud)
 
 ## 1.샘플
-    
 - 배포 구성도 
 - 쿠버네티스 기반
  
