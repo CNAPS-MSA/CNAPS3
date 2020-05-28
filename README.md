@@ -71,8 +71,10 @@
 
 ## SAMPLE
 - [도서대여시스템](/contents/sample.md)
- - 도서대여시스템 사용하기
+  - 도서대여시스템 사용하기
 - [Jhipster Sample](/contents/jhipster_guide.md)
+  - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
+  - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
