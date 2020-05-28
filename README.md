@@ -75,6 +75,8 @@
 - [Jhipster Sample](/contents/jhipster_guide.md)
   - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
   - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
+  - [Jhipster Kafka 연결하기)(/contents/jhipster_kafka.md)
+  - [Jhipster Feign Client 연결하기)(/contents/jhipster_feign.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
