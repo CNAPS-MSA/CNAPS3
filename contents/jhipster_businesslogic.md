@@ -9,7 +9,19 @@ gateway directory -> resources -> config -> **application-dev.yml 과 applicatio
 
 위 이미지처럼 빨간 박스 부분을 수정해주면 된다.
 
-Rental 서비스부터 구현할 예정이기 때문에 우선 rental만 등록해두었다.
+위 이미지엔 Rental만 추가 되었는데, Book 서비스, Delivery, Payment등 새로운 서비스를 추가할 때마다 Rental을 추가한 형식으로 추가해야한다.
+
+```yaml
+jhipster:
+  gateway:
+    rate-limiting:
+      enabled: false
+      limit: 100000
+      duration-in-seconds: 3600
+    authorized-microservices-endpoints: # Access Control Policy, if left empty for a route, all endpoints will be accessible
+      rental: /api,/v2/api-docs # recommended dev configuration
+      book: /api,/v2/api-docs 
+````
 
 ## Rent book 서비스 구현하기
 
