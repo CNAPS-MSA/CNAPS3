@@ -25,12 +25,10 @@
         authorized-microservices-endpoints: # Access Control Policy, if left empty for a route, all endpoints will be accessible
           rental: /api,/v2/api-docs # recommended dev configuration
           book: /api,/v2/api-docs 
-    ````
+    ```
 
 
-    Rental 서비스부터 구현할 예정이기 때문에 우선 rental만 등록해두었다.
-
-1. Security 설정 변경
+2. Security 설정 변경
    
     기존의 Gateway, Rental, Book의 `SecurityConfiguration.java`를 살펴보면 아래와 같이 작성되어있다.
 
@@ -348,7 +346,7 @@ Rental Directory로 이동한다.
         Rental rental = rentalRepository.findByUserId(userId).get();
 
         List<RentedItem> rentedItems = rental.getRentedItems().stream()
-            .filter(rentedItem -> bookIds.stream().anyMatch(bookId-> bookId==rentedItem.getBookId()))
+            .filter(rentedItem -> bookIds.contains(rentedItem.getBookId()))
             .collect(Collectors.toList());
 
         for(RentedItem rentedItem: rentedItems){
@@ -358,7 +356,6 @@ Rental Directory로 이동한다.
         rental = rentalRepository.save(rental);
 
         return rental;
-
 
 
     }
