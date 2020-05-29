@@ -1,4 +1,4 @@
-# 시냅스 방법론 3.0
+# 시냅스(CNAPS)방법론 3.0
 > 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
 
 
@@ -8,11 +8,16 @@
 
 
 
-# 네이티브 공정도
+# 네이티브(NATIVE)공정도
 
 ![공정도](https://github.com/cnaps/main/blob/master/img/%EA%B3%B5%EC%A0%95%EB%8F%84.png)  
 
-# 프렉티스 별 주요활동 & 산출물 
+# 프렉티스별 주요활동 & 산출물 
+
+<details>
+<summary>산출물목록</summary>
+<div markdown="1">
+
 |Phase|Practice | Step | Output |
 |------|------|---|---|
 |Sprint0|**외부아키텍처정의**|- 인프라정의<br>- 플랫폼정의<br>- 백엔드서비스정의<br>- 통신방법정의<br>- 배포정책정의|인프라구성도<br>아키텍처구성도<br>배포구성도|
@@ -35,51 +40,58 @@
 ||데이터이행|- 기초데이터이행<br>- 본데이터이행||
 ||릴리즈|- 릴리즈수행|운영환경|
 
+</div>
+</details>
 
 # Cloud Native 핵심프로세스 설명 
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
+- [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
 
-## 0.아키텍처정의 
+## SPRINT#0 - 아키텍처정의& 마이크로서비스도출 
 - [외부아키텍처정의](/contents/outerarchi.md) 
 - [내부아키텍처정의](/contents/innerarchi.md)  
- 
-
-## 1.설계
 - [마이크로서비스 도출하기](/contents/ddd.md) 
+
+## SPRINT#N - 설계
 - BackEnd 설계하기 
   - [내부구조정의](/contents/mspackage.md) 
   - [API설계](/contents/API.md) 
   - [도메인모델링](/contents/domain.md) 
   - [데이터모델링](/contents/data.md) 
- - FrontEnd 설계하기
-## 2.개발
+ - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
+## SPRINT#N - 개발
 - [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
 - [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
 - FrontEnd개발
     
-## 3.(CI/CD) 통합 및 배포
+## SPRINT#N - 통합&배포(CI/CD)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
 
-## 4.SAMPLE
+## SAMPLE
 - [도서대여시스템](/contents/sample.md)
- - [Jhipster Sample](/contents/jhipster_guide.md)
+  - 도서대여시스템 사용하기
+- [Jhipster Sample](/contents/jhipster_guide.md)
+  - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
+  - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
+  - [Jhipster Kafka 연결하기)(/contents/jhipster_kafka.md)
+  - [Jhipster Feign Client 연결하기)(/contents/jhipster_feign.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
     - [마이크로서비스 개념](https://engineering-skcc.github.io/categories/#microservice-%EA%B0%9C%EB%85%90)
     - [마이크로서비스 Outer 아키텍처](https://engineering-skcc.github.io/categories/#microservice-outer-achitecture)
     - [마이크로서비스 Inner 아키텍처](https://engineering-skcc.github.io/categories/#microservice-inner-achitecture)
+  - [마이크로서비스 모델링](https://engineering-skcc.github.io/categories/#microservice-modeling)
     - 교육교재 
-  - 마이크로서비스 모델링
+  - 마이크로서비스 모델링 
     - 도메인주도설계
-      - 전략적설계
-      - 전술적설계
-    - API설계
-    - 이벤트스토밍
+      - [전략적설계](https://engineering-skcc.github.io/microservice%20modeling/ddd-Srategic-design/)
+      - [전술적설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-domainModeling/)
+    - [API설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
+    - [이벤트스토밍](https://engineering-skcc.github.io/microservice%20modeling/Event-Storming/)
     - 교육교재
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
    
-
 

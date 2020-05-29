@@ -406,10 +406,16 @@ cd rental
 위 이미지처럼 Jhipster가 Fake DB를 repository에 저장하여 화면을 보여준다. 물론, FakeDB는 추후 삭제할 수 있다.
 또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.
 
+# Jhipster Project Package Refactoring
+
+Jhipster에서 기본으로 생성해주는 Directory 구조도 훌륭하지만, CNAPS 3.0에서 추구하는 방향성과는 다른 부분들이 있다.
+따라서 해당 부분들을 수정해주었다. 세부사항은 아래 링크에서 확인해보자.
+
+>[Jhipster Project Package Refactoring](/contents/jhipster_package_ref.md)
 
 # Jhipster Project Business Logic
 
-Jhipster를 활용해 기본적인 CQRS와 화면구성까지 완료하였다. 이제 각 service와 service간의 Business Logic을 추가해보자.
+Jhipster를 활용해 기본적인 CQRS와 화면구성, package 구조 또한 변경을 완료하였다. 이제 각 service와 service간의 Business Logic을 추가해보자.
 
 -> [Jhipster Business Logic추가](/contents/jhipster_businesslogic.md)
 
