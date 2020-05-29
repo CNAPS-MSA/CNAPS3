@@ -10,7 +10,7 @@ DTO, Mapper, Kafka, fiegn은 외부 다른 서비스와의 통신에서 사용�
 Jhipster는 DTO와 Mapper는 Service 패키지에, Kafka는 Web.rest에 구성해두었다. (Feign은 config외엔 없다.)
 하지만 외부 서비스와 통신하는 데 쓰이는 경우 client와 연결되는 곳인 controller에 필요한 DTO나 Mapper는 web.rest에, 이때 쓰이는 도구인 Kafka나 feign은 adaptor라는 패키지를 따로 만들어 관리하는 것이 바람직하다.
 
-따라서 패키지의 구조르 아래 이미지와 같이 수정하였다.
+따라서 패키지의 구조 아래 이미지와 같이 수정하였다.
 
 ![image](https://user-images.githubusercontent.com/18453570/83114885-8ade7f80-a104-11ea-85ea-063515eca39f.png)
 
