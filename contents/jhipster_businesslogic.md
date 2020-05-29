@@ -79,6 +79,7 @@
     위의 코드에서 `.antMatchers("/api/**").authenticated()`부분을 `.antMatchers("/api/**").permitAll()`로 수정해준다.
     `.antMatchers("/api/**").authenticated()`는 해당 경로로 들어오는 요청이 인증된 요청인 경우에만 허용한다는 의미인데, Swagger로 테스트 하던 중 SecurityFilter에 오류가 생기는 현상이 있어, 로직 개발 중엔 `permitAll()`로 수정하여 개발 및 테스트를 진행하였다. 
     >Gateway, Rental, Book의 각 SecurityConfiguration.java을 모두 위와 같이 수정하였다.
+    >>오직 개발 또는 테스트 단계일 때만 `permitAll()`로 설정해야하며, prod단계에선 `authenticated()`를 적용해야한다.
 
 
 # Business Logic 구현
@@ -86,8 +87,9 @@
 Sample에서 보여줄 Logic은 아래와 같다.
 
 1. 도서 대여하기
+   1. 대여시, book 정보(id, title)를 feign을 통해 가져오기
+   2. 대여 완료된 book 상태 kafka를 통해 업데이트하기 
 2. 도서 반납 후, 도서 상태 변경하기 -> kafka 사용하기
-3. 도서 연체 시 포인트 결제 연결하기 -> FeignClient 사용하기
 
 **코드는 아무 예고 없이 언제든 변경될 수 있으니, 실제 코드는 해당 서비스 애플리케이션의 Repository에서 확인하세요.**
 
@@ -104,14 +106,16 @@ Rental Directory로 이동한다.
 
     ```java
 
+    
     /****
-        *
-        * Business Logic
-        *
-        * 책 대여하기
-        *
-        * ****/
-        RentalDTO rentBooks(Long userId, List<Long> bookIds);
+     *
+     * Business Logic
+     *
+     * 책 대여하기
+     *
+     * ****/
+    Rental rentBooks(Long userId, List<BookInfo> books) throws Exception;
+
 
     ```
 
@@ -121,36 +125,59 @@ Rental Directory로 이동한다.
 2. RentalServiceImpl.java
 
     ```java
-        @Override
-    public RentalDTO rentBooks(Long userId, List<Long> bookIds) {
-        log.debug("Rent Books by : ", userId, " Book List : ", bookIds);
-
-        if(rentalRepository.findByUserId(userId).isPresent()){ //기존에 대여 내역이 있는 경우
-            Rental rental = rentalRepository.findByUserId(userId).get();
-            rental = rental.rentBooks(bookIds);
-            if(rental!=null)
-            {
-                log.debug(" 대여 완료 되었습니다.", rental);
-                return rentalMapper.toDto(rental);
-            }else{
-                log.debug("대여 불가능 상태입니다.");
-                return null;
-            }
-        }else{ // 첫 대여인 경우
-            log.debug("첫 도서 대여입니다.");
-            Rental rental = Rental.createRental(userId);
-            rentalRepository.save(rental);
-            rental=rental.rentBooks(bookIds);
-
-            log.debug(" 대여 완료 되었습니다.", rental);
-            return rentalMapper.toDto(rental);
+       
+    @Transactional
+    public Rental rentBooks(Long userId, List<BookInfo> books) throws Exception {
+        log.debug("Rent Books by : ", userId, " Book List : ", books);
+        Rental rental = new Rental();
+        if(rentalRepository.findByUserId(userId).isPresent()){
+            rental = rentalRepository.findByUserId(userId).get();
+        }else{
+            //도서카드 생성 -> rental과 user 연결 후 삭제해야함
+            log.debug("첫 도서 대여 입니다.");
+            rental = Rental.createRental(userId);
         }
+
+        try{
+            Boolean checkRentalStatus = rental.checkRentalAvailable(books.size());
+            if(checkRentalStatus){
+            List<RentedItem> rentedItems = books.stream()
+                .map(bookInfo -> RentedItem.createRentedItem(bookInfo.getId(), bookInfo.getTitle(), LocalDate.now()))
+                .collect(Collectors.toList());
+
+            for (RentedItem rentedItem : rentedItems) {
+                rental = rental.rentBook(rentedItem);
+
+            }
+            rentalRepository.save(rental);
+
+
+            }
+
+        }catch (Exception e){
+            String errorMessage = e.getMessage();
+            System.out.println(errorMessage);
+            throw new Exception(errorMessage);
+
+        }
+        return rental;
+
+    
     }
+
     ```
 
-    - 기존 내역이 있는 경우 -> 해당 User의 Rental을 찾아 rentBooks를 진행한다. 
-      - 해당 User가 대여 가능 상태인지 체크하고, 불가능인 경우 null을 return, 가능한 경우 rent를 진행한다.
-    - 첫 대여인 경우 -> 해당 User의 Rent를 생성하여 저장한다. 이후, rentBooks를 진행한다.
+    - 기존 내역이 있는 경우 -> 해당 User의 Rental을 찾아 rentBooks를 진행한다. : 이 부분은 User Service구현 완료 시 User 생성완료 후 Rental을 생성하는 방식으로 변경할 예정임. 따라서, 추후 이부분은 삭제될예정임.
+    - Controller에서 넘겨받은 BookInfo를 가지고 rentedItem을 생성하여 Rental Entity내의 rentBook을 진행한다.
+        >이부분의 경우, RentedItem List를 생성시에는 Java Stream API를, rentBook 메소드를 반복 실행할 때에는 for loop를 사용한 것을 확인할 수 있다.
+        >왜냐하면, Java Stream은 List Object내 Item의 map과 collect 작업에서 성능이 유효하다. 간단한 for loop의 경우 stream이 아닌 일반적인 방식의 for loop가 성능이 3배정도 빠르기 때문이다. 따라서, 메소드 반복 실행의 경우엔 일반적인 for loop로 구현하였다. 
+      - 가장 먼저, 현재 Rent가 가능한 상태인지 확인한다.
+        >상태 체크 메소드는 Rental.java에 구현한다.
+        -> RentalStatus가 OVERDUE이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 Exception을 던진다.
+        -> 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 Exception을 던진다.
+        -> 대여 가능 상태인 경우 rentBook을 진행한다.
+    - 작업한 Rental은 RentalRepository에 save 한다.
+    - 예외 상황에 대해 모두 Exception처리를 했다. 구체적인 Exception 구현은 추후 개발할 예정이다.
 
 3. Rental.java
 
@@ -176,82 +203,69 @@ Rental Directory로 이동한다.
     
     2. Rental 생성 메소드
    
-    첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 OK로 설정하며, LateFee는 0으로 설정한다.
+    첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
     
     ```java
-        //생성메소드//
-    public static Rental createRental(Long userId){
-        Rental rental = new Rental();
-        rental.setUserId(userId);
-        rental.setRentalStatus(RentalStatus.OK);
-        rental.setRentedItems(new HashSet<>());
-        rental.setOverdueItems(new HashSet<>());
-        rental.setReturnedItems(new HashSet<>());
-        rental.setLateFee((long)0);
-        return rental;
-    }
+
+            //생성메소드//
+        /**
+        *
+        * @param userId
+        * @return
+        */
+        public static Rental createRental(Long userId){
+            Rental rental = new Rental();
+            rental.setUserId(userId);
+            //대여 가능하게 상태 변경
+            rental.setRentalStatus(RentalStatus.RENT_AVAILABLE);
+            rental.setLateFee((long)0);
+            return rental;
+        }
+
     ```
     3. rentBooks 메소드 (책 대여하기)
     
-    가장 먼저, 현재 Rent가 가능한 상태인지 확인한다.
-    -> RentalStatus가 OVERDUE이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하다. 
-    -> 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 return 한다.
-
-    Book Id 리스트를 받아 각 book마다 rentedItem을 생성하고 Rental의 rentedItems에 add한다.
-    Rental의 상태는 RENTED로 변경하고, Latefee를 0으로 설정한다.
     
     ```java
+    //대여하기 메소드//
+    public Rental rentBook(RentedItem rentedItem){
+        //현재 대여목록 갯수와 대여할 도서 갯수 파악
+
+        this.addRentedItem(rentedItem);
+
+        return this;
+    }
 
     //대여 가능 여부 체크 //
-    public boolean checkRentalAvailable(Integer newBookCnt){
-        if(this.rentalStatus!=RentalStatus.OVERDUE){
+    public boolean checkRentalAvailable(Integer newBookListCnt) throws Exception{
+        if(this.rentalStatus!=RentalStatus.RENT_UNAVAILABLE ) throw new Exception("연체 상태입니다.");
+        if(this.getLateFee()==0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
+        if(newBookListCnt+this.getRentedItems().size() <=5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
 
-            if(this.rentedItems.size()+newBookCnt >5){
-                System.out.println("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
-                return false;
-            }else{
-                return true;
-            }
-        }else{
-            System.out.println("연체 상태입니다.");
-            return false;
-        }
+        return true;
     }
-
-
-    //대여하기 메소드//
-    public Rental rentBooks(List<Long> bookIds){
-        if(checkRentalAvailable(bookIds.size())){
-            for(Long bookId : bookIds){
-                RentedItem rentedItem = RentedItem.createRentedItem(this, bookId, LocalDate.now());
-                this.addRentedItem(rentedItem);
-            }
-            this.setRentalStatus(RentalStatus.RENTED);
-            this.setLateFee((long)0);
-            return this;
-
-        }else{
-            return null;
-        }
-    }
-
+    
 
     ```
 
+    - ServiceImpl에서 생성한 RentedItem을 받아, rental의 rentedItems에 add 한다.
+    - 대여 가능 여부 체크에서는 rentalStatus, LateFee, 현재 대여한 책의 개수를 기준으로 가능여부를 체크한다.
+
 4. RentedItem.java
 
-    Rent에서 RentedItem 생성시에도 RentedItem Entity를 호출하여 생성한다. 
+    ServiceImpl에서 RentedItem 생성시에도 RentedItem Entity를 호출하여 생성한다. 
 
     RentedItem 생성 시, 연결되어있는 rental의 정보, 대여 도서 정보, 대여시작 날짜, 반납 날짜가 포함되어야한다. 대여기간은 총 2주로 설정하였다.
 
     ```java
-     public static RentedItem createRentedItem(Rental rental, Long bookId, LocalDate rentedDate) {
+      public static RentedItem createRentedItem(Long bookId, String bookTitle, LocalDate rentedDate) {
         RentedItem rentedItem = new RentedItem();
         rentedItem.setBookId(bookId);
-        rentedItem.setRental(rental);
+        rentedItem.setBookTitle(bookTitle);
         rentedItem.setRentedDate(rentedDate);
-        rentedItem.setDueDate(rentedDate.plusWeeks(2)); //총 대여기간 2주 설정
+        rentedItem.setDueDate(rentedDate.plusWeeks(2));
         return rentedItem;
+
     }
     ```
 
@@ -261,26 +275,29 @@ Rental Directory로 이동한다.
     Input으로는 `userId`와 `bookIdList`를 받는다. 각각 userid와 books로 매핑하였다.
     >RestController에서는 되도록 DTO를 사용하였다. 
 
-    rentBooks 요청이 실행되면, rentalService의 rentBooks메소드를 실행시켜, rentalDTO를 반환받았다.
-    rentalDTO가 null인 경우, 에러 메세지를 출력한다. 
-    정상적으로 진행된 경우 rentalService의 save메소드를 통해 repository에 저장하였다.
+    - rentBooks 요청이 실행되면, rentalService의 rentBooks메소드를 실행시켜 rental을 반환받는다.
+      - 과정 중 Exception이 발생하면, Exception을 던진다.
+    - 정상적으로 진행된 경우, kafka를 통해 rentalService에 bookStatus를 업데이트 시키는 메소드를 실행시킨다. 
 
     ```java
-        @PostMapping("/rentbooks/by/{userid}/books/{books}")
-    public ResponseEntity<RentalDTO> rentBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books){
-        log.debug("rent book request");
-        RentalDTO rentalDTO = rentalService.rentBooks(userid,books);
+        @PostMapping("/rentbooks/{userid}/{books}")
+        public ResponseEntity rentBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books) throws Exception {
+            log.debug("rent book request");
+            List<BookInfo> bookInfoList = bookClient.getBookInfo(books);
+            log.debug("book info list",bookInfoList.toString());
+            try {
+                Rental rental = rentalService.rentBooks(userid, bookInfoList);
+                //kafka - 책 상태 업데이트
+                rentalService.updateBookStatus(books, "UNAVAILABLE");
+                
+                RentalDTO result = rentalMapper.toDto(rental);
+                return ResponseEntity.ok().body(result);
 
-        if(rentalDTO==null){
-            throw new BadRequestAlertException("Invalid ", ENTITY_NAME, "null");
+            }catch (Exception e){
+                throw new Exception(e.getMessage());
+            }
+
         }
-        RentalDTO result = rentalService.save(rentalDTO);
-        log.debug("SEND BOOKIDS for Book: {}", books);
-
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, rentalDTO.getId().toString()))
-            .body(result);
-    }
     ```
 
 ## 도서 반납 서비스 구현하기
@@ -290,16 +307,21 @@ Rental Directory로 이동한다.
     도서 반납 요청 또한 대여와 마찬가지로 userId와 book Id List를 Input으로 받도록하였다.
    
    ```java
-
-    @PutMapping("/returnbooks/by/{userid}/books/{books}")
+    
+    @PutMapping("/returnbooks/{userid}/{books}")
     public ResponseEntity returnBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books){
-        rentalService.returnBooks(userid,books);
+        Rental rental=rentalService.returnBooks(userid,books);
         log.debug("returned books");
         log.debug("SEND BOOKIDS for Book: {}", books);
-
-        return ResponseEntity.ok().build();
+        
+        rentalService.updateBookStatus(books, "AVAILABLE");
+        
+        RentalDTO result = rentalMapper.toDto(rental);
+        return ResponseEntity.ok().body(result);
     }
     ```
+    
+    returnBook을 마친 후에, book의 상태를 변경한다.
 
 2. RentalService.java
 
@@ -313,46 +335,74 @@ Rental Directory로 이동한다.
      *
      * ****/
 
-    void returnBooks(Long userId, List<Long> bookIds);
+    Rental returnBooks(Long userId, List<Long> bookIds);
     ```
 
 3. RentalServiceImpl.java
 
     ```java
 
-
-    @Override
-    public void returnBooks(Long userId, List<Long> bookIds) {
+    @Transactional
+    public Rental returnBooks(Long userId, List<Long> bookIds) {
         log.debug("Return books by ", userId, " Return Book List : ", bookIds);
+        Rental rental = rentalRepository.findByUserId(userId).get();
 
-        if(rentalRepository.findByUserId(userId).isPresent()){
-            Rental rental = rentalRepository.findByUserId(userId).get();
-            for(Long bookId: bookIds){
-                RentedItem rentedItem = rentedItemRepository.findByBookId(bookId).get();
-                rental.getRentedItems().remove(rentedItem);
-                rentedItemRepository.delete(rentedItem);
-                ReturnedItem returnedItem = ReturnedItem.createReturnedItem(rental, bookId , LocalDate.now());
-                rental.addReturnedItem(returnedItem);
-                returnedItemRepository.save(returnedItem);
+        List<RentedItem> rentedItems = rental.getRentedItems().stream()
+            .filter(rentedItem -> bookIds.stream().anyMatch(bookId-> bookId==rentedItem.getBookId()))
+            .collect(Collectors.toList());
 
-            }
-
-            if(rental.getRentedItems().size()==0 && rental.getRentalStatus()!= RentalStatus.OVERDUE){
-                rental.setRentalStatus(RentalStatus.OK);
-            }
-
-            rentalRepository.save(rental);
-
-            return ;
-
-        }else{
-            log.debug("대여 이력이 없습니다.");
-            return ;
+        for(RentedItem rentedItem: rentedItems){
+            rental.returnbook(rentedItem);
         }
+
+        rental = rentalRepository.save(rental);
+
+        return rental;
+
+
 
     }
 
     ```
+    - 해당 User의 Rental을 찾는다.
+    - Controller에서 넘겨받은 BookId와 rental의 rentedItems 중 일치하는 book을 필터링한다. 일치하는 book만 모아 새로운 rentedItemList를 만든다.
+    - for loop에서 Rental의 returnBook을 차례로 진행한다.
+    - 진행 후, rental을 저장한다.
 
-### kafka로 도서 대여/반납 시, Book상태 변경하기
+4. Rental.java
+
+    ```java
+     //반납 하기//
+    public Rental returnbook(RentedItem rentedItem) {
+
+        this.removeRentedItem(rentedItem);
+        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), rentedItem.getBookTitle(), LocalDate.now()));
+        return this;
+
+    }
+    ```
+
+    받은 rentedItem을 기존의 rentedItemList에서 제거하고, returnedItem을 생성하여 returnedItemList에 추가한다.
+
+5. ReturnedItem.java
+
+    ```java
+        public static ReturnedItem createReturnedItem(Long bookId, String bookTitle, LocalDate now) {
+        ReturnedItem returnedItem = new ReturnedItem();
+        returnedItem.setBookId(bookId);
+        returnedItem.setBookTitle(bookTitle);
+        returnedItem.setReturnedDate(now);
+        return returnedItem;
+    }
+    ```
+    ReturnedItem 생성 메소드이다. 
+
+### kafka와 Feign
+
+Rent와 Return에서 Book 상태를 업데이트하고, 해당 Book의 정보 또한 가져와야했다.
+Book상태의 경우 Kafka를 통해, Logic이 완료되면 업데이트하였고, Book정보는 Logic 시작 전 Feign을 통해 가져왔다. 
+Book Service와의 Kafka, Feign Client연결은 아래 링크 페이지로 이동하여 확인하자.
+
+- [Kafka 구성하기](/contents/jhipster_kafka.md)
+- [Feign Client 구성하기](/contents/jhipster_feign.md)
 
