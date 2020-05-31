@@ -62,6 +62,13 @@
 
 
 ### 1.2.이벤트스토밍를 통한 마이크로서비스 도출
+![subdomain](https://github.com/cnaps/main/blob/master/img/subdomain.jpg)  
+
+![subdomain](https://github.com/cnaps/main/blob/master/img/BC.jpg)  
+
+![subdomain](https://github.com/cnaps/main/blob/master/img/ContextMap.jpg)  
+
+![subdomain](https://github.com/cnaps/main/blob/master/img/contextmap2.jpg)  
 
 
 ### 컨텍스트맵
