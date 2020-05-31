@@ -68,7 +68,7 @@
 
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ContextMap.jpg)  
 
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextmap2.jpg)  
+![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
 
 
 ### 컨텍스트맵
