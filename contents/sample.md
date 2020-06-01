@@ -80,6 +80,16 @@
 12.USER1의 라이브러리를 보면 2권의 반납이력이 존재하고 1권은 대출중이다.
 
 
+주요 구현 기능
+- 도서관리 
+- 대출하기
+- 반납하기
+- 연체처리
+- 연체해제처리(포인트 사용)
+
+
+
+
 ## 2.이벤트스토밍를 통한 마이크로서비스 도출
 
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/subdomain.jpg)  
