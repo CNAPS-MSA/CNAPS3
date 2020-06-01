@@ -78,16 +78,34 @@
 
 
 ### 1.2.이벤트스토밍를 통한 마이크로서비스 도출
+
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/subdomain.jpg)  
+- 문제영역(서브시스템)
 
+### 컨텍스트경계 도출
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/BC.jpg)  
-
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ContextMap.jpg)  
-
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
+- 컨텍스트 경계 도출
 
 
 ### 컨텍스트맵
+![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ContextMap.jpg)  
+- 동기,비동기 호출 관계 정리
+
+![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
+- 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
+|이벤트스토밍 결과물|헥사고널 아키텍처 구성요소|
+|------|------|
+|커맨드|API|
+|어그리게잇|DATA|
+|도메인이벤트|외부영역-|
+|||
+|외부시스템|외부영역-대외연계어답터|
+
+
+
+
+- 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
+
 
 ### 마이크로서비스별 설계
 
