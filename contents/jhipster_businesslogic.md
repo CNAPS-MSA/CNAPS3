@@ -112,7 +112,7 @@ Rental Directory로 이동한다.
      * 책 대여하기
      *
      * ****/
-    Rental rentBooks(Long userId, List<BookInfo> books) throws Exception;
+    Rental rentBooks(Long userId, List<BookInfo> books);
 
 
     ```
@@ -125,7 +125,7 @@ Rental Directory로 이동한다.
     ```java
        
     @Transactional
-    public Rental rentBooks(Long userId, List<BookInfo> books) throws Exception {
+    public Rental rentBooks(Long userId, List<BookInfo> books) {
         log.debug("Rent Books by : ", userId, " Book List : ", books);
         Rental rental = new Rental();
         if(rentalRepository.findByUserId(userId).isPresent()){
@@ -146,6 +146,7 @@ Rental Directory로 이동한다.
             for (RentedItem rentedItem : rentedItems) {
                 rental = rental.rentBook(rentedItem);
 
+
             }
             rentalRepository.save(rental);
 
@@ -155,12 +156,10 @@ Rental Directory로 이동한다.
         }catch (Exception e){
             String errorMessage = e.getMessage();
             System.out.println(errorMessage);
-            throw new Exception(errorMessage);
-
+            return null;
         }
         return rental;
 
-    
     }
 
     ```
@@ -199,7 +198,7 @@ Rental Directory로 이동한다.
     private Set<ReturnedItem> returnedItems = new HashSet<>();
     ```
     
-    2. Rental 생성 메소드
+    1. Rental 생성 메소드
    
     첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
     
@@ -221,7 +220,7 @@ Rental Directory로 이동한다.
         }
 
     ```
-    3. rentBooks 메소드 (책 대여하기)
+    1. rentBooks 메소드 (책 대여하기)
     
     
     ```java
@@ -234,11 +233,12 @@ Rental Directory로 이동한다.
         return this;
     }
 
+    
     //대여 가능 여부 체크 //
     public boolean checkRentalAvailable(Integer newBookListCnt) throws Exception{
-        if(this.rentalStatus!=RentalStatus.RENT_UNAVAILABLE ) throw new Exception("연체 상태입니다.");
-        if(this.getLateFee()==0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
-        if(newBookListCnt+this.getRentedItems().size() <=5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
+        if(this.rentalStatus.equals(RentalStatus.RENT_UNAVAILABLE )) throw new Exception("연체 상태입니다.");
+        if(this.getLateFee()!=0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
+        if(newBookListCnt+this.getRentedItems().size()>5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
 
         return true;
     }
@@ -274,28 +274,35 @@ Rental Directory로 이동한다.
     >RestController에서는 되도록 DTO를 사용하였다. 
 
     - rentBooks 요청이 실행되면, rentalService의 rentBooks메소드를 실행시켜 rental을 반환받는다.
-      - 과정 중 Exception이 발생하면, Exception을 던진다.
+      - 과정 중 Exception이 발생하면, Exception을 던진다. -> 우선은 null check를 통해 체크하였다. 추후 Exception 처리를 추가할 예정이다.
     - 정상적으로 진행된 경우, kafka를 통해 rentalService에 bookStatus를 업데이트 시키는 메소드를 실행시킨다. 
 
     ```java
-        @PostMapping("/rentbooks/{userid}/{books}")
-        public ResponseEntity rentBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books) throws Exception {
-            log.debug("rent book request");
-            List<BookInfo> bookInfoList = bookClient.getBookInfo(books);
-            log.debug("book info list",bookInfoList.toString());
-            try {
-                Rental rental = rentalService.rentBooks(userid, bookInfoList);
-                //kafka - 책 상태 업데이트
-                rentalService.updateBookStatus(books, "UNAVAILABLE");
-                
-                RentalDTO result = rentalMapper.toDto(rental);
-                return ResponseEntity.ok().body(result);
+       
+    @PostMapping("/rentbooks/{userid}/{books}")
+    public ResponseEntity rentBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books) {
+        log.debug("rent book request");
+        List<BookInfo> bookInfoList = bookClient.getBookInfo(books);
+        log.debug("book info list",bookInfoList.toString());
 
-            }catch (Exception e){
-                throw new Exception(e.getMessage());
-            }
+        Rental rental = rentalService.rentBooks(userid, bookInfoList);
+
+        //추후 Exception처리//
+        if(rental!=null) {
+            //kafka - 책 상태 업데이트
+            bookInfoList.stream().forEach(b -> rentalService.updateBookStatus(b.getId(), "UNAVAILABLE"));
+
+            RentalDTO result = rentalMapper.toDto(rental);
+            return ResponseEntity.ok().body(result);
+        }else {
+
+            log.debug("대여 불가:");
+
+            return ResponseEntity.badRequest().build();
 
         }
+
+    }
     ```
 
 ## 도서 반납 서비스 구현하기
@@ -303,19 +310,27 @@ Rental Directory로 이동한다.
 1. RentalResource.java
 
     도서 반납 요청 또한 대여와 마찬가지로 userId와 book Id List를 Input으로 받도록하였다.
-   
-   ```java
+    이때 대여 기록이 없는 책을 반납시도하는 경우 null을 던지게 했다. 이 부분은 추후 Exception으로 처리할 예정이다.
+    ```java
     
-    @PutMapping("/returnbooks/{userid}/{books}")
+     @PutMapping("/returnbooks/{userid}/{books}")
     public ResponseEntity returnBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books){
-        Rental rental=rentalService.returnBooks(userid,books);
-        log.debug("returned books");
-        log.debug("SEND BOOKIDS for Book: {}", books);
-        
-        rentalService.updateBookStatus(books, "AVAILABLE");
-        
-        RentalDTO result = rentalMapper.toDto(rental);
-        return ResponseEntity.ok().body(result);
+
+
+            Rental rental=rentalService.returnBooks(userid,books);
+            log.debug("returned books");
+            log.debug("SEND BOOKIDS for Book: {}", books);
+
+            //추후 Exception처리//
+            if(rental!=null) {
+                books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
+                RentalDTO result = rentalMapper.toDto(rental);
+                return ResponseEntity.ok().body(result);
+            }else {
+                log.debug("대여기록에 없는 도서입니다.");
+                return ResponseEntity.badRequest().build();
+            }
+
     }
     ```
     
@@ -340,6 +355,7 @@ Rental Directory로 이동한다.
 
     ```java
 
+   
     @Transactional
     public Rental returnBooks(Long userId, List<Long> bookIds) {
         log.debug("Return books by ", userId, " Return Book List : ", bookIds);
@@ -348,15 +364,20 @@ Rental Directory로 이동한다.
         List<RentedItem> rentedItems = rental.getRentedItems().stream()
             .filter(rentedItem -> bookIds.contains(rentedItem.getBookId()))
             .collect(Collectors.toList());
+        log.debug("bookIds contain :" , rentedItems.size());
 
-        for(RentedItem rentedItem: rentedItems){
-            rental.returnbook(rentedItem);
+        if(rentedItems.size()>0) {
+            for (RentedItem rentedItem : rentedItems) {
+                rental.returnbook(rentedItem);
+            }
+
+            rental = rentalRepository.save(rental);
+
+            return rental;
+        }else{
+
+            return null;
         }
-
-        rental = rentalRepository.save(rental);
-
-        return rental;
-
 
     }
 
