@@ -93,12 +93,12 @@
 
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
 - 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
+
 |이벤트스토밍 결과물|헥사고널 아키텍처 구성요소|
 |------|------|
 |커맨드|API|
 |어그리게잇|DATA|
 |도메인이벤트|외부영역-|
-|||
 |외부시스템|외부영역-대외연계어답터|
 
 
