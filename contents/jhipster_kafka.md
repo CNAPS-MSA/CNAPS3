@@ -134,6 +134,11 @@ public class UpdateBookEvent {
 
 ```java
 
+    ...
+
+    ...
+
+
     books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
 
 ```
@@ -148,11 +153,27 @@ book ID List를 받아 각각 bookId와`AVAILABLE`이란 상태 메세지를 담
 
 ```java
 
+    private final RentalKafkaProducer rentalKafkaProducer;
+
+    public RentalServiceImpl(RentalRepository rentalRepository, RentedItemRepository rentedItemRepository, ReturnedItemRepository returnedItemRepository,
+                             RentalKafkaProducer rentalKafkaProducer) {
+        this.rentalRepository = rentalRepository;
+        this.rentedItemRepository = rentedItemRepository;
+        this.returnedItemRepository = returnedItemRepository;
+        this.rentalKafkaProducer = rentalKafkaProducer;
+    }
+    
+    ...
+
     @Override
     public void updateBookStatus(Long bookId, String bookStatus) {
         rentalKafkaProducer.updateBookStatus(bookId, bookStatus);
     }
 ```
+
+Service에 updateBookStatus 메소드를 선언하고 ServiceImpl에서 구현한다. 
+이때, Kafka Producer를 private final로 선언하고 constructor에 포함시키는 것을 잊지말자.
+
 
 이제 Rental이 보내는 Kafka메세지를 구독할 Consumer를 만들어보자.
 
