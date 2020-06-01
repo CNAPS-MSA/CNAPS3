@@ -132,25 +132,48 @@ public class UpdateBookEvent {
 
 그리고 book에 메세지를 보낼 때는 아래와같이 보내면된다.
 
-    ```java
+```java
 
-        books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
-    ```
-    위 코드는 책을 반납한 뒤, 책 상태를 변경해주기 위해 보내는 메세지이다.
+    ...
 
-    book ID List를 받아 각각 bookId와`AVAILABLE`이란 상태 메세지를 담아 보내는 것이다. 
+    ...
+
+
+    books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
+
+```
+
+위 코드는 책을 반납한 뒤, 책 상태를 변경해주기 위해 보내는 메세지이다.
+
+book ID List를 받아 각각 bookId와`AVAILABLE`이란 상태 메세지를 담아 보내는 것이다. 
     
-    또, 바로 kafka producer에 접근하지 않고 service를 통해 메소드를 실행시켰다.
+또, 바로 kafka producer에 접근하지 않고 service를 통해 메소드를 실행시켰다.
 
-1. RentalServiceImpl.java
+4. RentalServiceImpl.java
 
 ```java
+
+    private final RentalKafkaProducer rentalKafkaProducer;
+
+    public RentalServiceImpl(RentalRepository rentalRepository, RentedItemRepository rentedItemRepository, ReturnedItemRepository returnedItemRepository,
+                             RentalKafkaProducer rentalKafkaProducer) {
+        this.rentalRepository = rentalRepository;
+        this.rentedItemRepository = rentedItemRepository;
+        this.returnedItemRepository = returnedItemRepository;
+        this.rentalKafkaProducer = rentalKafkaProducer;
+    }
+    
+    ...
 
     @Override
     public void updateBookStatus(Long bookId, String bookStatus) {
         rentalKafkaProducer.updateBookStatus(bookId, bookStatus);
     }
 ```
+
+Service에 updateBookStatus 메소드를 선언하고 ServiceImpl에서 구현한다. 
+이때, Kafka Producer를 private final로 선언하고 constructor에 포함시키는 것을 잊지말자.
+
 
 이제 Rental이 보내는 Kafka메세지를 구독할 Consumer를 만들어보자.
 
