@@ -198,7 +198,7 @@ Rental Directory로 이동한다.
     private Set<ReturnedItem> returnedItems = new HashSet<>();
     ```
     
-    1. Rental 생성 메소드
+    2. Rental 생성 메소드
    
     첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
     
@@ -220,7 +220,8 @@ Rental Directory로 이동한다.
         }
 
     ```
-    1. rentBooks 메소드 (책 대여하기)
+
+    3. rentBooks 메소드 (책 대여하기)
     
     
     ```java
