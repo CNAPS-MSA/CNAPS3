@@ -91,6 +91,8 @@
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ContextMap.jpg)  
 - 동기,비동기 호출 관계 정리
 
+### 마이크로서비스별 설계
+
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
 - 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
 
@@ -98,16 +100,10 @@
 |------|------|
 |커맨드|API|
 |어그리게잇|DATA|
-|도메인이벤트|외부영역-|
-|외부시스템|외부영역-대외연계어답터|
+|도메인이벤트|Event|
+|외부시스템, 정책|I/f|
 
 
-
-
-- 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
-
-
-### 마이크로서비스별 설계
 
 
 
