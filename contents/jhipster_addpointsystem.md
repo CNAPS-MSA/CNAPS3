@@ -14,3 +14,5 @@
 gateway의 User Domain에 point를 추가한다.
 
 User Domain 뿐만 아니라, User DTO, User ServiceImpl도 모두 수정한다.
+
+//Front 부분도 수정하였으나, 실제 view에선 보이지 않아 다시 수정해야함.
