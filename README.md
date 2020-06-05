@@ -46,7 +46,7 @@
 # Cloud Native 핵심프로세스 
 - Natvie 방법론의 핵심 아키텍팅/설계/개발 프로세스를 각 활동들을 설명하며 샘플을 제시한다.
 - 각 활동의 개념등은 SK 주식회사 C&C 기술블로그와 연계하여 설명한다.
-- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등을 연계하여 제공한다.
+- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등 활동별로 Seemless하 제공한다.
 
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
@@ -75,11 +75,7 @@
 
 ## SAMPLE
 - [도서대여시스템](/contents/sample.md)
-- [Jhipster Sample](/contents/jhipster_guide.md)
-  - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
-  - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
-  - [Jhipster Kafka 연결하기](/contents/jhipster_kafka.md)
-  - [Jhipster Feign Client 연결하기](/contents/jhipster_feign.md)
+
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
