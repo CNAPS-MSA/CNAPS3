@@ -103,12 +103,12 @@ CQRS,MongoDB
 - 문제영역(서브시스템)
 
 ### 컨텍스트경계 도출
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/BC.jpg)  
+![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bc.jpg)  
 - 컨텍스트 경계 도출
 
 
 ### 컨텍스트맵
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ContextMap.jpg)  
+![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap.jpg)  
 - 동기,비동기 호출 관계 정리
 
 ### 마이크로서비스별 설계
