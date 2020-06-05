@@ -43,7 +43,11 @@
 </div>
 </details>
 
-# Cloud Native 핵심프로세스 설명 
+# Cloud Native 핵심프로세스 
+- Natvie 방법론의 핵심 아키텍팅/설계/개발 프로세스를 각 활동들을 설명하며 샘플을 제시한다.
+- 각 활동의 개념등은 SK 주식회사 C&C 기술블로그와 연계하여 설명한다.
+- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등을 연계하여 제공한다.
+
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 - [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
