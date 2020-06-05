@@ -40,8 +40,8 @@ VM 및 자체컨테이너기반 솔루션
 - [spring cloud](https://spring.io/projects/spring-cloud)
 
 ## 1.샘플
-- 구성도
-![ms3.0](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ac.jpg)  
+- 도서대여시스템 구성도
+![도서대여시스템](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ac.jpg)  
 
 - 쿠버네티스 기반
  
