@@ -66,6 +66,9 @@ brew install jhipster
 
 # Jhipster로 개발 시작하기
 
+![image](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/firstArchitecture.jpg)
+
+
 Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
 
 1. gateway 만들기
