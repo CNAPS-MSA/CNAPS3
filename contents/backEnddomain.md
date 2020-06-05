@@ -11,12 +11,13 @@
 
 ### 프로젝트 구조 생성하기
 - [Jhipster사용하여 프로젝트 구조생성](/contents/jhipster_guide.md)
+  - 도메인 구현
+  - 레파지토리 구현
+  
 - [Package Refactoring](/contents/jhipster_package_ref.md)
 
 ### 내부영역개발
 - [Business Logic개발](/contents/jhipster_businesslogic.md)
-  - 도메인 구현
-  - 레파지토리 구현
   - 서비스 구현
 
 ### 외부영역개발
