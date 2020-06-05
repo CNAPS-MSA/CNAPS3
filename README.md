@@ -65,7 +65,7 @@
   - [데이터모델링](/contents/data.md) 
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## SPRINT#N - 개발
-- [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
+- [BackEnd개발](/contents/backEnddomain.md) 
 - FrontEnd개발
     
 ## SPRINT#N - 통합&배포(CI/CD)
