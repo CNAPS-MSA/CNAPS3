@@ -1,6 +1,13 @@
 # BackEnd개발(헥사고널+DDD)
 
 ## 1.패키지구조 및 명명규칙
+
+- [Jhipster Sample](/contents/jhipster_guide.md)
+  - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
+  - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
+  - [Jhipster Kafka 연결하기](/contents/jhipster_kafka.md)
+  - [Jhipster Feign Client 연결하기](/contents/jhipster_feign.md)
+  
 ### 클래스,메소드 명명규칙
 
 ### 내부영역개발
