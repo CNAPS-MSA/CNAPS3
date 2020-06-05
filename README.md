@@ -66,7 +66,6 @@
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## SPRINT#N - 개발
 - [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
-- [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
 - FrontEnd개발
     
 ## SPRINT#N - 통합&배포(CI/CD)
@@ -75,7 +74,6 @@
 
 ## SAMPLE
 - [도서대여시스템](/contents/sample.md)
-
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
