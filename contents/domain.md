@@ -8,13 +8,13 @@
 * 형식은 자유 (PPT, UML도구 ,화이트보드갭쳐,협업도구,구현후리버스)
 
 ### Rental 도메인모델
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/RentalDomainModel.png" width="50%">
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/RentalDomainModel.png" width="70%">
 
 
 ### Book 도메인모델
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bookDomainModel.png" width="50%">
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bookDomainModel.png" width="70%">
 
 ### Catalog 도메인모델
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/catalogDomainModel.png" width="50%">
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/catalogDomainModel.png" width="70%">
 
 
