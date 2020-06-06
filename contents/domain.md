@@ -7,5 +7,14 @@
 * 헥사고널 + DDD구조를 선택한 서비스
 * 형식은 자유 (PPT, UML도구 ,화이트보드갭쳐,협업도구,구현후리버스)
 
+### Rental 도메인모델
 <img src="/img/class.png" width="50%">
+
+
+### Book 도메인모델
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bookDomainModel.png" width="50%">
+
+### Catalog 도메인모델
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/catalogDomainModel.png" width="50%">
+
 
