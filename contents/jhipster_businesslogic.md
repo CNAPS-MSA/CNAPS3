@@ -21,7 +21,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 
 ## 도서 대여 기능 구현
 
-### 도메인 모델
+### 도메인 모델 
 <img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/RentalDomainModel.png" width="70%">
 
 1. Rental.java
@@ -359,12 +359,12 @@ Rental Directory로 이동한다.
 
 
 
-### kafka와 Feign
+### 타서비스 호출처리 
 
 Rent와 Return에서 Book 상태를 업데이트하고, 해당 Book의 정보 또한 가져와야했다.
 Book상태의 경우 Kafka를 통해, Logic이 완료되면 업데이트하였고, Book정보는 Logic 시작 전 Feign을 통해 가져왔다. 
 Book Service와의 Kafka, Feign Client연결은 아래 링크 페이지로 이동하여 확인하자.
 
-- [Kafka 구성하기](/contents/jhipster_kafka.md)
-- [Feign Client 구성하기](/contents/jhipster_feign.md)
+- [타서비스 비동기호출처리 : Kafka 구성하기](/contents/jhipster_kafka.md)
+- [타서비스 동기호출처리 : Feign Client 구성하기](/contents/jhipster_feign.md)
 
