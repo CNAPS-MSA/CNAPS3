@@ -16,16 +16,15 @@ Sample에서 보여줄 기능은 아래와 같다.
       1. 연체처리 - 미구현
       2. 대여불가처리 - 미구현 
 
-# Business Logic 구현
+# 내부 Business Logic 구현
 **코드는 아무 예고 없이 언제든 변경될 수 있으니, 실제 코드는 해당 서비스 애플리케이션의 Repository에서 확인하세요.**
-
-
 
 ## 도서 대여 기능 구현
 
 ### 도메인 모델
+<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/RentalDomainModel.png" width="70%">
 
-3. Rental.java
+1. Rental.java
 
     1. CASCADE 설정
 
@@ -99,7 +98,7 @@ Sample에서 보여줄 기능은 아래와 같다.
     - ServiceImpl에서 생성한 RentedItem을 받아, rental의 rentedItems에 add 한다.
     - 대여 가능 여부 체크에서는 rentalStatus, LateFee, 현재 대여한 책의 개수를 기준으로 가능여부를 체크한다.
 
-4. RentedItem.java
+2. RentedItem.java
 
     ServiceImpl에서 RentedItem 생성시에도 RentedItem Entity를 호출하여 생성한다. 
 
@@ -122,10 +121,9 @@ Sample에서 보여줄 기능은 아래와 같다.
 
 아래 코드를 살펴보면, rentBooks()를 RentalServiceImpl에서 개발하지 않고, **Rental Entity 내부**에 진행한 것을 확인할 수 있다. 그 이유는, Entity 생명주기 내에서 처리할 수 있는 로직을 ServiceImple에서 구현하는 경우 ServiceImple의 크기가 비대해지는데, 이 현상을 **Fat Service**라 한다. *(맞나..?)* 이를 방지하기 위해 생명주기가 같은 Entity들끼리의 로직, Repository접근 없이 가능한 로직들은 Entity내에 개발하였다.
 
-
 Rental Directory로 이동한다.
 
-1. RentalService.java
+3. RentalService.java
     
     아래 코드를 RentalService.java에 추가한다.
 
@@ -147,7 +145,7 @@ Rental Directory로 이동한다.
     -> 책 대여 시, 대여하는 사용자의 Id와 대여하고자 하는 책들의 Id를 받아 진행한다. 
 
 
-2. RentalServiceImpl.java
+4. RentalServiceImpl.java
 
     ```java
        
@@ -247,7 +245,7 @@ Rental Directory로 이동한다.
 
 ### 도메인 구현
 
-4. Rental.java
+1. Rental.java
 
     ```java
      //반납 하기//
@@ -262,7 +260,7 @@ Rental Directory로 이동한다.
 
     받은 rentedItem을 기존의 rentedItemList에서 제거하고, returnedItem을 생성하여 returnedItemList에 추가한다.
 
-5. ReturnedItem.java
+2. ReturnedItem.java
 
     ```java
         public static ReturnedItem createReturnedItem(Long bookId, String bookTitle, LocalDate now) {
@@ -277,7 +275,7 @@ Rental Directory로 이동한다.
 
 ### 서비스 구현
 
-2. RentalService.java
+3. RentalService.java
 
     ```java
 
@@ -292,7 +290,7 @@ Rental Directory로 이동한다.
     Rental returnBooks(Long userId, List<Long> bookIds);
     ```
 
-3. RentalServiceImpl.java
+4. RentalServiceImpl.java
 
     ```java
 
@@ -330,7 +328,7 @@ Rental Directory로 이동한다.
 
 ### REST API 구현
 
-1. RentalResource.java
+5. RentalResource.java
 
     도서 반납 요청 또한 대여와 마찬가지로 userId와 book Id List를 Input으로 받도록하였다.
     이때 대여 기록이 없는 책을 반납시도하는 경우 null을 던지게 했다. 이 부분은 추후 Exception으로 처리할 예정이다.
