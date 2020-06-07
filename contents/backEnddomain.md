@@ -37,9 +37,8 @@
   - 반납처리 
   - 연체처리
 - [내부 Business Logic 구현하기](/contents/jhipster_businesslogic.md)
-- [타서비스 동기호출처리 Feign Client 연결하기](/contents/jhipster_feign.md) 
-  - 반납처리 
-- [EDA구현](/contents/jhipster_kafka.md)
+- [타서비스 동기호출처리 : Feign Client 연결하기](/contents/jhipster_feign.md) 
+- [타버시스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
 
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
