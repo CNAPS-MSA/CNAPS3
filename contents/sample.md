@@ -96,37 +96,6 @@
 CQRS,MongoDB 
 비동기 처리(도서변경되면 카탈로그 변경됨,베스트셀러)
 
-
-## 2.이벤트스토밍를 통한 마이크로서비스 도출
-
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/subdomain.jpg)  
-- 문제영역(서브시스템)
-
-### 컨텍스트경계 도출
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bc.jpg)  
-- 컨텍스트 경계 도출
-
-
-### 컨텍스트맵
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap.jpg)  
-- 동기,비동기 호출 관계 정리
-
-### 마이크로서비스별 설계
-
-![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/contextMap2.jpg)  
-- 이벤트 스토밍 요소들을 헥사고널 아키텍처에 매핑하여 정리
-
-|이벤트스토밍 결과물|헥사고널 아키텍처 구성요소|
-|------|------|
-|커맨드|API|
-|어그리게잇|DATA|
-|도메인이벤트|Event|
-|외부시스템, 정책|I/f|
-
-
-
-
-
 ## 3.아키텍처 정의 및 개발구조정의
 - 마이크로서비스 기반의 쿠버네티스 환경 , 카프카 기반 비동기 메시지 통신 활용, CQRS적용
 - 내부아키텍처는 헥사고널 아키텍처를 적용
