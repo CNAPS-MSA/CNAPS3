@@ -16,12 +16,13 @@
 ## 외부아키텍처구현
 - MSA개발환경을 쉽게 구축해 주는 도구인 Jhipster를 사용하였다.
 - Jhipster 콘솔창의 질의응답을 통해 스프링 클라우드,스프링부트기반의 마이크로서비스 개발환경을 쉽게 구축해 준다.
-- [Jhipster사용하여 게이트웨이,레지스터 생성](/contents/jhipster_guide.md)
+  - [Jhipster사용하여 게이트웨이,레지스터 생성](/contents/jhipster_guide.md)
 
 ## 내부아키텍처구현
-- [Jhipster사용하여 백엔드 서비스 프로젝트 구조 생성](/contents/jhipster_guide.md)
+- 백엔드 서비스의 구조를 정의하고 서비스를 생성해 본다.
+  - [Jhipster사용하여 백엔드 서비스 프로젝트 구조 생성](/contents/jhipster_guide.md)
 - Jhipster가 생성한 구조는 **헥사고널 아키텍처 + DDD** 의 기본 사상을 만족하나 DTO의 위치 및 몇가지 수정이 필요해 보인다. 아래와 같이 좀더 바람직하도록 수정하였다.
-- [Package Refactoring](/contents/jhipster_package_ref.md)
+  - [Package Refactoring](/contents/jhipster_package_ref.md)
 - 헥사고널+트랜젝션스크립트 패키지구조는  게시판 서비스 구현을 통해 추후 살펴보자.
 
 ## 구현기능
