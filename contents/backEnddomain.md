@@ -34,19 +34,11 @@
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 구현기능
   - 도서대출
-    1. Book서비스의 도서정보가져와서 도서대출처리
-    2. Book서비스 '대출됨'처리 (Book 서비스와 연계 구현)
-    3. User서비스에 포인트 부여 (User 서비스와 연계 구현)
-    4. Category서비스에 베스트셀러 카운트(Category서비스와 연계 구현)
   - 반납처리 
-    1. 도서반납처리
-    2. Book서비스 '반납됨'처리 (Book 서비스와 연계 구현)
-    3. User서비스에 포인트 부여 (User 서비스와 연계 구현)
   - 연체처리
-    1. 연체처리
-    2. 대여불가처리 
-- [대여서비스 구현하기](/contents/jhipster_businesslogic.md)
-- [Feign Client 연결하기](/contents/jhipster_feign.md)
+- [내부 Business Logic 구현하기](/contents/jhipster_businesslogic.md)
+- [타서비스 동기호출처리 Feign Client 연결하기](/contents/jhipster_feign.md) 
+  - 반납처리 
 - [EDA구현](/contents/jhipster_kafka.md)
 
 ### Book 서비스
