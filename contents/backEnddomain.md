@@ -29,13 +29,11 @@
 ### 백엔드서비스 구현 전, Configuration 설정
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
-### 대여(Rental)서비스 
+### 대출(Rental)서비스 
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
-- 구현기능
-  - 도서대출
-  - 반납처리 
-  - 연체처리
+- 주요기능
+  - 사내도서시스템의 핵심서비스로 도서대출/반납/연체처리를 수행한다.
 - [내부 Business Logic 구현하기](/contents/jhipster_businesslogic.md)
 - [타서비스 동기호출처리 : Feign Client 연결하기](/contents/jhipster_feign.md) 
 - [타버시스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
@@ -43,7 +41,7 @@
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
-- 구현기능
+- 주요기능
   - 도서입고 
     1. 도서입고처리,입고 시 Catagory서비스에서 검색되도록 정보전송
     2. Book서비스 '대출됨/반납됨' 기능구현
@@ -54,7 +52,7 @@
 ### User 서비스
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
-- 구현기능
+- 주요기능
   - 사용자관리
     1. 사용자 역할관리
   - 포인트관리
@@ -66,7 +64,7 @@
 ### Catagory 서비스
 - 내부구조 : 헥사고널 + DDD 구조 + NoSQL DB
 - 저장소처리 : OR매퍼인 Sring DATA 
-- 구현기능
+- 주요기능
   - 도서목록 및 검색기능
     1. 도서입고 시 Catgory생성
   - 베스트셀러 기능   
@@ -75,7 +73,7 @@
 ### 게시판 서비스 
 - 헥사고널 + Simple CRUD 구조 
 - 저장소처리 : SQL매퍼인 MyBatis 
-- 구현기능 
+- 주요기능 
   - 공지사항
   - 자유게시판 
   - 댓글기능 
