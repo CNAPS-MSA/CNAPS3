@@ -1,4 +1,4 @@
-# Jhipster를 활용한 Microservice application 개발
+# Jhipster를 활용한 MSA 외부아키텍처 구성(게이트웨이,레지스터)
 
 ## Jhipster란 무엇인가?
 
@@ -65,9 +65,6 @@ brew install jhipster
 > 참조 : [Jhipster공식 설치가이드 링크](https://www.jhipster.tech/installation/)
 
 # Jhipster로 개발 시작하기
-
-![image](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/firstArchitecture.jpg)
-
 
 Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
 
