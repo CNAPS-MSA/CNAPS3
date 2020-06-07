@@ -16,7 +16,7 @@
 ## 외부아키텍처구현
 - MSA개발환경을 쉽게 구축해 주는 도구인 Jhipster를 사용하였다.
 - Jhipster 콘솔창의 질의응답을 통해 스프링 클라우드,스프링부트기반의 마이크로서비스 개발환경을 쉽게 구축해 준다.
-  - [Jhipster사용하여 게이트웨이,레지스터 생성](/contents/jhipster_guide.md)
+  - [Jhipster를 활용한 MSA 외부아키텍처 구성(게이트웨이,레지스터)](/contents/jhipster_guide.md)
 
 ## 내부아키텍처구현
 - 백엔드 서비스의 구조를 정의하고 서비스를 생성해 본다.
