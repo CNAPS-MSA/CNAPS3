@@ -1,4 +1,4 @@
-# Feign Client 적용하기
+# 타서비스 동기호출처리 : Feign Client 연결하기
 
 Kafka는 비동기식 메세징 방식이며 Feign은 동기식 메세징 방식이다.
 
