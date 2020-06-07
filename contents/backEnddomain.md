@@ -20,7 +20,7 @@
 
 ## 내부아키텍처구현
 - 백엔드 서비스의 구조를 정의하고 서비스를 생성해 본다.
-  - [Jhipster사용하여 백엔드 서비스 프로젝트 구조 생성](/contents/jhipster_guide.md)
+  - [Jhipster사용하여 백엔드 서비스 프로젝트 구조 생성](/contents/jhipster_guide2.md)
 - Jhipster가 생성한 구조는 **헥사고널 아키텍처 + DDD** 의 기본 사상을 만족하나 DTO의 위치 및 몇가지 수정이 필요해 보인다. 아래와 같이 좀더 바람직하도록 수정하였다.
   - [Package Refactoring](/contents/jhipster_package_ref.md)
 - 헥사고널+트랜젝션스크립트 패키지구조는  게시판 서비스 구현을 통해 추후 살펴보자.
