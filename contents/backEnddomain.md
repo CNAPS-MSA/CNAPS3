@@ -26,7 +26,7 @@
 - 헥사고널+트랜젝션스크립트 패키지구조는  게시판 서비스 구현을 통해 추후 살펴보자.
 
 ## 구현기능
-### Rental 서비스 
+### 대여(Rental)서비스 
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 구현기능
@@ -42,18 +42,20 @@
   - 연체처리
     1. 연체처리
     2. 대여불가처리 
+- [대여서비스 구현하기](/contents/jhipster_businesslogic.md)
+- [Feign Client 연결하기](/contents/jhipster_feign.md)
+- [EDA구현](/contents/jhipster_kafka.md)
 
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 구현기능
-  - 도서입고 [Business Logic개발](/contents/jhipster_businesslogic.md)
+  - 도서입고 
     1. 도서입고처리,입고 시 Catagory서비스에서 검색되도록 정보전송
     2. Book서비스 '대출됨/반납됨' 기능구현
   - 도서예약
     1. 대출됨 상태에 있는 도서 예약처리
-- [Feign Client 연결하기](/contents/jhipster_feign.md)
-- [EDA구현](/contents/jhipster_kafka.md)
+
 
 ### User 서비스
 - 내부구조 : 헥사고널 + DDD 구조
