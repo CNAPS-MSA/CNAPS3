@@ -65,15 +65,12 @@
   - [데이터모델링](/contents/data.md) 
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## SPRINT#N - 개발
-- [BackEnd개발](/contents/backEnddomain.md) 
-- FrontEnd개발
+- [BackEnd 마이크로서비스 개발](/contents/backEnddomain.md) 
+- FrontEnd 개발
     
 ## SPRINT#N - 통합&배포(CI/CD)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
-
-## SAMPLE
-- [도서대여시스템](/contents/sample.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
@@ -91,4 +88,5 @@
     - 교육교재
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
    
+- [백업 : 도서대여시스템](/contents/sample.md)
 
