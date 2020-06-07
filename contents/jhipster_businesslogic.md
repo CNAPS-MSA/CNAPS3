@@ -21,90 +21,9 @@ Sample에서 보여줄 기능은 아래와 같다.
 
 
 
-## 도서 대여 서비스 구현하기
+## 도서 대여 기능 구현
 
-아래 코드를 살펴보면, rentBooks()를 RentalServiceImpl에서 개발하지 않고, **Rental Entity 내부**에 진행한 것을 확인할 수 있다. 그 이유는, Entity 생명주기 내에서 처리할 수 있는 로직을 ServiceImple에서 구현하는 경우 ServiceImple의 크기가 비대해지는데, 이 현상을 **Fat Service**라 한다. *(맞나..?)* 이를 방지하기 위해 생명주기가 같은 Entity들끼리의 로직, Repository접근 없이 가능한 로직들은 Entity내에 개발하였다.
-
-
-Rental Directory로 이동한다.
-
-1. RentalService.java
-    
-    아래 코드를 RentalService.java에 추가한다.
-
-    ```java
-
-    
-    /****
-     *
-     * Business Logic
-     *
-     * 책 대여하기
-     *
-     * ****/
-    Rental rentBooks(Long userId, List<BookInfo> books);
-
-
-    ```
-
-    -> 책 대여 시, 대여하는 사용자의 Id와 대여하고자 하는 책들의 Id를 받아 진행한다. 
-
-
-2. RentalServiceImpl.java
-
-    ```java
-       
-    @Transactional
-    public Rental rentBooks(Long userId, List<BookInfo> books) {
-        log.debug("Rent Books by : ", userId, " Book List : ", books);
-        Rental rental = new Rental();
-        if(rentalRepository.findByUserId(userId).isPresent()){
-            rental = rentalRepository.findByUserId(userId).get();
-        }else{
-            //도서카드 생성 -> rental과 user 연결 후 삭제해야함
-            log.debug("첫 도서 대여 입니다.");
-            rental = Rental.createRental(userId);
-        }
-
-        try{
-            Boolean checkRentalStatus = rental.checkRentalAvailable(books.size());
-            if(checkRentalStatus){
-            List<RentedItem> rentedItems = books.stream()
-                .map(bookInfo -> RentedItem.createRentedItem(bookInfo.getId(), bookInfo.getTitle(), LocalDate.now()))
-                .collect(Collectors.toList());
-
-            for (RentedItem rentedItem : rentedItems) {
-                rental = rental.rentBook(rentedItem);
-
-
-            }
-            rentalRepository.save(rental);
-
-
-            }
-
-        }catch (Exception e){
-            String errorMessage = e.getMessage();
-            System.out.println(errorMessage);
-            return null;
-        }
-        return rental;
-
-    }
-
-    ```
-
-    - 기존 내역이 있는 경우 -> 해당 User의 Rental을 찾아 rentBooks를 진행한다. : 이 부분은 User Service구현 완료 시 User 생성완료 후 Rental을 생성하는 방식으로 변경할 예정임. 따라서, 추후 이부분은 삭제될예정임.
-    - Controller에서 넘겨받은 BookInfo를 가지고 rentedItem을 생성하여 Rental Entity내의 rentBook을 진행한다.
-        >이부분의 경우, RentedItem List를 생성시에는 Java Stream API를, rentBook 메소드를 반복 실행할 때에는 for loop를 사용한 것을 확인할 수 있다.
-        >왜냐하면, Java Stream은 List Object내 Item의 map과 collect 작업에서 성능이 유효하다. 간단한 for loop의 경우 stream이 아닌 일반적인 방식의 for loop가 성능이 3배정도 빠르기 때문이다. 따라서, 메소드 반복 실행의 경우엔 일반적인 for loop로 구현하였다. 
-      - 가장 먼저, 현재 Rent가 가능한 상태인지 확인한다.
-        >상태 체크 메소드는 Rental.java에 구현한다.
-        -> RentalStatus가 OVERDUE이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 Exception을 던진다.
-        -> 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 Exception을 던진다.
-        -> 대여 가능 상태인 경우 rentBook을 진행한다.
-    - 작업한 Rental은 RentalRepository에 save 한다.
-    - 예외 상황에 대해 모두 Exception처리를 했다. 구체적인 Exception 구현은 추후 개발할 예정이다.
+### 도메인 모델
 
 3. Rental.java
 
@@ -198,6 +117,94 @@ Rental Directory로 이동한다.
     }
     ```
 
+
+### 서비스 구현
+
+아래 코드를 살펴보면, rentBooks()를 RentalServiceImpl에서 개발하지 않고, **Rental Entity 내부**에 진행한 것을 확인할 수 있다. 그 이유는, Entity 생명주기 내에서 처리할 수 있는 로직을 ServiceImple에서 구현하는 경우 ServiceImple의 크기가 비대해지는데, 이 현상을 **Fat Service**라 한다. *(맞나..?)* 이를 방지하기 위해 생명주기가 같은 Entity들끼리의 로직, Repository접근 없이 가능한 로직들은 Entity내에 개발하였다.
+
+
+Rental Directory로 이동한다.
+
+1. RentalService.java
+    
+    아래 코드를 RentalService.java에 추가한다.
+
+    ```java
+
+    
+    /****
+     *
+     * Business Logic
+     *
+     * 책 대여하기
+     *
+     * ****/
+    Rental rentBooks(Long userId, List<BookInfo> books);
+
+
+    ```
+
+    -> 책 대여 시, 대여하는 사용자의 Id와 대여하고자 하는 책들의 Id를 받아 진행한다. 
+
+
+2. RentalServiceImpl.java
+
+    ```java
+       
+    @Transactional
+    public Rental rentBooks(Long userId, List<BookInfo> books) {
+        log.debug("Rent Books by : ", userId, " Book List : ", books);
+        Rental rental = new Rental();
+        if(rentalRepository.findByUserId(userId).isPresent()){
+            rental = rentalRepository.findByUserId(userId).get();
+        }else{
+            //도서카드 생성 -> rental과 user 연결 후 삭제해야함
+            log.debug("첫 도서 대여 입니다.");
+            rental = Rental.createRental(userId);
+        }
+
+        try{
+            Boolean checkRentalStatus = rental.checkRentalAvailable(books.size());
+            if(checkRentalStatus){
+            List<RentedItem> rentedItems = books.stream()
+                .map(bookInfo -> RentedItem.createRentedItem(bookInfo.getId(), bookInfo.getTitle(), LocalDate.now()))
+                .collect(Collectors.toList());
+
+            for (RentedItem rentedItem : rentedItems) {
+                rental = rental.rentBook(rentedItem);
+
+
+            }
+            rentalRepository.save(rental);
+
+
+            }
+
+        }catch (Exception e){
+            String errorMessage = e.getMessage();
+            System.out.println(errorMessage);
+            return null;
+        }
+        return rental;
+
+    }
+
+    ```
+
+    - 기존 내역이 있는 경우 -> 해당 User의 Rental을 찾아 rentBooks를 진행한다. : 이 부분은 User Service구현 완료 시 User 생성완료 후 Rental을 생성하는 방식으로 변경할 예정임. 따라서, 추후 이부분은 삭제될예정임.
+    - Controller에서 넘겨받은 BookInfo를 가지고 rentedItem을 생성하여 Rental Entity내의 rentBook을 진행한다.
+        >이부분의 경우, RentedItem List를 생성시에는 Java Stream API를, rentBook 메소드를 반복 실행할 때에는 for loop를 사용한 것을 확인할 수 있다.
+        >왜냐하면, Java Stream은 List Object내 Item의 map과 collect 작업에서 성능이 유효하다. 간단한 for loop의 경우 stream이 아닌 일반적인 방식의 for loop가 성능이 3배정도 빠르기 때문이다. 따라서, 메소드 반복 실행의 경우엔 일반적인 for loop로 구현하였다. 
+      - 가장 먼저, 현재 Rent가 가능한 상태인지 확인한다.
+        >상태 체크 메소드는 Rental.java에 구현한다.
+        -> RentalStatus가 OVERDUE이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 Exception을 던진다.
+        -> 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 Exception을 던진다.
+        -> 대여 가능 상태인 경우 rentBook을 진행한다.
+    - 작업한 Rental은 RentalRepository에 save 한다.
+    - 예외 상황에 대해 모두 Exception처리를 했다. 구체적인 Exception 구현은 추후 개발할 예정이다.
+
+### REST API 구현 
+
 5. RentalResource.java
 
     이제 RentalResource에서 mapping을 선언하여 RestAPI로 구현해보자.
@@ -238,34 +245,37 @@ Rental Directory로 이동한다.
 
 ## 도서 반납 서비스 구현하기
 
-1. RentalResource.java
+### 도메인 구현
 
-    도서 반납 요청 또한 대여와 마찬가지로 userId와 book Id List를 Input으로 받도록하였다.
-    이때 대여 기록이 없는 책을 반납시도하는 경우 null을 던지게 했다. 이 부분은 추후 Exception으로 처리할 예정이다.
+4. Rental.java
+
     ```java
-    
-     @PutMapping("/returnbooks/{userid}/{books}")
-    public ResponseEntity returnBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books){
+     //반납 하기//
+    public Rental returnbook(RentedItem rentedItem) {
 
-
-            Rental rental=rentalService.returnBooks(userid,books);
-            log.debug("returned books");
-            log.debug("SEND BOOKIDS for Book: {}", books);
-
-            //추후 Exception처리//
-            if(rental!=null) {
-                books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
-                RentalDTO result = rentalMapper.toDto(rental);
-                return ResponseEntity.ok().body(result);
-            }else {
-                log.debug("대여기록에 없는 도서입니다.");
-                return ResponseEntity.badRequest().build();
-            }
+        this.removeRentedItem(rentedItem);
+        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), rentedItem.getBookTitle(), LocalDate.now()));
+        return this;
 
     }
     ```
-    
-    returnBook을 마친 후에, book의 상태를 변경한다.
+
+    받은 rentedItem을 기존의 rentedItemList에서 제거하고, returnedItem을 생성하여 returnedItemList에 추가한다.
+
+5. ReturnedItem.java
+
+    ```java
+        public static ReturnedItem createReturnedItem(Long bookId, String bookTitle, LocalDate now) {
+        ReturnedItem returnedItem = new ReturnedItem();
+        returnedItem.setBookId(bookId);
+        returnedItem.setBookTitle(bookTitle);
+        returnedItem.setReturnedDate(now);
+        return returnedItem;
+    }
+    ```
+    ReturnedItem 생성 메소드이다. 
+
+### 서비스 구현
 
 2. RentalService.java
 
@@ -318,33 +328,38 @@ Rental Directory로 이동한다.
     - for loop에서 Rental의 returnBook을 차례로 진행한다.
     - 진행 후, rental을 저장한다.
 
-4. Rental.java
+### REST API 구현
 
+1. RentalResource.java
+
+    도서 반납 요청 또한 대여와 마찬가지로 userId와 book Id List를 Input으로 받도록하였다.
+    이때 대여 기록이 없는 책을 반납시도하는 경우 null을 던지게 했다. 이 부분은 추후 Exception으로 처리할 예정이다.
     ```java
-     //반납 하기//
-    public Rental returnbook(RentedItem rentedItem) {
+    
+     @PutMapping("/returnbooks/{userid}/{books}")
+    public ResponseEntity returnBooks(@PathVariable("userid")Long userid, @PathVariable("books") List<Long> books){
 
-        this.removeRentedItem(rentedItem);
-        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), rentedItem.getBookTitle(), LocalDate.now()));
-        return this;
+
+            Rental rental=rentalService.returnBooks(userid,books);
+            log.debug("returned books");
+            log.debug("SEND BOOKIDS for Book: {}", books);
+
+            //추후 Exception처리//
+            if(rental!=null) {
+                books.stream().forEach(b -> rentalService.updateBookStatus(b, "AVAILABLE"));
+                RentalDTO result = rentalMapper.toDto(rental);
+                return ResponseEntity.ok().body(result);
+            }else {
+                log.debug("대여기록에 없는 도서입니다.");
+                return ResponseEntity.badRequest().build();
+            }
 
     }
     ```
+    
+    returnBook을 마친 후에, book의 상태를 변경한다.
 
-    받은 rentedItem을 기존의 rentedItemList에서 제거하고, returnedItem을 생성하여 returnedItemList에 추가한다.
 
-5. ReturnedItem.java
-
-    ```java
-        public static ReturnedItem createReturnedItem(Long bookId, String bookTitle, LocalDate now) {
-        ReturnedItem returnedItem = new ReturnedItem();
-        returnedItem.setBookId(bookId);
-        returnedItem.setBookTitle(bookTitle);
-        returnedItem.setReturnedDate(now);
-        return returnedItem;
-    }
-    ```
-    ReturnedItem 생성 메소드이다. 
 
 ### kafka와 Feign
 
