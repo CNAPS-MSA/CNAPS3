@@ -1,4 +1,17 @@
-# Jhipster Business Logic 
+# 대여(Rental)서비스 구현
+- 구현기능
+   - 도서대출
+      1. Book서비스의 도서정보가져와서 도서대출처리
+      2. Book서비스 '대출됨'처리 (Book 서비스와 연계 구현)
+      3. User서비스에 포인트 부여 (User 서비스와 연계 구현) - 미구현
+      4. Category서비스에 베스트셀러 카운트(Category서비스와 연계 구현) - 미구현
+   - 반납처리
+      1. 도서반납처리 
+      2. Book서비스 '반납됨'처리 (Book 서비스와 연계 구현)
+      3. User서비스에 포인트 부여 (User 서비스와 연계 구현) - 미구현
+   - 연체처리 
+      1. 연체처리 - 미구현
+      2. 대여불가처리 - 미구현 
 
 ## Business Logic 추가 전, Configuration 설정
 
