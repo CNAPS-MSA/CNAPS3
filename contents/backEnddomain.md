@@ -25,7 +25,7 @@
   - [Package Refactoring](/contents/jhipster_package_ref.md)
 - 헥사고널+트랜젝션스크립트 패키지구조는  게시판 서비스 구현을 통해 추후 살펴보자.
 
-## 구현기능
+## 백엔드 마이크로서비스 
 ### 백엔드서비스 구현 전, Configuration 설정
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
