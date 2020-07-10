@@ -122,7 +122,7 @@ rentalpage를 menu의 바로 하위에 등록하였기 때문에, 위 코드처�
 
 이제 gateway를 실행시켜보면, 아래와 같은 화면을 볼 수 있다.
 
-![](/images/judy/2020-07-10-14-11-39.png)
+<img width="940" alt="image" src="https://user-images.githubusercontent.com/18453570/87122439-d9fd0000-c2bf-11ea-92f6-3bad80b43821.png">
 
 
 ## book-rental 기능을 위한 모듈 개발
@@ -141,5 +141,417 @@ Vue.js에서는 기본적으로 component.ts, service.ts, vue파일이 세트로
 
 따라서 아래 이미지와 같이 폴더 및 패키지를 생성한다.
 
+![image](https://user-images.githubusercontent.com/18453570/87122484-f7ca6500-c2bf-11ea-9abf-dac28ea8bba2.png)
 
-![](/images/judy/2020-07-10-15-06-54.png)
+우선 Vue.js의 component, service, vue파일은 jhipster에서 제공하는 entities의 기존 내용을 그대로 가져와 수정 및 추가하는 방향으로 개발하였다.
+
+### book-rental.vue작성
+
+book-rental.vue의 전체 코드는 아래와 같다. (조회와 검색 기능만 있음)
+
+```html
+<template>
+    <div>
+        <h2 id="page-heading">
+            <span v-text="$t('global.menu.rentalpage')">Rental Page</span>
+        </h2>
+        <b-alert :show="dismissCountDown"
+            dismissible
+            :variant="alertType"
+            @dismissed="dismissCountDown=0"
+            @dismiss-count-down="countDownChanged">
+            {{alertMessage}}
+        </b-alert>
+        <br/>
+        <div class="alert alert-warning" v-if="!isFetching && books && books.length === 0">
+            <span>No books found</span>
+        </div>
+        <div class="input-group mb-3">
+            <label>
+                <input type="text" class="form-control" placeholder="Search by title"
+                       v-model="title"/>
+            </label>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button"
+                        @click="search(title)"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive" v-if="books && books.length > 0">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.title')">Title</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.description')">Description</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.classification')">Classification</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.author')">Author</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.publicationDate')">Publication Date</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.rented')">Rented</span></th>
+                    <th><span v-text="$t('gatewayApp.bookCatalogBookCatalog.rentCnt')">Rental Count</span></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="book in books"
+                    :key="book.title">
+                    <td>
+                        <router-link :to="{name: 'BookRentalView', params: {bookTitle: book.title}}">{{book.title}}</router-link>
+                    </td>
+                    <td>{{book.description}}</td>
+                    <td>{{book.classification}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.publicationDate}}</td>
+                    <td>{{book.rented}}</td>
+                    <td>{{book.rentCnt}}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <router-link :to="{name: 'BookRentalView', params: {bookTitle: book.title}}" tag="button" class="btn btn-info btn-sm details">
+                                <font-awesome-icon icon="eye"></font-awesome-icon>
+                                <span class="d-none d-md-inline" v-text="$t('entity.action.view')">View</span>
+                            </router-link>
+
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-show="books && books.length > 0">
+            <div class="row justify-content-center">
+                <jhi-item-count :page="page" :total="queryCount" :itemsPerPage="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <b-pagination size="md" :total-rows="totalItems" v-model="page" :per-page="itemsPerPage" :change="loadPage(page)"></b-pagination>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts" src="./book-rental.component.ts">
+</script>
+```
+
+윗부분부터 살펴본다.
+
+1. 페이지 이름 수정 
+   
+    ```html
+    <h2 id="page-heading">
+        <span v-text="$t('global.menu.rentalpage')">Rental Page</span>
+    </h2>
+    ```
+    먼저, 페이지 이름을 메뉴에 등록한 이름으로 변경한다. 
+
+2. 책이 없는 경우 경고 표시 & 검색어 입력 및 버튼 만들기
+   
+    ```html
+        <div class="alert alert-warning" v-if="!isFetching && books && books.length === 0">
+            <span>No books found</span>
+        </div>
+        <div class="input-group mb-3">
+            <label>
+                <input type="text" class="form-control" placeholder="Search by title"
+                       v-model="title"/>
+            </label>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button"
+                        @click="search(title)"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    ```
+
+    `v-if`는 말 그래도 if문이다. 만약 book catalog에 등록된 책이 없으면 No books found라는 메세지가 뜨도록 하였다. 여기서 book catalog list가 바로 `books`라는 변수로 쓰였다.
+
+    그 밑에는 입력 폼을 추가하였다. 여기서 v-model은 입력된 내용을 `title`이라는 변수에 넣는다는 것이며, 버튼을 누르면 `@click="search(title)"`이 실행되어 search(title)이라는 메소드가 실행된다.
+
+    그럼 이 `books`라는 변수와 `search(title)`라는 메소드는 어디에 선언한 것일까?
+
+    바로 component.ts파일에 선언된다. vue 파일의 전체 소스코드 맨 하단을 보면 `<script>`로 묶인 부분에 component.ts파일이 source라는 것이 명시되어있다.
+
+### book-rental-component.ts파일 수정
+   
+    ```js
+        import { mixins } from 'vue-class-component';
+
+        import { Component, Vue, Inject } from 'vue-property-decorator';
+        import Vue2Filters from 'vue2-filters';
+        import { IRental } from '@/shared/model/rental/rental.model';
+        import { IBookCatalog } from '@/shared/model/bookCatalog/book-catalog.model';
+        import AlertMixin from '@/shared/alert/alert.mixin';
+
+        import BookRentalService from './book-rental.service';
+
+        @Component({
+        mixins: [Vue2Filters.mixin],
+        })
+        export default class BookRental extends mixins(AlertMixin) {
+        @Inject('bookRentalService') private bookRentalService: () => BookRentalService;
+        private removeId: number = null;
+        public itemsPerPage = 20;
+        public queryCount: number = null;
+        public page = 1;
+        public previousPage = 1;
+        public propOrder = 'id';
+        public reverse = false;
+        public totalItems = 0;
+        public title = '';
+        public rentals: IRental[] = [];
+        public books: IBookCatalog[] = [];
+        public isFetching = false;
+
+        public mounted(): void {
+            this.retrieveAllBooks();
+        }
+
+        public clear(): void {
+            this.page = 1;
+            this.retrieveAllBooks();
+        }
+
+        public retrieveAllBooks(): void {
+            this.isFetching = true;
+
+            const paginationQuery = {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort(),
+            };
+            this.bookRentalService()
+            .retrieve(paginationQuery)
+            .then(
+                res => {
+                this.books = res.data;
+                this.totalItems = Number(res.headers['x-total-count']);
+                this.queryCount = this.totalItems;
+                this.isFetching = false;
+                },
+                err => {
+                this.isFetching = false;
+                }
+            );
+        }
+        public sort(): Array<any> {
+            const result = [this.propOrder + ',' + (this.reverse ? 'asc' : 'desc')];
+            if (this.propOrder !== 'id') {
+            result.push('id');
+            }
+            return result;
+        }
+
+        public loadPage(page: number): void {
+            if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.transition();
+            }
+        }
+
+        public transition(): void {
+            this.retrieveAllBooks();
+        }
+
+        public changeOrder(propOrder): void {
+            this.propOrder = propOrder;
+            this.reverse = !this.reverse;
+            this.transition();
+        }
+
+        public closeDialog(): void {
+            (<any>this.$refs.removeEntity).hide();
+        }
+        
+        public search(title: String): void {
+            let foundBook: IBookCatalog[] = [];
+            this.bookRentalService()
+            .findByTitle(title)
+            .then(res => {
+                foundBook.push(res);
+                this.books = foundBook;
+            });
+        }
+        }
+
+    ```
+
+위 소스 코드를 차근 차근 살펴보자.
+먼저 윗부분부터 살펴보면 `@Inject('bookRentalService') private bookRentalService: () => BookRentalService;`라는 코드로 bookRentalService를 주입시킨다.
+이 bookRentalService는 추후 설명할 예정이지만, 간단히 설명하자면 다른 마이크로 서비스의 REST API controller로 요청을 주고받는 곳이다.
+        
+```js
+    public title = '';
+    public rentals: IRental[] = [];
+    public books: IBookCatalog[] = [];
+```
+위처럼 vue파일에 쓰일 변수들을 초기화 해준다. title은 검색할 때 쓰이는 v-model 변수로 설명했다.
+rentals와 books는 Jhipster에서 rental과 bookCatalog 서비스와 연결한 후 생성한 client model과 연결시킨다. 해당 모델들은 `webApp -> app -> shared -> model`에서 확인할 수 있다.
+
+그 밑의 메소드들이 바로 vue의 템플릿에서 사용되는 메소드들이다. 
+
+```js
+    public search(title: String): void {
+            let foundBook: IBookCatalog[] = [];
+            this.bookRentalService()
+            .findByTitle(title)
+            .then(res => {
+                foundBook.push(res);
+                this.books = foundBook;
+            });
+        }
+        }
+```
+
+    이부분이 바로 vue파일에서 선언한 search이다. 현재는 title이 정확하게 일치하는 도서만 검색되게 하였기 때문에 위처럼 작성하였고, 추후 수정할 예정이다.
+    
+    위 코드에서 보면 bookRentalService를 호출하고 있는데, 이부분은 잠시 후 설명한다.
+
+### book-rental.vue
+    
+다시, book-rental.vue파일 코드를 살펴보자.
+
+```html
+    <tr v-for="book in books"
+                    :key="book.title">
+                    <td>
+                        <router-link :to="{name: 'BookRentalView', params: {bookTitle: book.title}}">{{book.title}}</router-link>
+                    </td>
+                    <td>{{book.description}}</td>
+                    <td>{{book.classification}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.publicationDate}}</td>
+                    <td>{{book.rented}}</td>
+                    <td>{{book.rentCnt}}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <router-link :to="{name: 'BookRentalView', params: {bookTitle: book.title}}" tag="button" class="btn btn-info btn-sm details">
+                                <font-awesome-icon icon="eye"></font-awesome-icon>
+                                <span class="d-none d-md-inline" v-text="$t('entity.action.view')">View</span>
+                            </router-link>
+
+                        </div>
+                    </td>
+                </tr>
+```    
+우선 v-for은 for문으로 book catalog에서 가져온 도서들을 하나씩 돌아가며 하단 코드를 실행시킨다. 이때 key로 book.title인것을 볼 수 있는데, index를 의미한다. (book.id로 수정할 예정이다.)
+
+첫번째로 눈에 띄는 것은 `<router-link>`이다. 이것은 위에서 설명한대로 router의 index.ts에 추가하였던 path의 name과 연결되는 곳이다. 
+    
+첫번째 router-link를 보면 'BookRentalView'에 연결되며, 전달되는 param은 bookTitle로 book.title이 입력됨을 알 수 있다. 두번째 router-link도 마찬가지이다.
+
+이부분을 통해 바로 **vue에서 다른 vue파일로 param을 넘기는 방식**을 확인할 수 있다.
+
+BookRentalView는 BookRentalService를 설명한 뒤 간략하게 설명하도록하겠다.
+
+### book-rental-service.ts
+
+앞서 component에서 bookRentalService를 주입시켰다. 이렇게 bookRentalService를 주입시키기 위해선 이 애플리케이션에 bookRentalService를 선언해야한다.
+
+서비스를 선언하는 부분은 `webApp -> app -> main.ts`에서 선언할 수 있다.
+
+```js
+
+import BookRentalService from '@/cnaps/book-rental-service/book-rental.service';
+
+...
+
+new Vue({
+  el: '#app',
+  components: { App },
+  template: '<App/>',
+  router,
+  provide: {
+    ...
+    bookRentalService: () => new BookRentalService(),
+  },
+  i18n,
+  store,
+});
+
+```
+
+이제 book-rental-service.ts를 살펴보자.
+
+```js
+import axios from 'axios';
+
+import buildPaginationQueryOpts from '@/shared/sort/sorts';
+
+import { IRental } from '@/shared/model/rental/rental.model';
+import { IBookCatalog } from '@/shared/model/bookCatalog/book-catalog.model';
+
+const rentalApiUrl = 'services/rental/api/rentals';
+const bookApiUrl = 'services/bookcatalog/api/book-catalogs';
+
+export default class BookRentalService {
+  public find(id: number): Promise<IBookCatalog> {
+    return new Promise<IBookCatalog>((resolve, reject) => {
+      axios
+        .get(`${bookApiUrl}/${id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  public retrieve(paginationQuery?: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      axios
+        .get(bookApiUrl + `?${buildPaginationQueryOpts(paginationQuery)}`)
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  public findByTitle(title: String): Promise<IBookCatalog> {
+    return new Promise<IBookCatalog>((resolve, reject) => {
+      axios
+        .get(`${bookApiUrl}/title/${title}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+  
+}
+```
+book-catalog-service.ts의 코드 또한 매우 직관적이다. 
+
+```js
+const rentalApiUrl = 'services/rental/api/rentals';
+const bookApiUrl = 'services/bookcatalog/api/book-catalogs';
+```
+이부분은 url을 선언하는 부분이다. 이 url을 통해 gateway에 등록된 마이크로 서비스의 REST API로 요청을 주고 받는다.
+
+앞서 component에서 생성한 search 메소드를 살펴보면
+
+```js
+    public search(title: String): void {
+            let foundBook: IBookCatalog[] = [];
+            this.bookRentalService()
+            .findByTitle(title)
+            .then(res => {
+                foundBook.push(res);
+                this.books = foundBook;
+            });
+        }
+        }
+```
+`this.bookRentalService().findBytitle(title)`로 검색을 위해 입력한 title을 bookRentalService의 findByTitle메소드로 보낸다.
+서비스에서 findByTitle()을 실행시키면 axios로 요청을 보내고 data를 받아 resolve한다. 이 data를 다시 컴포넌트의 search 메소드가 받고, book-rental에서 사용하는 books Array에 넣어준다.
+
+### book-rental-details-component.ts작성
+
+to be continue..
