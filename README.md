@@ -66,7 +66,7 @@
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## SPRINT#N - 개발
 - [BackEnd 마이크로서비스 개발](/contents/backEnddomain.md) 
-- FrontEnd 개발
+- [FrontEnd 개발](/contents/jhipster-front1.md)
     
 ## SPRINT#N - 통합&배포(CI/CD)
 - [지속적통합](/contents/ci.md)
