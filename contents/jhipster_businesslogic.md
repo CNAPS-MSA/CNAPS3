@@ -77,11 +77,12 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 ### 내부영역 - 도메인 모델 개발하기 
 #### Rental.java
 
-    CASCADE 설정
+대여카드(Rental)은 사용자아이디(userid), 대여가능상태(RentalStatus), 연체료(lateFee), 대여도서(RentedItem), 연체도서(OverdueItem), 반납도서(ReturnedItem)의 속성을 가지고 있다.
 
-    Rental.java에는 3개의 OneToMany관계가 선언되어있다.
-    대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
-    3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
+CASCADE 설정
+Rental.java에는 3개의 OneToMany관계가 선언되어있다.
+대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
+3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
 
     ```java
     /**
@@ -119,9 +120,9 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 
     ```
     
-    2. Rental 생성 메소드
+  2. Rental 생성 메소드
    
-    첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
+  첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
     
     ```java
 
