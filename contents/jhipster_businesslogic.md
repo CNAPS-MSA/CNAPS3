@@ -61,26 +61,61 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 ### 도메인 모델 
 ![image](https://user-images.githubusercontent.com/15258916/87246499-d072c400-c488-11ea-9df3-193f5d6b4763.png)
 
-1. Rental.java
+- 도메인 모델에서는 비지니스 개념을 표현한다. 비지니스 개념은 객체로 표현되고 도메인 주도 설계의 전술적 설계 기법인 어그리게잇, 엔티티, VO, 표준타입 패턴을 적용한다.
+- 위 그림은 그렇게 정의된 대여 서비스의 도메인 모델이다. 대여와 반납의 책임을 가지고 있는 어그리게잇이며 루트 엔티티인 대여카드(Rental) , Rental과 일대다 관계인 엔티티 유형의 대여도서(RentedItem), 엔티티 연체도서(OverdueItem), 엔티티 반납도서(RetrurnItem)로 구성된다. 대여도서(OverdueItem) 와 반납도서(RetrurnItem)은 대여도서(RentedItem)과 마찬가지로 Rental과 일대다관계이다.
+- Rental의 개념은 대여카드이다. 모든 사용자는 대여를 위한 대여카드를 하나씩 보유한다. 대여카드는 대여, 반납, 연체 처리, 연체도서반납,연체해제처리의 책임을 가진다.
+- 대여 시 빌린도서만큼 대여도서(RentedItem)가 생성되고, 연체되면 연체도서(OverdueItem) 로 이동하고, 반납 시 반납도서(RetrurnItem)로 최종 이동된다. 
+- 개인 5권의 대여 한도가 체크되고 1권의 도서라도 연체 되면 대여할 수 없다. 이런 대여가능여부는 표준 타입인 대여가능여부(RentalStatus)에 의해 규정된다.
 
-    1. CASCADE 설정
+### 유스케이스 흐름
+![image](https://user-images.githubusercontent.com/15258916/87246802-84288380-c48a-11ea-8d4e-2703df4f2899.png)
+
+위의 그림은 도서대여와 도서반납의 유스케이스 흐름을 시퀀스 다이어그램 으로 작성한 것이다.
+도서대여 및 도서반납의 비지니스 로직은 도메인 모델에 응집되어 있는 것을 확인할 수 있다. 서비스는 그외 흐름제어 및 저장처리, 이벤트 메시지 처리를 담당한다. 그럼 각 영역별로 상세히 살펴보자.
+
+### 내부영역 - 도메인 모델 개발하기 
+#### Rental.java
+
+    CASCADE 설정
 
     Rental.java에는 3개의 OneToMany관계가 선언되어있다.
     대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
     3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
 
     ```java
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<RentedItem> rentedItems = new HashSet<>();
+/**
+ * 대여카드 어그리게잇(루트 엔티티) 클래스
+ */
+@Entity
+@Table(name = "rental")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Rental implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<OverdueItem> overdueItems = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rental_status")
+    private RentalStatus rentalStatus;
 
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ReturnedItem> returnedItems = new HashSet<>();
+    @Column(name = "late_fee")
+    private Long lateFee;
+
+   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+   private Set<RentedItem> rentedItems = new HashSet<>();
+
+   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+   private Set<OverdueItem> overdueItems = new HashSet<>();
+
+   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+   private Set<ReturnedItem> returnedItems = new HashSet<>();
+
+…(중략)…
     ```
     
     2. Rental 생성 메소드
