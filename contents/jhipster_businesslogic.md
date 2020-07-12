@@ -80,11 +80,12 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 대여카드(Rental)은 사용자아이디(userid), 대여가능상태(RentalStatus), 연체료(lateFee), 대여도서(RentedItem), 연체도서(OverdueItem), 반납도서(ReturnedItem)의 속성을 가지고 있다.
 
 CASCADE 설정
+
 Rental.java에는 3개의 OneToMany관계가 선언되어있다.
 대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
 3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
 
-    ```java
+  ```java
     /**
     * 대여카드 어그리게잇(루트 엔티티) 클래스
     */
@@ -117,7 +118,6 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
          @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
          private Set<ReturnedItem> returnedItems = new HashSet<>();
       …(중략)…
-
     ```
     
   2. Rental 생성 메소드
@@ -126,7 +126,7 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
     
     ```java
 
-            //생성메소드//
+         //생성메소드//
         /**
         *
         * @param userId
@@ -140,13 +140,12 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
             rental.setLateFee((long)0);
             return rental;
         }
+   ```
 
-    ```
-
-    3. rentBooks 메소드 (책 대여하기)
+ 3. rentBooks 메소드 (책 대여하기)
     
     
-    ```java
+   ```java
     //대여하기 메소드//
     public Rental rentBook(RentedItem rentedItem){
         //현재 대여목록 갯수와 대여할 도서 갯수 파악
@@ -165,8 +164,6 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
 
         return true;
     }
-    
-
     ```
 
     - ServiceImpl에서 생성한 RentedItem을 받아, rental의 rentedItems에 add 한다.
