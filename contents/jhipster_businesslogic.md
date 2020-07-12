@@ -59,7 +59,7 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 |Response| |
 
 ### 도메인 모델 
-![image](https://user-images.githubusercontent.com/15258916/87246389-1713ee80-c488-11ea-9967-8f08ef5f165b.png)
+![image](https://user-images.githubusercontent.com/15258916/87246499-d072c400-c488-11ea-9df3-193f5d6b4763.png)
 
 1. Rental.java
 
