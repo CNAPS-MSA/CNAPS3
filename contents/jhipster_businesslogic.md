@@ -68,7 +68,8 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 - 개인 5권의 대여 한도가 체크되고 1권의 도서라도 연체 되면 대여할 수 없다. 이런 대여가능여부는 표준 타입인 대여가능여부(RentalStatus)에 의해 규정된다.
 
 ### 유스케이스 흐름
-![image](https://user-images.githubusercontent.com/15258916/87246802-84288380-c48a-11ea-8d4e-2703df4f2899.png)
+![image](https://user-images.githubusercontent.com/15258916/87246908-5728a080-c48b-11ea-90c3-86a10a3c27c1.png)
+
 
 위의 그림은 도서대여와 도서반납의 유스케이스 흐름을 시퀀스 다이어그램 으로 작성한 것이다.
 도서대여 및 도서반납의 비지니스 로직은 도메인 모델에 응집되어 있는 것을 확인할 수 있다. 서비스는 그외 흐름제어 및 저장처리, 이벤트 메시지 처리를 담당한다. 그럼 각 영역별로 상세히 살펴보자.
@@ -83,39 +84,39 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
     3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
 
     ```java
-/**
- * 대여카드 어그리게잇(루트 엔티티) 클래스
- */
-@Entity
-@Table(name = "rental")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Rental implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "user_id")
-    private Long userId;
+    /**
+    * 대여카드 어그리게잇(루트 엔티티) 클래스
+    */
+      @Entity
+      @Table(name = "rental")
+      @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+      public class Rental implements Serializable {
+         @Id
+         @GeneratedValue(strategy = GenerationType.IDENTITY)
+         private Long id;
+         @Column(name = "user_id")
+         private Long userId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "rental_status")
-    private RentalStatus rentalStatus;
+         @Enumerated(EnumType.STRING)
+         @Column(name = "rental_status")
+         private RentalStatus rentalStatus;
 
-    @Column(name = "late_fee")
-    private Long lateFee;
+         @Column(name = "late_fee")
+         private Long lateFee;
 
-   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-   private Set<RentedItem> rentedItems = new HashSet<>();
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+         private Set<RentedItem> rentedItems = new HashSet<>();
 
-   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-   private Set<OverdueItem> overdueItems = new HashSet<>();
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+         private Set<OverdueItem> overdueItems = new HashSet<>();
 
-   @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-   private Set<ReturnedItem> returnedItems = new HashSet<>();
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+         private Set<ReturnedItem> returnedItems = new HashSet<>();
+      …(중략)…
 
-…(중략)…
     ```
     
     2. Rental 생성 메소드
