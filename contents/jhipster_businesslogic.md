@@ -29,7 +29,8 @@ Sample에서 보여줄 기능은 아래와 같다.
 |Request| |
 |Response| |
 
-리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 된다는 의미이다.
+리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 
+scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 된다는 의미이다.
 
 |API명|도서반납|
 |----|------|
@@ -47,7 +48,8 @@ Sample에서 보여줄 기능은 아래와 같다.
 |Request| |
 |Response| |
 
-예를 들면 /rentals/scant/OverdueItem/10001를 post방식으로 호출하므로 scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체 등록된다는 의미이다.
+예를 들면 /rentals/scant/OverdueItem/10001를 post방식으로 호출하므로 
+scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체 등록된다는 의미이다.
 
 |API명|도서연체처리|
 |----|------|
@@ -57,7 +59,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 |Response| |
 
 ### 도메인 모델 
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/RentalDomainModel.png" width="70%">
+![image](https://user-images.githubusercontent.com/15258916/87246389-1713ee80-c488-11ea-9967-8f08ef5f165b.png)
 
 1. Rental.java
 
