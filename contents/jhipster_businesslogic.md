@@ -23,6 +23,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 
 ### API설계
 |API명|도서대여|
+|----|------|
 |메소드|/rentals/{userid}/rentedItem/{books}|
 |Request| |
 |Response| |
