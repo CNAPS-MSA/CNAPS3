@@ -24,7 +24,32 @@ Sample에서 보여줄 기능은 아래와 같다.
 ### API설계
 |API명|도서대여|
 |----|------|
-|메소드|/rentals/{userid}/rentedItem/{books}|
+|리소스URI|/rentals/{userid}/rentedItem/{books}|
+|Method|POST|
+|Request| |
+|Response| |
+리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 된다는 의미이다.
+
+|API명|도서반납|
+|----|------|
+|리소스URI|/rentals/{userid}/rentedItem/{books}|
+|Method|DELETE|
+|Request| |
+|Response| |
+마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
+
+|API명|도서연체처리|
+|----|------|
+|리소스URI|/rentals/{userid}/OverdueItem/{books}|
+|Method|POST|
+|Request| |
+|Response| |
+예를 들면 /rentals/scant/OverdueItem/10001를 post방식으로 호출하므로 scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체 등록된다는 의미이다.
+
+|API명|도서연체처리|
+|----|------|
+|리소스URI|/rentals/{userid}/OverdueItem/{books}|
+|Method|DELETE|
 |Request| |
 |Response| |
 
