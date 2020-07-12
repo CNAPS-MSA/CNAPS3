@@ -480,6 +480,6 @@ userid);
 ![image](https://user-images.githubusercontent.com/15258916/87247736-8db4ea00-c490-11ea-8748-fa1b5602fffa.png)
 
 지금부터는 이러한 아웃바운드 어댑터 처리의 구현에 대해 알아보자. 다음 순서로 살펴보겠다. 
-- [Kafka 비동기 메시지 전송처리](/contents/jhipster_kafka.md)
 - [Feign 동기 메시지 호출처리](/contents/jhipster_feign.md)
+- [Kafka 비동기 메시지 전송처리](/contents/jhipster_kafka.md)
 
