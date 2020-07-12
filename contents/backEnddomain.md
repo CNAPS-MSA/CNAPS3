@@ -33,9 +33,10 @@
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
   - 사내도서시스템의 핵심서비스로 도서대출/반납/연체처리를 수행한다.
-- [내부 Business Logic 구현하기](/contents/jhipster_businesslogic.md)
+- [내부 Business Logic 구현하기 - 1:도서대출/반납 기능](/contents/jhipster_businesslogic.md)
 - [타서비스 동기호출처리 : Feign Client 연결하기](/contents/jhipster_feign.md) 
 - [타서비스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
+- [내부 Business Logic 구현하기 - 2:도서 연체/연체된도서 반납기능](/contents/OverdueBook.md)
 
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
