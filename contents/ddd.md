@@ -52,6 +52,9 @@
 - 사용자 관리
 ![image](https://user-images.githubusercontent.com/15258916/87249288-39623800-c499-11ea-98ae-b7dd1b624428.png)
 
+- 대출,반납
+![image](https://user-images.githubusercontent.com/15258916/87249333-74646b80-c499-11ea-87df-a8a5bbca120c.png)
+
 
 ### 컨텍스트경계(Bounded Context) 도출
 ![subdomain](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bc.jpg)  
