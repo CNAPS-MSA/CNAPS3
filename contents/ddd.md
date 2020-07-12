@@ -50,7 +50,7 @@
 위에 요구사항을 사용자관리, 도서관리, 도서대출 및 반납,배송,이메일 등으로 분류하였는데 이것은 비지니스 해결을 위한 문제영역이다. 
 도메인 주도설계에서는 문제 영역을 서브 도메인이라 부른다. 서브도메인 별로 이벤트 스토밍을 진행해 보자. 제일 처음은 사용자관리이다.
 - 사용자 관리
-![image](https://user-images.githubusercontent.com/15258916/87249237-d83a6480-c498-11ea-8d1a-16e54f235e87.png)
+![image](https://user-images.githubusercontent.com/15258916/87249288-39623800-c499-11ea-98ae-b7dd1b624428.png)
 
 
 ### 컨텍스트경계(Bounded Context) 도출
