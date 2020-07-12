@@ -85,7 +85,7 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
 대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
 3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
 
-  ```java
+```java
     /**
     * 대여카드 어그리게잇(루트 엔티티) 클래스
     */
@@ -118,58 +118,76 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
          @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
          private Set<ReturnedItem> returnedItems = new HashSet<>();
       …(중략)…
-    ```
-    
-  2. Rental 생성 메소드
-   
-  첫 대여인 경우 Rental을 생성한다. 이때 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
-    
-    ```java
+```
+ 
+### Rental
 
-         //생성메소드//
-        /**
-        *
-        * @param userId
-        * @return
-        */
-        public static Rental createRental(Long userId){
-            Rental rental = new Rental();
-            rental.setUserId(userId);
-            //대여 가능하게 상태 변경
-            rental.setRentalStatus(RentalStatus.RENT_AVAILABLE);
-            rental.setLateFee((long)0);
-            return rental;
-        }
-   ```
+```java
+/**
+  * 대여카드 생성
+  * @param userId
+  * @return
+  */
+public static Rental createRental(Long userId) {
+    Rental rental = new Rental();
+    rental.setUserId(userId);
+    //대여 가능하게 상태 변경
+    rental.setRentalStatus(RentalStatus.RENT_AVAILABLE);
+    rental.setLateFee(0);
+    return rental;
+}
+```
+**createRental(대여카드 생성 메소드)**
 
- 3. rentBooks 메소드 (책 대여하기)
-    
-    
-   ```java
-    //대여하기 메소드//
-    public Rental rentBook(RentedItem rentedItem){
-        //현재 대여목록 갯수와 대여할 도서 갯수 파악
+대여카드 생성메소드는 Renta내부에서 사용자id만 받아 생성될 수 있도록 캡슐화한다. 
+이때 대여카드에 사용자id을 부여하고 RentalStatus는 RENT_AVAILABLE로 설정하며, LateFee는 0으로 설정한다.
 
-        this.addRentedItem(rentedItem);
+```java
+//대여 가능 여부 체크 //
+public boolean checkRentalAvailable(Integer newBookListCnt) throws Exception{
+    if(this.rentalStatus.equals(RentalStatus.RENT_UNAVAILABLE )) throw new Exception("연체 상태입니다.");
+    if(this.getLateFee()!=0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
+    if(newBookListCnt+this.getRentedItems().size()>5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
 
-        return this;
-    }
+    return true;
+}
 
-    
-    //대여 가능 여부 체크 //
-    public boolean checkRentalAvailable(Integer newBookListCnt) throws Exception{
-        if(this.rentalStatus.equals(RentalStatus.RENT_UNAVAILABLE )) throw new Exception("연체 상태입니다.");
-        if(this.getLateFee()!=0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
-        if(newBookListCnt+this.getRentedItems().size()>5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
+/**
+ * 대여하기
+ *
+ * @param bookid
+ * @param title
+ * @return
+ */
+public Rental rentBook(Long bookid, String title) {
+    this.addRentedItem(RentedItem.createRentedItem(bookid, title, LocalDate.now()));
+    return this;
+}
 
-        return true;
-    }
-    ```
+/**
+ * 반납하기
+ *
+ * @param bookId
+ * @return
+ */
+public Rental returnbook(Long bookId) {
+    RentedItem rentedItem = this.rentedItems
+.stream().filter(item -> item.getBookId().equals(bookId)).findFirst().get();
+    this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), 
+rentedItem.getBookTitle(), LocalDate.now()));
+    this.removeRentedItem(rentedItem);
+    return this;
+}
+```
+**checkRentalAvailable(대여가능여부체크)**
+   - 대여가능여부(RentalStatus)가 RENT_UNAVAILABLE 이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 Exception을 던진다. 
+   - 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 Exception을 던진다.
+**rentBooks 메소드 (대여하기)** 
+  - 도서id와 이름으로 대여 도서 객체(RentedItem)를 생성한 후에 대여 카드(rental)에 추가한다. 
+**returnbook(반납하기)**
+  - 도서id로 대여 카드에 존재했던 대여도서 객체(rentedItem)를 찾아 삭제하고, 그 정보로 반납도서 객체(returnedItem)를 만든 후 대여카드(rental)에 추가한다.
 
-    - ServiceImpl에서 생성한 RentedItem을 받아, rental의 rentedItems에 add 한다.
-    - 대여 가능 여부 체크에서는 rentalStatus, LateFee, 현재 대여한 책의 개수를 기준으로 가능여부를 체크한다.
-
-2. RentedItem.java
+### RentedItem.java
 
     ServiceImpl에서 RentedItem 생성시에도 RentedItem Entity를 호출하여 생성한다. 
 
