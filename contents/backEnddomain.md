@@ -28,7 +28,7 @@
 ### 백엔드서비스 구현 전, Configuration 설정
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
-### 대출(Rental)서비스 
+### 대여(Rental)서비스 
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
