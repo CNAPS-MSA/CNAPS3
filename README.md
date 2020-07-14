@@ -43,7 +43,11 @@
 </div>
 </details>
 
-# Cloud Native 핵심프로세스 설명 
+# Cloud Native 핵심프로세스 
+- Natvie 방법론의 핵심 아키텍팅/설계/개발 프로세스를 각 활동들을 설명하며 샘플을 제시한다.
+- 각 활동의 개념등은 SK 주식회사 C&C 기술블로그와 연계하여 설명한다.
+- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등 활동별로 Seemless하 제공한다.
+
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 - [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
@@ -61,22 +65,12 @@
   - [데이터모델링](/contents/data.md) 
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 ## SPRINT#N - 개발
-- [BackEnd개발(헥사고널&DDD)](/contents/backEnddomain.md) 
-- [BackEnd개발(헥사고널&트랜젝션)](/contents/backEnddata.md) 
-- FrontEnd개발
+- [BackEnd 마이크로서비스 개발](/contents/backEnddomain.md) 
+- [FrontEnd 개발](/contents/jhipster-front1.md)
     
 ## SPRINT#N - 통합&배포(CI/CD)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
-
-## SAMPLE
-- [도서대여시스템](/contents/sample.md)
-  - 도서대여시스템 사용하기
-- [Jhipster Sample](/contents/jhipster_guide.md)
-  - [Jhipster Package Refactoring](/contents/jhipster_package_ref.md)
-  - [Jhipster Business Logic개발](/contents/jhipster_businesslogic.md)
-  - [Jhipster Kafka 연결하기)(/contents/jhipster_kafka.md)
-  - [Jhipster Feign Client 연결하기)(/contents/jhipster_feign.md)
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
@@ -94,4 +88,5 @@
     - 교육교재
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
    
+- [백업 : 도서대여시스템](/contents/sample.md)
 

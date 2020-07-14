@@ -40,6 +40,7 @@ jhipster --blueprint vuejs
 
     library.add( ...
 
+
     ,faBook);
     }
 
@@ -691,6 +692,7 @@ bookRentalDetailsView에 연결된 vue 파일이다. 상세 정보를 보여주�
 
 ## Vue.js 개발 간단 요약
 
+
 Vue.js에서 어떠한 페이지를 생성해 기능을 부여하는 개발 순서는 아래와 같다. 
 
 1. 개발하고자 하는 모듈의 package(폴더)생성
@@ -700,4 +702,5 @@ Vue.js에서 어떠한 페이지를 생성해 기능을 부여하는 개발 순�
 3. component 및 service 를 전역 등록
 4. Path를 router에 등록
 5. navBar 또는 Home에서 이동할 수 있는 메뉴 추가
+
 
