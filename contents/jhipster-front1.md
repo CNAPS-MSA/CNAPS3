@@ -37,7 +37,8 @@ jhipster --blueprint vuejs
     } from "@fortawesome/free-solid-svg-icons/faBook";
 
     export function initFortAwesome(vue) {
-  library.add( ...
+
+    library.add( ...
 
     ,faBook);
     }
