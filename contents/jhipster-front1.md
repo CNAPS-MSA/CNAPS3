@@ -37,7 +37,9 @@ jhipster --blueprint vuejs
     } from "@fortawesome/free-solid-svg-icons/faBook";
 
     export function initFortAwesome(vue) {
-  library.add( ...
+
+    library.add( ...
+
 
     ,faBook);
     }
@@ -690,4 +692,15 @@ bookRentalDetailsView에 연결된 vue 파일이다. 상세 정보를 보여주�
 
 ## Vue.js 개발 간단 요약
 
+
 Vue.js에서 어떠한 페이지를 생성해 기능을 부여하는 개발 순서는 아래와 같다. 
+
+1. 개발하고자 하는 모듈의 package(폴더)생성
+2. 모듈 폴더 내에 해당 기능을 위한 name-component.ts, name-service.ts, name.vue파일 생성 및 소스 개발
+   1. component는 vue에서 사용되는 메소드 및 변수 선언
+   2. service는 Microservices와의 REST API 통신을 위한 메소드 및 변수 선언
+3. component 및 service 를 전역 등록
+4. Path를 router에 등록
+5. navBar 또는 Home에서 이동할 수 있는 메뉴 추가
+
+
