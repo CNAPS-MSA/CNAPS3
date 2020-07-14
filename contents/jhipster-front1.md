@@ -275,7 +275,7 @@ book-rental.vue의 전체 코드는 아래와 같다. (조회와 검색 기능�
 
 ### book-rental-component.ts파일 수정
    
-    ```js
+```js
         import { mixins } from 'vue-class-component';
 
         import { Component, Vue, Inject } from 'vue-property-decorator';
@@ -375,7 +375,7 @@ book-rental.vue의 전체 코드는 아래와 같다. (조회와 검색 기능�
         }
         }
 
-    ```
+```
 
 위 소스 코드를 차근 차근 살펴보자.
 먼저 윗부분부터 살펴보면 `@Inject('bookRentalService') private bookRentalService: () => BookRentalService;`라는 코드로 bookRentalService를 주입시킨다.
@@ -552,6 +552,142 @@ const bookApiUrl = 'services/bookcatalog/api/book-catalogs';
 `this.bookRentalService().findBytitle(title)`로 검색을 위해 입력한 title을 bookRentalService의 findByTitle메소드로 보낸다.
 서비스에서 findByTitle()을 실행시키면 axios로 요청을 보내고 data를 받아 resolve한다. 이 data를 다시 컴포넌트의 search 메소드가 받고, book-rental에서 사용하는 books Array에 넣어준다.
 
+### BookRentalView
+
+BookRentalView는 도서의 상세 정보를 조회했을 때 나오는 페이지로, book-rental-details에 해당한다. 이것 또한 새로운 페이지로 이동하는 것이기 때문에 우선 router에 등록해주어야한다.
+
+router의 index.ts에 아래와 같은 코드를 추가해준다.
+
+```js
+{
+      path: '/rent/:bookTitle/view',
+      name: 'BookRentalView',
+      component: BookRentalDetails,
+      meta: { authorities: [Authority.USER]}
+    }
+```
+
+path를 보면 `/rent/:bookTitle/view`로 중간에 bookTitle이 있는 것을 확인할 수 있다. 이는 param을 bookTitle로 가져온다는 것이다. (추후 bookId로 수정될 수 있다.)
+또한 BookRentalView라는 이름으로 vue파일에서 연결될 것이다. book-rental.vue 코드에서 아래와 같이 확인할 수 있다.
+
+```html
+<td>
+    <router-link :to="{name: 'BookRentalView', params: {bookTitle: book.title}}">{{book.title}}</router-link>
+</td>
+```
+
+component 는 BookRentalDetails란 이름으로 아래와 같이 등록해준다.
+
+```js
+const BookRentalDetails = () => import('../cnaps/book-rental-service/book-rental-details.vue');
+```
+
+component는 path와 마찬가지로 index.ts라는 동일한 파일 상단에 등록해준다.
+
+이제 book-rental-details-component를 확인해보자.
+
 ### book-rental-details-component.ts작성
 
-to be continue..
+```js
+import { Component, Inject, Vue } from 'vue-property-decorator';
+import { IBookCatalog } from '@/shared/model/bookCatalog/book-catalog.model';
+import BookRentalService from '@/cnaps/book-rental-service/book-rental.service';
+@Component
+export default class BookRentalDetails extends Vue {
+  @Inject('bookRentalService') private bookRentalService: () => BookRentalService;
+  public book: IBookCatalog = {};
+
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (to.params.bookTitle) {
+        vm.retrieveBookRental(to.params.bookTitle);
+      }
+    });
+  }
+
+  public retrieveBookRental(bookTitle) {
+    this.bookRentalService()
+      .findByTitle(bookTitle)
+      .then(res => {
+        this.book = res;
+      });
+  }
+
+  public previousState() {
+    this.$router.go(-1);
+  }
+}
+```
+
+- bookRentalService 주입 : book-rental-details 또한 BookRentalService 의 주입이 필요하다. Book Rental과 연결되어있는 기능이기 때문이다.
+- book : IBookCatalog= {} : Book Catalog의 front model을 가져와 선언한다. book-rental-details.vue에서 `book`이라는 명칭을 사용해 bookCatalog를 가져오게된다.
+- beforeRouteEnter : vue의 기능 중 하나인 **네비게이션 가드**로, Vue Router로 특정 URL에 접근할 때 해당 URL의 접근을 막는 방법을 의미한다. 주로 사용자 인증정보가 없으면 페이지에 접근을 못하게 하는데에 주로 쓰인다.
+  - 여기서는 다른 의미로 쓰였는데, 상세정보 조회 버튼을 눌렀을 때 해당 책에 대한 key정보(bookTitle)이 param으로 넘어오지 않으면 페이지 이동이 제한된다.
+- retrieveBookRental : beforeRouteEnter 함수의 코드를 보면 조건 통과 후 retrieveBookRental을 호출한다. retrieveBookRental은 넘겨받은 bookTitle을 bookRentalService의 findByTitle을 실행시켜 book 정보를 가져온다.
+
+### book-rental-details.vue
+
+```html
+<template>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div v-if="book">
+                <h2 class="jh-entity-heading"><span v-text="$t('gatewayApp.bookCatalogBookCatalog.detail.header')">Book Details</span></h2>
+                <dl class="row jh-entity-details">
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.title')">Title</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.title}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.description')">Description</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.description}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.author')">Author</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.author}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.publicationDate')">Publication Date</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.publicationDate}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.classification')">Classification</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.classification}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.rented')">Rented</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.rented}}</span>
+                    </dd>
+                    <dt>
+                        <span v-text="$t('gatewayApp.bookCatalogBookCatalog.rentCnt')">Rent Cnt</span>
+                    </dt>
+                    <dd>
+                        <span>{{book.rentCnt}}</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts" src="./book-rental-details.component.ts">
+</script>
+```
+
+bookRentalDetailsView에 연결된 vue 파일이다. 상세 정보를 보여주는 만큼 심플하다. (주 코드 설명은 book-rental.vue에서 설명하였으므로 생략)
+
+## Vue.js 개발 간단 요약
+
+Vue.js에서 어떠한 페이지를 생성해 기능을 부여하는 개발 순서는 아래와 같다. 
