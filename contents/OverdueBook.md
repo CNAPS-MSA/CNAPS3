@@ -1,7 +1,9 @@
 # 도서 연체 및 연체된 도서반납하기 기능 구현
 
 
-- [대여(Rental)서비스 구현](/contents/jhipster_businesslogic.md) 초반에 구현기능에서 언급한 기능 중 연체 처리와 연체된 도서 반납 처리를 구현해 보자.
+- [대여(Rental)서비스 구현](/contents/jhipster_businesslogic.md) 
+
+초반에 구현기능에서 언급한 기능 중 연체 처리와 연체된 도서 반납 처리를 구현해 보자.
 대여서비스구현에서 이미 중요한 흐름을 따라가 봤기 때문에 도서 연체 및 연체된 도서반납처리는 어렵지 않을 것이다. 
 아래의 시퀀스 다이어그림처럼 도서대여 흐름과  거의 비슷하니 비지니스 로직 처리 흐름상 다른 부분만 살펴보자. 
 ![image](https://user-images.githubusercontent.com/15258916/87248578-1fbef180-c495-11ea-90c2-cf3b6b399a38.png)
