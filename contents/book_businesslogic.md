@@ -108,16 +108,21 @@ InStockBookService의 구현체인 InStockBookServiceImpl는 특별한 로직이
 
 다음은 BookRepository 인터페이스이다. 
 
-
-
+```java
+@SuppressWarnings("unused")
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+}
+```
 다음은 InStockBookRepository 인터페이스인데 제목으로 도서찾는 기능을 추가했다
 
-
+```java
 @SuppressWarnings("unused")
 @Repository
 public interface InStockBookRepository extends JpaRepository<InStockBook, Long> {
     Page<InStockBook> findByTitleLike(String title, Pageable pageable);
 }
+```
 
 ## 외부영역 - REST 컨트롤러 개발
 
