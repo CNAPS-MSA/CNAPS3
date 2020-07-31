@@ -74,16 +74,17 @@ Sample에서 보여줄 기능은 아래와 같다.
   
   도서엔티티이다. 도서엔티티는 실제로 대여가능한 도서이기때문에 입고도서가 가진 속성에 추가하여 도서대여상태 및 도서분류 ,보유도서관 등의 속성을 가지고 있다.
   또한 예약자와 일대 다의 관계를 가진다.
-  
-  주요 기능인 도서대여가능여부확인 및 도서예약에 대한 로직처리를 위해 도서엔티티 메소드를 살펴보자.
-  
-  도서대여가능여부확인을 위해 3가지 메소드를 제공한다.
-  
-  
-  
-  
   예약자는 사용자id와 예약순번의 속성을 가진다.
-  표준타입으로 대여가능,불가능의 도서상태를 보유한 BookStatus ENUM 클래스와 도서가 보관된 도서관을 의미하는 Location ENUM 클래스등이 있다.
+  
+  주요 기능인 도서대여가능여부확인 및 도서예약에 대한 로직처리를 위해 도서엔티티 메소드를 살펴보면
+  도서엔티티는 도서예약을 위해 다음 4가지 메소드를 제공한다.
+  
+  - ReserveBookByUserId는 해당사용자로 도서를 예약한다. 
+  - cancelReserveBookByUserId는 해당사용자도서예약을 취소한다.
+  - checkReservationContains는 해당사용자로 예약되어 있는지 확인한다.
+  - isFirstReservation는 해당사용자가 1순위 예약자인지 확인한다.
+ 
+  또한 표준타입으로 대여가능,불가능의 도서상태를 보유한 BookStatus ENUM 클래스와 도서가 보관된 도서관을 의미하는 Location ENUM 클래스등이 있다.
 
 
 ## 내부영역 - 서비스 개발
@@ -98,10 +99,25 @@ InStockBookService의 구현체인 InStockBookServiceImpl는 특별한 로직이
 예약자가 있다면 해당 사용자가 1순위 대상자인지 확인하여 1순위자면 true를 반환한다. 1순위 대상자가 아니라면 false를 반환한다.
 
 
-다음은 도서예약이다. 도서예약 메소드는 
+다음은 도서예약이다. 도서예약 메소드는 도서도메인의 ReserveBookByUserId로 도서를 예약한다. 
 
 
 ## 내부영역 - 레파지토리 개발
+
+레파지토리는 엔티티당 1개식 만든다.
+
+다음은 BookRepository 인터페이스이다. 
+
+
+
+다음은 InStockBookRepository 인터페이스인데 제목으로 도서찾는 기능을 추가했다
+
+
+@SuppressWarnings("unused")
+@Repository
+public interface InStockBookRepository extends JpaRepository<InStockBook, Long> {
+    Page<InStockBook> findByTitleLike(String title, Pageable pageable);
+}
 
 ## 외부영역 - REST 컨트롤러 개발
 
