@@ -32,12 +32,13 @@
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
-  - 사내도서시스템의 핵심서비스로 도서대출/반납/연체처리를 수행한다.
+  - 사내도서시스템의 핵심서비스로 도서대출/반납/연체/대출금지 해제처리를 수행한다.
 - [내부 Business Logic 구현하기 - 1:도서대출/반납 기능](/contents/jhipster_businesslogic.md)
 - [타서비스 동기호출처리 : Feign Client 연결하기](/contents/jhipster_feign.md) 
 - [타서비스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
 - [내부 Business Logic 구현하기 - 2:도서 연체/연체된도서 반납기능](/contents/OverdueBook.md)
-
+- [내부 Business Logic 구현하기 - 3:대출금지 해제처리 기능](/contents/releaseOverdue.md)
+  
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
@@ -50,8 +51,10 @@
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
-  - 사용자관리 ,포인트관리, 대출금지 해제처리 기능을 제공한다.
- - [내부 Business Logic 구현하기](/contents/user_businesslogic.md)
+  - 사용자관리, 포인트관리기능을 제공한다.
+ - [내부 Business Logic 구현하기 - 1: 사용자 관리 기능 ](/contents/user_businesslogic.md)
+ - [내부 Business Logic 구현하기 - 2: 포인트 관리 기능]
+
     
 ### Catalog 서비스
 - 내부구조 : 헥사고널 + DDD 구조 + NoSQL DB
@@ -74,7 +77,7 @@
 4. USER으로 로그인한다.
 5. USER1이 도서정보를 검색한다. 
 6. 대출가능한 도서를 2권 대출한다.
-    - 대여중인 도서는 예약한다.
+    - 대여중인 도서는 대출할 수 없다.
 7. 대출한 도서중 1권을 반납한다.
 8. 2주가 지난도서는 연체된다.(1권을 연체처리한다.)
 9. 연체도서를 반납한다.
