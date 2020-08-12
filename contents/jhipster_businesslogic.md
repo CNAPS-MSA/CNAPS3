@@ -21,7 +21,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 ## API설계
 |API명|도서대여|
 |----|------|
-|리소스URI|/rentals/{userid}/rentedItem/{books}|
+|리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|POST|
 |Request| |
 |Response| |
@@ -31,7 +31,7 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
 
 |API명|도서반납|
 |----|------|
-|리소스URI|/rentals/{userid}/rentedItem/{books}|
+|리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|DELETE|
 |Request| |
 |Response| |
@@ -40,7 +40,7 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
 
 |API명|도서연체처리|
 |----|------|
-|리소스URI|/rentals/{userid}/OverdueItem/{books}|
+|리소스URI|/rentals/{userid}/OverdueItem/{book}|
 |Method|POST|
 |Request| |
 |Response| |
@@ -50,10 +50,12 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 
 |API명|도서연체처리|
 |----|------|
-|리소스URI|/rentals/{userid}/OverdueItem/{books}|
+|리소스URI|/rentals/{userid}/OverdueItem/{book}|
 |Method|DELETE|
 |Request| |
 |Response| |
+
+마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
 
 ## 도메인 모델 
 ![image](https://user-images.githubusercontent.com/15258916/87246499-d072c400-c488-11ea-9df3-193f5d6b4763.png)
@@ -80,7 +82,8 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 
 Rental.java에는 3개의 OneToMany관계가 선언되어있다.
 대여 중인 도서 리스트/ 연체 도서 리스트/ 반납된 도서 리스트이다.
-3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다.
+3가지 리스트 모두 Rental과 생명 주기가 같기 때문에 `CascadeType.ALL`로 설정하였다. 
+또한, Rental에서 리스트의 객체 삭제시 해당 리스트의 Entity가 삭제되어야하기 때문에 `orphanRemoval = true`로 설정하였다.
 
 ```java
     /**
@@ -103,21 +106,22 @@ Rental.java에는 3개의 OneToMany관계가 선언되어있다.
          @Column(name = "late_fee")
          private Long lateFee;
 
-         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true) 
          @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
          private Set<RentedItem> rentedItems = new HashSet<>();
 
-         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
          @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
          private Set<OverdueItem> overdueItems = new HashSet<>();
 
-         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
+         @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
          @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
          private Set<ReturnedItem> returnedItems = new HashSet<>();
       …(중략)…
 ```
  
 ### Rental
+
 
 ```java
 /**
@@ -134,6 +138,8 @@ public static Rental createRental(Long userId) {
     return rental;
 }
 ```
+
+
 **createRental(대여카드 생성 메소드)**
 
 대여카드 생성메소드는 Renta내부에서 사용자id만 받아 생성될 수 있도록 캡슐화한다. 
@@ -141,13 +147,11 @@ public static Rental createRental(Long userId) {
 
 ```java
 //대여 가능 여부 체크 //
-public boolean checkRentalAvailable(Integer newBookListCnt) throws Exception{
-    if(this.rentalStatus.equals(RentalStatus.RENT_UNAVAILABLE )) throw new Exception("연체 상태입니다.");
-    if(this.getLateFee()!=0) throw new Exception("연체료를 정산 후, 도서를 대여하실 수 있습니다.");
-    if(newBookListCnt+this.getRentedItems().size()>5) throw new Exception("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
+public void checkRentalAvailable() throws RentUnavailableException {
+    if(this.rentalStatus.equals(RentalStatus.RENT_UNAVAILABLE ) || this.getLateFee()!=0) throw new RentUnavailableException("연체 상태입니다. 연체료를 정산 후, 도서를 대여하실 수 있습니다.");
+    if(this.getRentedItems().size()>=5) throw new RentUnavailableException("대출 가능한 도서의 수는 "+( 5- this.getRentedItems().size())+"권 입니다.");
 
-    return true;
-}
+    }
 
 /**
  * 대여하기
@@ -168,17 +172,15 @@ public Rental rentBook(Long bookid, String title) {
  * @return
  */
 public Rental returnbook(Long bookId) {
-    RentedItem rentedItem = this.rentedItems
-.stream().filter(item -> item.getBookId().equals(bookId)).findFirst().get();
-    this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), 
-rentedItem.getBookTitle(), LocalDate.now()));
+    RentedItem rentedItem = this.rentedItems.stream().filter(item -> item.getBookId().equals(bookId)).findFirst().get();
+    this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.getBookId(), rentedItem.getBookTitle(), LocalDate.now()));
     this.removeRentedItem(rentedItem);
     return this;
 }
 ```
 **checkRentalAvailable(대여가능여부체크)**
-   - 대여가능여부(RentalStatus)가 RENT_UNAVAILABLE 이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 Exception을 던진다. 
-   - 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 Exception을 던진다.
+   - 대여가능여부(RentalStatus)가 RENT_UNAVAILABLE 이거나 Latefee가 0이 아니면 연체 상태로, 대여가 불가능하며 RentUnavailableException을 던진다. 
+   - 대여 중인 책과 대여하고자 하는 책 개수의 합이 5권이 넘는 경우 대여가 불가능하다. 이때, 대여가 가능한 책 권 수를 알려주고 RentUnavailableException을 던진다.
 
 **rentBooks 메소드 (대여하기)** 
   - 도서id와 이름으로 대여 도서 객체(RentedItem)를 생성한 후에 대여 카드(rental)에 추가한다. 
@@ -269,9 +271,9 @@ public interface RentalService {
  * 책 대여하기
  *
  * ****/
-Rental rentBooks(Long userId, List<BookInfo> books);
+Rental rentBooks(Long userId, BookInfoDTO book);
 ```
-대여 서비스 인터페이스이다. 책 대여 시, 대여 카드를 찾기 위해 대여하는 사용자의 Id와 대여하고자 하는 책들의 Id를 받는다.
+대여 서비스 인터페이스이다. 책 대여 시, 대여 카드를 찾기 위해 대여하는 사용자의 Id와 대여하고자 하는 책의 Id를 받는다.
 
 ### RentalServiceImpl.java
 ```java
@@ -280,49 +282,36 @@ Rental rentBooks(Long userId, List<BookInfo> books);
 public class RentalServiceImpl implements RentalService {
 …(중략)…
 /**
- * 여러권 대여하기
- *
- * @param userId
- * @param books
- * @return
- */
+* 도서 대여하기
+*
+* @param userId
+* @param book
+* @return
+*/
 @Transactional
-public Rental rentBooks(Long userId, List<BookInfoDTO> books) {
-    log.debug("Rent Books by : ", userId, " Book List : ", books);
+public Rental rentBook(Long userId, BookInfoDTO book) throws InterruptedException, ExecutionException, JsonProcessingException, RentUnavailableException {
+    log.debug("Rent Books by : ", userId, " Book List : ", book);
     Rental rental = rentalRepository.findByUserId(userId).get();
-    try {
-      Boolean checkRentalStatus = rental.checkRentalAvailable(books.size());
-       if (checkRentalStatus) {
+    rental.checkRentalAvailable();
 
-        books.forEach(bookInfo -> rental.rentBook(bookInfo.getId(), bookInfo.getTitle()));
-        rentalRepository.save(rental);
+    rental = rental.rentBook(book.getId(), book.getTitle());
+    rentalRepository.save(rental);
 
-        books.forEach(b -> {
-          try {
-                updateBookStatus(b.getId(), "UNAVAILABLE");
-                updateBookCatalog(b.getId(), "RENT_BOOK");
-               } catch (ExecutionException | InterruptedException 
-| JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            });
-            savePoints(userId, books.size());
-        }
-    } catch (Exception e) {
-        String errorMessage = e.getMessage();
-        System.out.println(errorMessage);
-        return null;
-    }
+    updateBookStatus(book.getId(), "UNAVAILABLE"); //send to book service
+    updateBookCatalog(book.getId(), "RENT_BOOK"); //send to book catalog service
+    savePoints(userId); //send to user service
     return rental;
+
 }
 ```
 도서대여 메소드이다. 
    - 사용자id에 해당하는 대여카드 (Rental)를 찾는다.
-   - 먼저 대출할 도서 갯수를 넣어 해당 대여카드가 도서대여 가능 상태인지 확인한다.
+   - 먼저 해당 대여카드가 도서대여 가능 상태인지 확인한다.
    - 도서카드(Renta)에 빌리려는 도서정보를 넣어 도서 대여 처리를 위임한다.
    - 대여 처리가 된 대여카드(Rental)는 RentalRepository에 save 한다.
    - 도서 상태변경 이벤트 처리를 전송 한다.
    - 도서 카탈로그 변경 이벤트 처리를 전송한다.
+   - 포인트 적립 이벤트 처리를 전송한다. 
 
 비동기 이벤트 처리를 위해 아웃바운드 어댑타를 호출하는 부분은 서비스에 아래와 같이 연계된다. 메시지를 카프카에 직접 던지는 구현부분은 아웃 바운드 어답터 영역에서 살펴보겠다. 
 
@@ -335,8 +324,8 @@ throws ExecutionException, InterruptedException, JsonProcessingException {
 }
 
 @Override
-public void savePoints(Long userId, int bookCnt) throws ExecutionException, InterruptedException, JsonProcessingException {
-    rentalProducer.savePoints(userId, bookCnt * pointPerBooks);
+public void savePoints(Long userId) throws ExecutionException, InterruptedException, JsonProcessingException {
+    rentalProducer.savePoints(userId, pointPerBooks);
 }
 
 @Override
@@ -356,40 +345,33 @@ public void updateBookCatalog(Long bookId, String eventType) throws InterruptedE
  *
  * ****/
 
-Rental returnBooks(Long userId, List<Long> bookIds);
+Rental returnBooks(Long userId, Long bookIds);
 ```
 ### RentalServiceImpl.java
 ```java
 /**
- * 여러 권 반납하기
+ * 도서 반납하기
  *
  * @param userId
- * @param bookIds
+ * @param bookId
  * @return
  */
 @Transactional
-public Rental returnBooks(Long userId, List<Long> bookIds) {
-    log.debug("Return books by ", userId, " Return Book List : ", bookIds);
+public Rental returnBook(Long userId, Long bookId) throws ExecutionException, InterruptedException ,JsonProcessingException {
+    log.debug("Return books by ", userId, " Return Book List : ", bookId);
     Rental rental = rentalRepository.findByUserId(userId).get();
+    rental = rental.returnbook(bookId);
+    rental = rentalRepository.save(rental);
 
-    Rental finalRental = rental;
-    bookIds.forEach(bookid -> finalRental.returnbook(bookid));
-    rental = rentalRepository.save(finalRental);
+    updateBookStatus(bookId, "AVAILABLE");
+    updateBookCatalog(bookId, "RETURN_BOOK");
 
-    bookIds.forEach(b -> {
-        try {
-            updateBookStatus(b, "AVAILABLE");
-            updateBookCatalog(b, "RETURN_BOOK");
-        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    });
     return rental;
 }
 ```
 도서대여처리와 비슷하다.
    - 해당 Userid의  대여카드(Rental)을 찾는다.
-   - for loop를 통해 대여카드에게 위임하여 도서반납처리를 차례로 진행한다.
+   - 대여카드에게 위임하여 도서반납처리를 진행한다.
    - 반납 처리가 된 대여카드(Rental)는 RentalRepository로 저장(save) 한다.
    - 도서 상태변경 이벤트 처리를 전송 한다.
    - 도서 카탈로그 변경 이벤트 처리를 전송한다.
@@ -434,40 +416,31 @@ RentalResource에서 대여API를 쉽게 인지할 수 있는 적절한 리소�
 public class RentalResource {
 …중략…
 /**
- * 도서 대여 하기
- * @param userid
- * @param books
- * @return
- * @throws InterruptedException
- * @throws ExecutionException
- * @throws JsonProcessingException
- */
-@PostMapping("/rentals/{userid}/RentedItem/{books}")
-public ResponseEntity rentBooks(@PathVariable("userid") Long userid, 
-@PathVariable("books") List<Long> books)
- throws InterruptedException, ExecutionException,
- JsonProcessingException {
+* 도서 대여 하기
+* @param userid
+* @param bookId
+* @return
+* @throws InterruptedException
+* @throws ExecutionException
+* @throws JsonProcessingException
+*/
+@PostMapping("/rentals/{userid}/RentedItem/{book}")
+public ResponseEntity<RentalDTO> rentBooks(@PathVariable("userid") Long userid, @PathVariable("book") Long bookId)
+    throws InterruptedException, ExecutionException, JsonProcessingException, RentUnavailableException {
     log.debug("rent book request");
 
-//feign - 책 정보 가져오기
-    ResponseEntity<List<BookInfoDTO>> bookInfoResult = bookClient.getBookInfo(books, 
-userid); 
-    List<BookInfoDTO> bookInfoDTOList = bookInfoResult.getBody();
-    log.debug("book info list", bookInfoDTOList.toString());
+    ResponseEntity<BookInfoDTO> bookInfoResult = bookClient.findBookInfo(bookId); //feign - 책 정보 가져오기
+    BookInfoDTO bookInfoDTO = bookInfoResult.getBody();
+    log.debug("book info list", bookInfoDTO.toString());
 
-    Rental rental = rentalService.rentBooks(userid, bookInfoDTOList);
+    Rental rental= rentalService.rentBook(userid, bookInfoDTO);
+    RentalDTO rentalDTO = rentalMapper.toDto(rental);
+    return ResponseEntity.ok().body(rentalDTO);
 
-    if (rental != null) {
-        RentalDTO result = rentalMapper.toDto(rental);
-        return ResponseEntity.ok().body(result);
-    } else {
-        log.debug("대여 할 수 없는 상태입니다.");
-        return ResponseEntity.badRequest().build();
-    }
 }
 ```
 대여처리 API 구현을 위한 컨트롤러 처리 흐름을 살펴보면
-   - Http Post방식으로 사용자id , 대여할 도서 정보 목록을 받는다.
+   - Http Post방식으로 사용자id, 대여할 도서 정보를 받는다.
    - 도서목록을 동기 호출로 도서 서비스를 호출하여 검증하고 상세도서정보를 가져온다.  
    - 서비스를 호출하여 도서대여처리를 수행한다.
    - 도서대여처리한 대여 카드를 DTO로 변경하여 클라이언트에 반환한다.
