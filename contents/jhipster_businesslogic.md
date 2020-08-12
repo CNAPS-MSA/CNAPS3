@@ -407,7 +407,9 @@ Spring Data JPA의 Repository인터페이스를 활용하면 Sql문 작성으로
 도메인과 서비스를 통해 대략적인 비지니스 개념을 정의하고 비지니스 흐름을 처리하는 방식을 살펴보았다. 이렇게 완성된 비지니스로직은 프론트엔드와 약속된 API로 외부로 공개되어 프론트 엔드에 의해 활용 되야 한다. REST컨트롤러는 구현된 서비스의 REST API를 발행한다. 
 
 컨트롤러는 프로트엔드에 제공할 API를 내부영역의 도메인 기능을 활용하여 적절히 제공해야 한다. 또한 API 변환 외의 비지니스 로직 처리는 내부영역의 서비스에 위임해야 한다. 
-RentalResource에서 대여API를 쉽게 인지할 수 있는 적절한 리소스명("/rentals/{userid}/RentedItem/{books}")으로 http 표준 메소드 POST방식으로 선언하여 제공하고 있다. 주요 비지니스로직처리는  rentalService. rentBooks를 호출하여 위임한다. 
+RentalResource에서 대여API를 쉽게 인지할 수 있는 적절한 리소스명("/rentals/{userid}/RentedItem/{book}")으로 http 표준 메소드 POST방식으로 선언하여 제공하고 있다. 주요 비지니스로직처리는  rentalService. rentBooks를 호출하여 위임한다. 
+
+
 ### RentalResource.java
 
 ```java
@@ -438,12 +440,34 @@ public ResponseEntity<RentalDTO> rentBooks(@PathVariable("userid") Long userid, 
     return ResponseEntity.ok().body(rentalDTO);
 
 }
+
+/**
+ * 도서 반납 하기
+ *
+ * @param userid
+ * @param book
+ * @return
+ */
+@DeleteMapping("/rentals/{userid}/RentedItem/{book}")
+public ResponseEntity returnBooks(@PathVariable("userid") Long userid, @PathVariable("book") Long book) throws InterruptedException, ExecutionException, JsonProcessingException {
+    Rental rental = rentalService.returnBook(userid, book);
+    log.debug("returned books");
+    log.debug("SEND BOOKIDS for Book: {}", book);
+
+    RentalDTO result = rentalMapper.toDto(rental);
+    return ResponseEntity.ok().body(result);
+}
 ```
 대여처리 API 구현을 위한 컨트롤러 처리 흐름을 살펴보면
    - Http Post방식으로 사용자id, 대여할 도서 정보를 받는다.
    - 도서목록을 동기 호출로 도서 서비스를 호출하여 검증하고 상세도서정보를 가져온다.  
    - 서비스를 호출하여 도서대여처리를 수행한다.
    - 도서대여처리한 대여 카드를 DTO로 변경하여 클라이언트에 반환한다.
+
+반납처리 API 구현을 위한 컨트롤러 처리 흐름을 살펴보면
+   - Http Delete방식으로 사용자id, 반납할 도서 정보를 받는다.
+   - 서비스를 호출하여 도서반납처리를 수행한다.
+   - 도서반납처리한 대여 카드를 DTO로 변경하여 클라이언트에 반환한다.
 
 도서 서비스를 호출하여 동기 호출한 상세 부분은 다음의 외부 영역 아웃바운드 처리에서 살펴보기로 한다.
 
