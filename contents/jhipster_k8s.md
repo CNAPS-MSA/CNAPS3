@@ -213,4 +213,4 @@ default() {
 ...
 ```
 
-여기까지 완료되면 다음 단계 [GCP 에 배포하기](/contents/cd_gcp.md) 를 참고한다.는
+여기까지 완료되면 다음 단계 [GCP 에 배포하기](/contents/cd_gcp.md) 를 참고한다.
