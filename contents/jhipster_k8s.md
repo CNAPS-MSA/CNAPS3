@@ -2,8 +2,8 @@
 
 Jhipster 는 쿠버네티스 설정 파일을 자동 생성해주고 이를 기반으로 쉽게 배포가 가능하다.
 
-##쿠버네티스 설정 파일 생성
-###1. 프로젝트 root directory 로 이동한다.
+## 쿠버네티스 설정 파일 생성
+### 1. 프로젝트 root directory 로 이동한다.
 ```
 cd ~/
 ```
@@ -15,12 +15,12 @@ gateway
 rental
 ```
 
-###2. 설정 파일용 폴더를 생성 후, 해당 폴더로 이동한다.
+### 2. 설정 파일용 폴더를 생성 후, 해당 폴더로 이동한다.
 ```
 mkdir k8s && cd k8s
 ```
 
-###3. 쿠버네티스 설정파일을 생성한다.
+### 3. 쿠버네티스 설정파일을 생성한다.
 
   - jhipster 명령어를 실행한다.
 ```
@@ -94,7 +94,7 @@ JHipster registry detected as the service discovery and configuration provider u
 ```
 ## 쿠버네티스 설정 파일 수정
 자동 생성된 설정 파일에 일부 수정이 필요하다.
-###1. Maria DB 설정 파일 수정
+### 1. Maria DB 설정 파일 수정
   - containers 내 args 항목을 추가한다. (해당 항목을 추가하지 않으면 한글 지원이 되지 않는다.)
     - book-k8s/book-mariadb.yml
     - gateway-k8s/gateway-mariadb.yml
@@ -135,7 +135,7 @@ JHipster registry detected as the service discovery and configuration provider u
 ...
 ```
 
-###2. Mongo DB 설정 파일 수정
+### 2. Mongo DB 설정 파일 수정
   - replicas 가 3으로 기본 설정되는데 이를 1로 수정한다.
     - bookcatalog-k8s/bookcatalog-mongodb.yml
 ```
@@ -168,7 +168,7 @@ spec:
       app: bookcatalog-mongodb
 ...
 ``` 
-###3. mongo db 접속 정보를 수정
+### 3. mongo db 접속 정보를 수정
   - bookcatalog-k8s/bookcatalog-deployment.yml
 ```
 <변경 전>
@@ -182,7 +182,7 @@ spec:
     value: 'mongodb://bookcatalog-mongodb-0.bookcatalog-mongodb.default:27017'
 ...
 ```
-###4. 쿠베네티스 배포 실행 파일 수정
+### 4. 쿠베네티스 배포 실행 파일 수정
   - 실행 순서를 변경한다.
 ```
 <변경 전>

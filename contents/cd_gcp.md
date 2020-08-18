@@ -122,12 +122,12 @@ $ docker push gcr.io/cnaps-project-286804/rental
             image: gcr.io/cnaps-project-286804/gateway
 ...
 ```
-###2. 배포
+### 2. 배포
   - 아래의 명령어를 수행한다.
 ```
 $ ./kubectl-apply.sh -f
 ```
-###3. 배포 서비스 확인
+### 3. 배포 서비스 확인
   - 모든 서비스가 정상적으로 기동되면 아래와 같다.
   - service/gateway 서비스에 접속하여 확인할 수 있다.
     - http://{EXTERNAL-IP}:8080
@@ -187,7 +187,7 @@ NAME                                   READY   AGE
 statefulset.apps/bookcatalog-mongodb   1/1     33m
 statefulset.apps/jhipster-registry     2/2     34m
 ```
-###4. 배포 서비스 삭제
+### 4. 배포 서비스 삭제
   - 모든 서비스를 중단한다.
 ```
 $ kubectl delete all --all
