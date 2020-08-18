@@ -36,8 +36,8 @@
 - [내부 Business Logic 구현하기 - 1:도서대출/반납 기능](/contents/jhipster_businesslogic.md)
 - [타서비스 동기호출처리 : Feign Client 연결하기](/contents/jhipster_feign.md) 
 - [타서비스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
-- [내부 Business Logic 구현하기 - 2:도서 연체/연체된도서 반납기능](/contents/OverdueBook.md)
-- [내부 Business Logic 구현하기 - 3:대출금지 해제처리 기능](/contents/releaseOverdue.md)
+- [내부 Business Logic 구현하기 - 2:도서 연체/연체된 도서 반납기능](/contents/OverdueBook.md)
+- [내부 Business Logic 구현하기 - 3:도서 대여불가 해제처리 기능](/contents/releaseOverdue.md)
   
 ### Book 서비스
 - 내부구조 : 헥사고널 + DDD 구조
@@ -53,7 +53,7 @@
 - 주요기능
   - 사용자관리, 포인트관리기능을 제공한다.
  - [내부 Business Logic 구현하기 - 1: 사용자 관리 기능 ](/contents/user_businesslogic.md)
- - [내부 Business Logic 구현하기 - 2: 포인트 관리 기능]
+ - [내부 Business Logic 구현하기 - 2: 포인트 관리 기능](/contents/user_point.md)
 
     
 ### Catalog 서비스
@@ -68,8 +68,14 @@
 - 헥사고널 + Simple CRUD 구조 
 - 저장소처리 : SQL매퍼인 MyBatis 
 - 주요기능 
-  - 공지사항, 자유게시판, 댓글기능 
+  - 공지사항, 자유게시판, 댓글기능
 
+### 예외 처리(Exception) 구현
+- Rental 과 Book 서비스에서 발생할 수 있는 에러를 처리할 수 있도록 예외처리를 구현한다.
+  - [서비스 내부 에러 관리하기](/contents/service_exception.md)
+- Feign Client 사용 시 발생할 수 있는 외부 서비스의 에러를 처리할 수 있도록 예외처리를 구현한다.
+  - [서비스 외부 에러 관리하기 - Feign Exception](/contents/feign_exception.md)
+  
 ## 테스트 시나리오
 1. 사용자 2명 등록한다. USER1,USER2
 2. USER2에게 운영자 권한을 준다.
