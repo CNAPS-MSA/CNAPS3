@@ -43,9 +43,8 @@
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
-  - 도서 위한 서비스로 도서입고처리 및 운영자에게 기본관리기능을 제공한다. 
-  - 사용자는 이미대출된 도서에 대해 도서예약 처리를 할 수 있다.
-- [내부 Business Logic 구현하기](/contents/book_businesslogic.md)
+  - 도서관리를 위한 서비스로 도서입고처리 및 운영자에게 기본관리기능을 제공한다. 
+- [내부 Business Logic 구현하기 - 1: 도서 관리 기능](/contents/book_businesslogic.md)
  
 ### User 서비스
 - 내부구조 : 헥사고널 + DDD 구조
