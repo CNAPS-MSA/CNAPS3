@@ -2,11 +2,12 @@
 
 Jhipster 는 쿠버네티스 설정 파일을 자동 생성해주고 이를 기반으로 쉽게 배포가 가능하다.
 
-1. 프로젝트 root directory 로 이동한다.
+##쿠버네티스 설정 파일 생성
+###1. 프로젝트 root directory 로 이동한다.
 ```
 cd ~/
 ```
-- 현재 총 3개의 Microservice 와 gateway 로 구성되어있다.
+ - 현재 총 3개의 Microservice 와 gateway 로 구성되어있다.
 ```
 book
 bookCatalog
@@ -14,18 +15,18 @@ gateway
 rental
 ```
 
-1. 설정 파일용 폴더를 생성 후, 해당 폴더로 이동한다.
+###2. 설정 파일용 폴더를 생성 후, 해당 폴더로 이동한다.
 ```
 mkdir k8s && cd k8s
 ```
 
-1. 쿠버네티스 설정파일을 생성한다.
+###3. 쿠버네티스 설정파일을 생성한다.
 
-- jhipster 명령어를 실행한다.
+  - jhipster 명령어를 실행한다.
 ```
 jhipster kubernetes
 ```
-- 아래 스크립트를 참고하여 옵션을 선택한다.
+  - 아래 스크립트를 참고하여 옵션을 선택한다.
 ```
 INFO! Using JHipster version installed globally
 INFO! Executing jhipster:kubernetes
@@ -69,7 +70,7 @@ JHipster registry detected as the service discovery and configuration provider u
 ❯ No
   Yes
 ```
-- 아래의 파일들이 자동생성된다.
+  - 아래의 파일들이 자동생성된다.
 ```
    create kubectl-apply.sh
    create book-k8s/book-deployment.yml
@@ -91,15 +92,13 @@ JHipster registry detected as the service discovery and configuration provider u
    create kustomization.yml
    create skaffold.yml
 ```
-
-1. DB 설정 파일 수정 
-- 자동 생성된 설정 파일에 일부 수정이 필요하다.
-
-  1. Maria DB 설정 파일 수정
-    - containers 내 args 항목을 추가한다. (해당 항목을 추가하지 않으면 한글 지원이 되지 않는다.)
-      - book-k8s/book-mariadb.yml
-      - gateway-k8s/gateway-mariadb.yml
-      - rental-k8s/rental-mariadb.yml
+## 쿠버네티스 설정 파일 수정
+자동 생성된 설정 파일에 일부 수정이 필요하다.
+###1. Maria DB 설정 파일 수정
+  - containers 내 args 항목을 추가한다. (해당 항목을 추가하지 않으면 한글 지원이 되지 않는다.)
+    - book-k8s/book-mariadb.yml
+    - gateway-k8s/gateway-mariadb.yml
+    - rental-k8s/rental-mariadb.yml
 ```
 <변경 전 - 예시 : book>
 ...
@@ -136,9 +135,9 @@ JHipster registry detected as the service discovery and configuration provider u
 ...
 ```
 
-  1. Mongo DB 설정 파일 수정
-    - replicas 가 3으로 기본 설정되는데 이를 1로 수정한다.
-      - bookcatalog-k8s/bookcatalog-mongodb.yml
+###2. Mongo DB 설정 파일 수정
+  - replicas 가 3으로 기본 설정되는데 이를 1로 수정한다.
+    - bookcatalog-k8s/bookcatalog-mongodb.yml
 ```
 <변경 전>
 ...
@@ -169,8 +168,8 @@ spec:
       app: bookcatalog-mongodb
 ...
 ``` 
- - mongo db 접속 정보를 수정한다.
-    - bookcatalog-k8s/bookcatalog-deployment.yml
+###3. mongo db 접속 정보를 수정
+  - bookcatalog-k8s/bookcatalog-deployment.yml
 ```
 <변경 전>
 ...
@@ -183,13 +182,11 @@ spec:
     value: 'mongodb://bookcatalog-mongodb-0.bookcatalog-mongodb.default:27017'
 ...
 ```
-1. git 반영
-git init
-git add .
-git commit -m "first commit"
-git remote add origin https://github.com/CNAPS-MSA/k8s.git
-git push -u origin master
-
+###4. 쿠베네티스 배포 실행 파일 수정
+  - 실행 순서를 변경한다.
+```
+<변경 전>
+...
 default() {
     suffix=k8s
     kubectl apply -f registry-${suffix}/
@@ -200,7 +197,9 @@ default() {
     kubectl apply -f messagebroker-${suffix}/
 
 }
-
+...
+<변경 후>
+...
 default() {
     suffix=k8s
     kubectl apply -f registry-${suffix}/
@@ -211,3 +210,7 @@ default() {
     kubectl apply -f rental-${suffix}/
 
 }
+...
+```
+
+여기까지 완료되면 다음 단계 [GCP 에 배포하기](/contents/cd_gcp.md) 를 참고한다.는
