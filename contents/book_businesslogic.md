@@ -338,24 +338,64 @@ public class BookResource {
 - Http Post 방식으로 InStockBook id와 등록할 도서의 정보를 받는다.
 - 도서 서비스의 저장 메소드를 호출하여 도서의 정보를 저장한다.
 - InStockBook의 서비스를 호출하여 입고된 도서정보를 삭제한다.
-- BookCatalog 서비스에 도서 등록이벤트를 전송하기 위해 도서 서비스를 호출하여 이벤트를 전송한다. 
+- BookCatalog 서비스에 도서 등록이벤트를 비동기 전송하기 위해 도서 서비스를 호출하여 이벤트를 전송한다. 
 
 도서 정보 조회 API 처리 흐름을 살펴보면
 - Http Get 방식으로 조회할 도서의 id를 받는다. 
 - 도서 서비스를 호출하여 조회한 도서 정보를 BookInfoDTO로 반환 받는다.
-- 도서정보조회 API는 Rental 서비스에서 호출하였기 떄문에 Rental 서비스로 요청결과를 반환한다. 
+- 도서정보조회 API는 Rental 서비스에서 호출하였기 때문에 Rental 서비스로 요청결과를 반환한다. 
 
 
 ## 외부영역 - 아웃바운드 어댑터 개발
  
+도서서비스는 도서가 등록/수정/삭제 되었을 때, 사용자가 업데이트된 도서 정보를 조회할 수 있도록 Catalog서비스에 도서 정보를 전송해야 한다.
+따라서, 도서 등록/수정/삭제 시 비동기 메시지가 카프카로 전송되게 한다.
 
-도서서비스는 도서가 등록되었을 때, 사용자가 도서를 검색하여 대여할 수 있도록 Catalog서비스에 도서 정보를 전송해야 한다.
-따라서, 도서등록 시 비동기 메시지가 카프카로 전송되게 한다.
+도서등록/수정/삭제 기능이 존재하는 BookServiceImpl 서비스에서 도서 등록/수정/삭제시 비동기 호출로 이벤트를 처리하도록 구현해 보자.
 
-도서등록 기능이 존재하는 BookServiceImpl서비스에서 도서등록시 처리하도록 구현해 보자.
 우선 도메인이벤트를 만들자.
 
+### CatalogChanged.java
+
+```java
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class CatalogChanged {
+
+    private String title;
+
+    private String description;
+
+    private String author;
+
+    private String publicationDate;
+
+    private String classification;
+
+    private Boolean rented;
+
+    private String eventType;
+
+    private Long rentCnt;
+
+    private Long bookId;
+
+
+}
+```
+
+도서 등록/수정/삭제 시 위의 도메인 이벤트를 생성하게 된다. CatalogChanged는 도서 정보와 어떤 이벤트 인지 구분하기 위한 이벤트 타입을 담고 있다. 
+
 다음은 이 도메인 이벤트를 생성해서 아웃바운드 어댑터를 호출하는 로직이다. 
+
+### BookResource.java
+
+
+### BookService.java
+
+### BookServiceImple.java
 
 다음은 아웃바운드 어댑터이다. 카프카로 도메인 이벤트를 보낸다.
 
