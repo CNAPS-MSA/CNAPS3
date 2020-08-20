@@ -217,52 +217,11 @@ public class BookServiceImpl implements BookService {
 - 생성한 BookInfoDTO에 조회한 도서의 id와 title을 저장 후 반환한다.
 - BookInfoDTO는 도서 정보를 요청했던 Rental 서비스로 다시 반환된다.
 
-도서정보조회 기능은 Rental 서비스의 도서 대여 기능과 관련된 것으로, Rental 서비스의 동기 호출 응답기능이다.
+도서정보조회 기능은 Rental 서비스의 도서 대여 기능과 관련된 것으로, Rental 서비스의 동기 호출 응답한다.
 동기호출 내용은 [Feign 동기 메세지 호출처리](/contents/jhipster_feign.md)에서 확인할 수 있다.
 
 도서 정보업데이트 기능은 외부 서비스인 Rental서비스, BookCatalog 서비스와 이벤트를 수신/발신해야하기 때문에 외부 어댑터 개발에서 살펴보자. 
 
-### BookService.java
-
-```java
- public interface BookService{ 
-  ...(중략)...
-  void sendBookCatalogEvent(String eventType, Long bookId) throws InterruptedException, ExecutionException, JsonProcessingException;
- }
-```
-도서정보업데이트시, 업데이트 종류(등록, 삭제, 정보수정)와 bookId를 받는다. 
-
-### BookServiceImpl.java
-
-```java
-@Service
-@Transactional
-public class BookServiceImpl implements BookService {
-    ...(중략)...
-    @Override
-    public void sendBookCatalogEvent(String eventType,Long bookId) throws InterruptedException, ExecutionException, JsonProcessingException {
-        Book book = bookRepository.findById(bookId).get();
-        CatalogChanged catalogChanged = new CatalogChanged();
-        if(eventType.equals("NEW_BOOK") || eventType.equals("UPDATE_BOOK")) {
-            catalogChanged.setBookId(book.getId());
-            catalogChanged.setAuthor(book.getAuthor());
-            catalogChanged.setClassification(book.getClassification().toString());
-            catalogChanged.setDescription(book.getDescription());
-            catalogChanged.setPublicationDate(book.getPublicationDate().format(fmt));
-            catalogChanged.setTitle(book.getTitle());
-            catalogChanged.setEventType(eventType);
-            catalogChanged.setRented(!book.getBookStatus().equals(BookStatus.AVAILABLE));
-            catalogChanged.setRentCnt((long) 0);
-            bookProducer.sendBookCreateEvent(catalogChanged);
-        }else if(eventType.equals("DELETE_BOOK")){
-            catalogChanged.setEventType(eventType);
-            catalogChanged.setBookId(book.getId());
-            bookProducer.sendBookDeleteEvent(catalogChanged);
-        }
-    }
-}
-```
-도서정보업데이트 메소드이다.
 
 ## 내부영역 - 레파지토리 개발
 
@@ -390,15 +349,162 @@ public class CatalogChanged {
 
 다음은 이 도메인 이벤트를 생성해서 아웃바운드 어댑터를 호출하는 로직이다. 
 
+먼저 클라이언트의 요청이 들어오고 도서 서비스를 호출하는 REST 컨트롤러부터 살펴보자.
+
 ### BookResource.java
 
+```java
+@RestController
+@RequestMapping("/api")
+public class BookResource {
+  ...(중략)...
+
+  //도서 등록
+    @PostMapping("/books/{inStockId}")
+    public ResponseEntity<BookDTO> registerBook(@RequestBody BookDTO bookDTO, @PathVariable Long inStockId) throws  URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException {
+        if (bookDTO.getId() != null) {
+            throw new BadRequestAlertException("A new book cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        Book newBook = bookService.save(bookMapper.toEntity(bookDTO));
+        inStockBookService.delete(inStockId);
+        bookService.sendBookCatalogEvent("NEW_BOOK",newBook.getId()); //send kafka - bookcatalog
+        BookDTO result = bookMapper.toDto(newBook);
+        return ResponseEntity.created(new URI("/api/books/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+  //도서 정보 수정
+    @PutMapping("/books")
+    public ResponseEntity<BookDTO> updateBook(@RequestBody BookDTO bookDTO) throws URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException {
+        log.debug("REST request to update Book : {}", bookDTO);
+        if (bookDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        Book book = bookService.save(bookMapper.toEntity(bookDTO));
+        bookService.sendBookCatalogEvent("UPDATE_BOOK",book.getId()); //send kafka - bookcatalog
+        BookDTO result = bookMapper.toDto(book);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookDTO.getId().toString()))
+            .body(result);
+    }
+
+  //도서 삭제
+   @DeleteMapping("/books/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
+        log.debug("REST request to delete Book : {}", id);
+        bookService.sendBookCatalogEvent("DELETE_BOOK", id);
+        bookService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+
+}
+```
+
+REST 컨트롤러에서 도서 등록/수정/삭제에 대한 클라이언트의 요청이 들어오면 해당 도서를 등록/수정/삭제하는 로직을 수행한다.
+
+도서 등록의 로직은 다음과 같다.
+- 입고도서 id와 등록할 도서 정보를 담고있는 bookDTO를 받는다. 
+- 도서 서비스를 호출하여 도서를 생성/저장한다.
+- 입고도서 서비스를 호출하여 해당 입고 도서는 삭제한다.
+- 도서 서비스를 호출하여 Catalog 서비스에 전달할 도서 등록이벤트를 생성한다. 이때, 이벤트의 종류는 `NEW_BOOK`으로 지정한다.
+
+도서 수정의 로직은 다음과 같다.
+- 수정할 도서 정보를 담고있는 bookDTO를 받는다.
+- 도서 서비스를 호출하여 도서 정보를 저장한다.
+- 도서 서비스를 호출하여 Catalog 서비스에 전달할 도서 수정이벤트를 생성한다. 이때, 이벤트의 종류는 `UPDATE_BOOK`이다.
+
+도서 삭제의 로직은 다음과 같다.
+- 삭제할 도서의 id를 받는다.
+- 도서 서비스를 호출하여 Catalog 서비스에 전달할 도서 삭제이벤트를 생성한다. 이때, 이벤트의 종류는 `DELETE_BOOK`이다.
+- 도서 서비스를 호출하여 도서를 삭제한다. 
 
 ### BookService.java
 
+컨트롤러에서 호출한, Catalog 서비스에 발송할 이벤트를 생성하는 메소드이다. 이벤트 타입과 도서id를 받는다.
+
+```java
+public interface BookService {
+
+...(중략)...
+
+void sendBookCatalogEvent(String eventType, Long bookId) throws InterruptedException, ExecutionException, JsonProcessingException;
+
+}
+```
+
 ### BookServiceImple.java
 
-다음은 아웃바운드 어댑터이다. 카프카로 도메인 이벤트를 보낸다.
+```java
+@Service
+@Transactional
+public class BookServiceImpl implements BookService {
 
+...(중략)...
+
+@Override
+    public void sendBookCatalogEvent(String eventType,Long bookId) throws InterruptedException, ExecutionException, JsonProcessingException {
+        Book book = bookRepository.findById(bookId).get();
+        CatalogChanged catalogChanged = new CatalogChanged();
+        if(eventType.equals("NEW_BOOK") || eventType.equals("UPDATE_BOOK")) {
+            catalogChanged.setBookId(book.getId());
+            catalogChanged.setAuthor(book.getAuthor());
+            catalogChanged.setClassification(book.getClassification().toString());
+            catalogChanged.setDescription(book.getDescription());
+            catalogChanged.setPublicationDate(book.getPublicationDate().format(fmt));
+            catalogChanged.setTitle(book.getTitle());
+            catalogChanged.setEventType(eventType);
+            catalogChanged.setRented(!book.getBookStatus().equals(BookStatus.AVAILABLE));
+            catalogChanged.setRentCnt((long) 0);
+            bookProducer.sendBookCreateEvent(catalogChanged);
+        }else if(eventType.equals("DELETE_BOOK")){
+            catalogChanged.setEventType(eventType);
+            catalogChanged.setBookId(book.getId());
+            bookProducer.sendBookDeleteEvent(catalogChanged);
+        }
+    }
+}
+```
+
+Catalog에 전송할 비동기 이벤트를 생성하는 메소드이다.
+- 이벤트 타입과 도서 id를 받는다.
+- 받은 도서 id로 해당 도서를 찾는다.
+- CatalogChanged라는 이벤트를 생성한다.
+- 이벤트 타입에 따라 도서 정보를 CatalogChanged에 담는다.
+  - 도서의 생성과 수정의 경우 도서의 모든 정보를 담는다.
+  - 도서의 삭제의 경우 해당 도서의 id만 알아도 삭제할 수 있기 때문에 id만 담는다. 
+- 아웃바운드 어댑터인 BookProducer를 호출하여 카프카로 이벤트를 보낸다.
+  - 도서의 생성/수정의 경우 bookProducer.sendBookCreateEvent를 호출하고
+  - 도서의 삭제의 경우 bookProducer.sendBookDeleteEvent를 호출한다.
+
+다음은 아웃바운드 어댑터이다.
+
+### BookProducer.java
+
+```java
+
+@Service
+public class BookProducer {
+    ...(중략)...
+    public PublishResult sendBookCreateEvent(CatalogChanged catalogChanged)throws ExecutionException, InterruptedException, JsonProcessingException{
+
+        String message = objectMapper.writeValueAsString(catalogChanged);
+        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
+        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
+    }
+
+    public PublishResult sendBookDeleteEvent(CatalogChanged bookDeleteEvent)throws ExecutionException, InterruptedException, JsonProcessingException{
+
+        String message = objectMapper.writeValueAsString(bookDeleteEvent);
+        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
+        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
+    }
+}
+```
+
+도서 서비스에서 호출한 아웃바운드 어댑터, BookProducer이다.
+sendBookCreateEvent와 sendBookDeleteEvent 메소드는 도서 서비스로부터 전달받은 CatalogChanged를 카프카 메세지로 변환하여 이벤트를 전송한다.
 
 
 ## 인바운드 어댑터 개발
@@ -409,6 +515,59 @@ public class CatalogChanged {
 발송된 비동기 메세지를 수신하는 것은 인바운드 어댑터로 구현한다.
 
 다음은 인바운드 어댑터이다. 
+
+```java
+@Service
+public class BookConsumer {
+
+...(중략)...
+
+@PostConstruct
+    public void start(){
+        log.info("Kafka consumer starting ...");
+        this.kafkaConsumer = new KafkaConsumer<>(kafkaProperties.getConsumerProps());
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        kafkaConsumer.subscribe(Collections.singleton(TOPIC));
+        log.info("Kafka consumer started");
+
+        executorService.execute(()-> {
+            try {
+                while (!closed.get()){
+                    ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
+                    for(ConsumerRecord<String, String> record: records){
+                        log.info("Consumed message in {} : {}", TOPIC, record.value());
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        StockChanged stockChanged = objectMapper.readValue(record.value(), StockChanged.class);
+                        Book book = bookService.findOne(stockChanged.getBookId()).get();
+                        book.setBookStatus(BookStatus.valueOf(stockChanged.getBookStatus()));
+                        bookService.save(book);
+                    }
+                }
+                kafkaConsumer.commitSync();
+            }catch (WakeupException e){
+                if(!closed.get()){
+                    throw e;
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }finally {
+                log.info("kafka consumer close");
+                kafkaConsumer.close();
+            }
+            }
+        );
+    }
+
+}
+```
+
+인바운드 어댑터는 Rental 서비스가 발송한 이벤트의 토픽을 구독하며 메세지를 polling한다. 
+인바운드 어댑터를 살펴보면
+- 토픽을 구독하며 메세지를 polling 한다.
+- 메세지가 수신되면 해당 메세지를 ObjectMapper를 통해 StockChanged라는 도메인 객체로 변환한다.
+- StockChanged 내의 정보를 통해 도서 정보를 업데이트한다.
+  - 대여된 경우, 도서상태를 대여 불가능으로 수정한다.
+  - 반납된 경우, 도서상태를 대여 가능으로 수정한다. 
 
 ## 단위테스트 수행
 
