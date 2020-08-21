@@ -12,9 +12,35 @@ Sample에서 보여줄 기능은 아래와 같다.
 ## API설계
 주요한 API설계는 다음과 같다.
 
-- 도서정보조회
-- 입고도서등록
-- 도서등록
+|API명|도서정보조회|
+|----|------|
+|리소스URI|/books/findBookInfo/{bookId}|
+|Method|GET|
+|Request| |
+|Response| |
+
+리소스로 예를 들면 /books/findBookInfo/10001를 GET방식으로 호출하므로 
+10001의 일련번호 서적 정보를 조회한다. 
+
+|API명|입고도서등록|
+|----|------|
+|리소스URI|/in-stock-books|
+|Method|POST|
+|Request| |
+|Response| |
+
+/in-stock-books에 requestBody형식으로 입고 도서 정보를 등록한다.
+
+|API명|도서등록|
+|----|------|
+|리소스URI|/books/{inStockId}|
+|Method|POST|
+|Request| |
+|Response| |
+
+예를 들면 /books/10001를 post방식으로 호출하므로 
+신규도서정보를 requestBody형식으로 받아와 도서를 등록하고, 입고도서 일련번호 10001에 해당하는 도서는 입고도서에서 삭제된다.
+
 
 
 ## 도메인 모델링
