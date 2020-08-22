@@ -407,7 +407,8 @@ Spring Data JPA의 Repository인터페이스를 활용하면 Sql문 작성으로
 도메인과 서비스를 통해 대략적인 비지니스 개념을 정의하고 비지니스 흐름을 처리하는 방식을 살펴보았다. 이렇게 완성된 비지니스로직은 프론트엔드와 약속된 API로 외부로 공개되어 프론트 엔드에 의해 활용 되야 한다. REST컨트롤러는 구현된 서비스의 REST API를 발행한다. 
 
 컨트롤러는 프로트엔드에 제공할 API를 내부영역의 도메인 기능을 활용하여 적절히 제공해야 한다. 또한 API 변환 외의 비지니스 로직 처리는 내부영역의 서비스에 위임해야 한다. 
-RentalResource에서 대여API를 쉽게 인지할 수 있는 적절한 리소스명("/rentals/{userid}/RentedItem/{book}")으로 http 표준 메소드 POST방식으로 선언하여 제공하고 있다. 주요 비지니스로직처리는  rentalService. rentBooks를 호출하여 위임한다. 
+RentalResource에서 대여API를 쉽게 인지할 수 있는 적절한 리소스명("/rentals/{userid}/RentedItem/{book}")으로 http 표준 메소드 POST방식으로 선언하여 제공하고 있다. 주요 비지니스로직처리는  rentalService. rentBook를 호출하여 위임한다.
+반납처리는 DELETE방식으로 선언하였으며 ("/rentals/{userid}/RentedItem/{book}")으로 리소스명을 정하여 제공한다. 반납 비즈니스로직처리는 rentalService.returnBook을 호출하여 위임한다.
 
 
 ### RentalResource.java
