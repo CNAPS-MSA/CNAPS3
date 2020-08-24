@@ -77,7 +77,7 @@ public class BookCatalog implements Serializable {
 ## 내부영역 - 서비스 개발
 
 BookCatalogService에서는 도서 정보 생성/수정/삭제기능을 구현하였다.
-도서 정보 생성/수정/삭제는 외부서비스인 Book서비스의 비동기호출에 의해 이뤄지므로 인바운드 어댑터 개발에서 다루도록 한다.
+도서 정보 생성/수정/삭제/상태변경은 외부서비스인 Book서비스의 비동기호출에 의해 이뤄지므로 인바운드 어댑터 개발에서 다루도록 한다.
 다음은 도서 제목으로 도서를 검색하는 기능과 인기도서 목록을 불러오는 기능이다.
 
 ### BookCatalogService.java
@@ -145,9 +145,355 @@ public interface BookCatalogRepository extends MongoRepository<BookCatalog, Stri
 
 ## 외부영역 - REST 컨트롤러 개발
 
-BookCatalog
+BookCatalog는 기본 CRUD와 클라이언트에서 요청하는 도서 리스트를 반환해주는 REST API로만 구성되어있다.
+또한, REST 컨트롤러는 기본적으로 Entity가 아닌 DTO로 클라이언트와 데이터를 주고 받기 때문에, REST 컨트롤러에서 bookMapper를 실행하여 bookCatalog 서비스에서 반환한 entity를 DTO로 변환시킨다. 
+이제 기본 CRUD와 리스트 반환 API 메소드를 살펴보자.
 
+### BookCatalogResource.java
+
+```java
+@RestController
+@RequestMapping("/api")
+public class BookCatalogResource {
+
+    ...(중략)...
+
+    /**
+     * {@code POST  /book-catalogs} : Create a new bookCatalog.
+     *
+     * @param bookCatalogDTO the bookCatalogDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bookCatalogDTO, or with status {@code 400 (Bad Request)} if the bookCatalog has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("/book-catalogs")
+    public ResponseEntity<BookCatalogDTO> createBookCatalog(@RequestBody BookCatalogDTO bookCatalogDTO) throws URISyntaxException {
+        log.debug("REST request to save BookCatalog : {}", bookCatalogDTO);
+        if (bookCatalogDTO.getId() != null) {
+            throw new BadRequestAlertException("A new bookCatalog cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        BookCatalogDTO result = bookCatalogMapper.toDto(bookCatalogService.save(bookCatalogMapper.toEntity(bookCatalogDTO)));
+        return ResponseEntity.created(new URI("/api/book-catalogs/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+            .body(result);
+    }
+
+    /**
+     * {@code PUT  /book-catalogs} : Updates an existing bookCatalog.
+     *
+     * @param bookCatalogDTO the bookCatalogDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bookCatalogDTO,
+     * or with status {@code 400 (Bad Request)} if the bookCatalogDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the bookCatalogDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/book-catalogs")
+    public ResponseEntity<BookCatalogDTO> updateBookCatalog(@RequestBody BookCatalogDTO bookCatalogDTO) throws URISyntaxException {
+        log.debug("REST request to update BookCatalog : {}", bookCatalogDTO);
+        if (bookCatalogDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        BookCatalogDTO result = bookCatalogMapper.toDto(bookCatalogService.save(bookCatalogMapper.toEntity(bookCatalogDTO)));
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookCatalogDTO.getId()))
+            .body(result);
+    }
+
+    /**
+     * {@code GET  /book-catalogs} : get all the bookCatalogs.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bookCatalogs in body.
+     */
+    @GetMapping("/book-catalogs")
+    public ResponseEntity<List<BookCatalogDTO>> getAllBookCatalogs(Pageable pageable) {
+        log.debug("REST request to get a page of BookCatalogs");
+        Page<BookCatalogDTO> page = bookCatalogService.findAll(pageable).map(bookCatalogMapper::toDto);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /book-catalogs/:id} : get the "id" bookCatalog.
+     *
+     * @param id the id of the bookCatalogDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bookCatalogDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/book-catalogs/{id}")
+    public ResponseEntity<BookCatalogDTO> getBookCatalog(@PathVariable String id) {
+        log.debug("REST request to get BookCatalog : {}", id);
+        Optional<BookCatalogDTO> bookCatalogDTO = bookCatalogService.findOne(id).map(bookCatalogMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(bookCatalogDTO);
+    }
+
+    /**
+     * {@code DELETE  /book-catalogs/:id} : delete the "id" bookCatalog.
+     *
+     * @param id the id of the bookCatalogDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/book-catalogs/{id}")
+    public ResponseEntity<Void> deleteBookCatalog(@PathVariable String id) {
+        log.debug("REST request to delete BookCatalog : {}", id);
+        bookCatalogService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/book-catalogs/title/{title}")
+    public ResponseEntity<List<BookCatalogDTO>> getBookByTitle(@PathVariable String title, Pageable pageable){
+        log.debug("REST request to get BookCatalog : {}", title);
+        Page<BookCatalogDTO> page = bookCatalogService.findBookByTitle(title, pageable).map(bookCatalogMapper::toDto);
+        return ResponseEntity.ok().body(page.getContent());
+    }
+
+    @GetMapping("/book-catalogs/top-10")
+    public ResponseEntity<List<BookCatalog>> loadTop10Books(){
+        List<BookCatalog> bookCatalogs = bookCatalogService.loadTop10();
+        return ResponseEntity.ok().body(bookCatalogs);
+    }
+
+}
+```
+
+- BookCatalog 생성 API : POST방식이며 ("/book-catalogs")으로 선언, BookDTO를 받아 book서비스를 호출하여 bookCatalog를 생성한다.
+- BookCatalog 업데이트 API : PUT방식이며 ("/book-catalogs")으로 선언, BookDTO를 받아 book서비스를 호출하여 bookCatalog를 수정한다.
+- BookCatalog 전체리스트 조회 API : GET방식이며 ("/book-catalogs")으로 선언, Paging을 위해 클라이언트에서 Paging 정보를 받아 book서비스를 호출하여 리스트를 Paging 하여 반환한다.
+- BookCatalog 조회 API : GET방식이며 ("/book-catalogs/{id}")으로 선언, 조회하고자 하는 BookCatalog의 id를 받아 book서비스를 호출하여 bookCatalog를 반환한다.
+- BookCatalog 삭제 API : DELETE방식이며 ("/book-catalogs/{id}")으로 선언, 삭제하고자 하는 BookCatalog의 id를 받아 book서비스를 호출하여 bookCatalog를 삭제한다.
+- BookCatalog Tilte 조회 API : GET방식이며 ("/book-catalogs/title/{title}")으로 선언, 조회하고자 하는 BookCatalog의 Title과 Paging정보를 받아 book서비스를 호출하여 해당 title을 포함하는 bookCatalog의 리스트를 Paging하여 반환한다. 
+- 인기도서 목록 조회 API : GET방식이며 ("/book-catalogs/top-10")으로 선언, book서비스를 호출하여 대여횟수를 기준으로 상위 10개의 도서 리스트를 반환한다.
+  
 ## 인바운드 어댑터 개발
+
+Book서비스에서 도서를 생성/수정/삭제하면 BookCatalog서비스로 이벤트를 발송한다. 또한 Rental서비스에서 도서를 대여/반납하면 BookCatalog서비스로 도서 상태 변경 이벤트를 발송한다.
+BookCatalog의 인바운드 어댑터에서 받는 CatalogChanged이벤트 내의 이벤트 종류는 총 4가지(생성/수정/삭제/상태변경)로, 메세지를 수신한 뒤 bookCatalog서비스를 호출하여 해당 이벤트 종류에 따라 각각 다른 메소드를 실행시켜 처리한다.  
+
+메세지 수신부터 BookCatalog 서비스를 호출하여 생성/수정/삭제/상태변경하는 프로세스까지 살펴보자.
+
+### BookCatalogConsumer.java
+
+```java
+@Service
+public class BookCatalogConsumer {
+  
+  ...(중략)...
+    
+    @PostConstruct
+    public void start(){
+        log.info("Kafka consumer starting ...");
+        this.kafkaConsumer = new KafkaConsumer<>(kafkaProperties.getConsumerProps());
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        kafkaConsumer.subscribe(Collections.singleton(TOPIC));
+        log.info("Kafka consumer started");
+
+        executorService.execute(()-> {
+                try {
+
+                    while (!closed.get()){
+                        ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
+                        for(ConsumerRecord<String, String> record: records){
+                            log.info("Consumed message in {} : {}", TOPIC, record.value());
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            CatalogChanged catalogChanged = objectMapper.readValue(record.value(), CatalogChanged.class);
+                            bookCatalogService.processCatalogChanged(catalogChanged);
+                        }
+
+                    }
+                    kafkaConsumer.commitSync();
+
+                }catch (WakeupException e){
+                    if(!closed.get()){
+                        throw e;
+                    }
+
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }finally {
+                    log.info("kafka consumer close");
+                    kafkaConsumer.close();
+                }
+
+            }
+
+
+
+        );
+    }
+
+}
+```
+
+Book서비스에서 카프카 메세지를 보낼때 명명하였던 Topic과 동일한 Topic을 수신한다. 따라서 "topic_catalog"라는 토픽을 수신하여 Object Mapper를 통해 수신한 카프카메세지를 CatalogChanged로 변환하여 메세지를 읽는다.
+bookCatalogService.processCatalogChanged를 호출하여 변환된 CatalogChanged를 보내 bookCatalog 생성/수정/삭제 이벤트를 수행한다.
+
+### BookCatalogService.java
+
+```java
+public interface BookCatalogService {
+    ...(중략)...
+
+    //kafka 이벤트 종류별 카테고라이징 처리
+    void processCatalogChanged(CatalogChanged catalogChanged);
+    //신규 도서 등록 
+    BookCatalog registerNewBook(CatalogChanged catalogChanged);
+    //도서 삭제
+    void deleteBook(CatalogChanged catalogChanged);
+    //도서 상태 수정
+    BookCatalog updateBookStatus(CatalogChanged catalogChanged);
+    //도서 정보 수정
+    BookCatalog updateBookInfo(CatalogChanged catalogChanged);
+
+}
+```
+
+bookCatalogService에 CatalogChanged를 받아 이벤트 종류별로 메소드를 호출하는 processCatalogChanged와 도서 등록/삭제/수정을 위한 메소드를 선언하였다.
+
+### BookCatalogServiceImpl.java
+
+```java
+@Service
+public class BookCatalogServiceImpl implements BookCatalogService {
+  
+  ...(중략)...
+
+    //이벤트 카테고라이징
+    @Override
+    public void processCatalogChanged(CatalogChanged catalogChanged) {
+        String eventType  = catalogChanged.getEventType();
+        switch (eventType) {
+            case "NEW_BOOK":
+               registerNewBook(catalogChanged);
+                break;
+            case "DELETE_BOOK":
+                deleteBook(catalogChanged);
+                break;
+            case "RENT_BOOK":
+            case "RETURN_BOOK":
+                updateBookStatus(catalogChanged);
+                break;
+            case "UPDATE_BOOK":
+                updateBookInfo(catalogChanged);
+                break;
+        }
+    }
+}
+
+```
+
+kafka 이벤트를 카테고라이징 하는 메소드이다. CatalogChanged의 이벤트 타입에 따라 생성/삭제/수정 메소드를 실행시킨다.
+
+### BookCatalogServiceImpl.java
+
+```java
+@Service
+public class BookCatalogServiceImpl implements BookCatalogService {
+   
+   ...(중략)...
+
+    //신규도서 등록
+    @Override
+    public BookCatalog registerNewBook(CatalogChanged catalogChanged) {
+        System.out.println("register new book");
+        BookCatalog bookCatalog = new BookCatalog();
+        bookCatalog.setBookId(catalogChanged.getBookId());
+        bookCatalog.setAuthor(catalogChanged.getAuthor());
+        bookCatalog.setClassification(catalogChanged.getClassification());
+        bookCatalog.setDescription(catalogChanged.getDescription());
+        bookCatalog.setPublicationDate(LocalDate.parse(catalogChanged.getPublicationDate(), fmt));
+        bookCatalog.setRented(catalogChanged.getRented());
+        bookCatalog.setTitle(catalogChanged.getTitle());
+        bookCatalog.setRentCnt(catalogChanged.getRentCnt());
+        bookCatalog= bookCatalogRepository.save(bookCatalog);
+        return bookCatalog;
+    }
+}
+```
+
+CatalogChanged의 eventType이 "NEW_BOOK"일때 실행시키는 메소드로, BookCatalog를 생성한다.
+이때, 전달받은 CatalogChanged의 정보에 따라 BookCatalog를 생성 후, 저장한다.
+
+### BookCatalogServiceImpl.java
+
+```java
+@Service
+public class BookCatalogServiceImpl implements BookCatalogService {
+   
+   ...(중략)...
+
+    //도서 삭제
+    @Override
+    public void deleteBook(CatalogChanged catalogChanged) {
+        bookCatalogRepository.deleteByBookId(catalogChanged.getBookId());
+    }
+}
+
+```
+
+CatalogChanged의 eventType이 "DELETE_BOOK"일때 실행시키는 메소드로, 전달받은 CatalogChanged의 도서 id로 BookCatalog를 찾아 삭제한다.
+
+### BookCatalogServiceImpl.java
+
+```java
+@Service
+public class BookCatalogServiceImpl implements BookCatalogService {
+   
+   ...(중략)...
+
+    //도서 상태 수정
+    @Override
+    public BookCatalog updateBookStatus(CatalogChanged catalogChanged) {
+        BookCatalog bookCatalog = bookCatalogRepository.findByBookId(catalogChanged.getBookId());
+        if(catalogChanged.getEventType().equals("RENT_BOOK")) {
+            Long newCnt = bookCatalog.getRentCnt() + (long) 1;
+            bookCatalog.setRentCnt(newCnt);
+            bookCatalog.setRented(true);
+            bookCatalog= bookCatalogRepository.save(bookCatalog);
+        }else if(catalogChanged.getEventType().equals("RETURN_BOOK")){
+            bookCatalog.setRented(false);
+            bookCatalog= bookCatalogRepository.save(bookCatalog);
+
+        }
+        return bookCatalog;
+
+    }
+}
+```
+
+CatalogChanged의 eventType이 "RENT_BOOK" 또는 "RETURN_BOOK" 일때 실행시키는 메소드이다.
+처리 흐름은 다음과 같다.
+- 전달받은 CatalogChanged의 해당 도서 id로 해당 BookCatalog를 찾는다.
+- 이벤트 타입이 "RENT_BOOK"인 경우
+  - 대여 횟수를 +1 하고, 대여 중으로 상태를 수정한다.
+- 이벤트 타입이 "RETURN_BOOK"인 경우
+  - 대여 상태를 대여 가능으로 수정한다.
+- 수정한 bookCatalog를 저장한다.
+
+### BookCatalogServiceImpl.java
+
+```java
+@Service
+public class BookCatalogServiceImpl implements BookCatalogService {
+   
+   ...(중략)...
+
+    //도서 정보 수정
+    @Override
+    public BookCatalog updateBookInfo(CatalogChanged catalogChanged) {
+        BookCatalog bookCatalog = bookCatalogRepository.findByBookId(catalogChanged.getBookId());
+        bookCatalog.setAuthor(catalogChanged.getAuthor());
+        bookCatalog.setClassification(catalogChanged.getClassification());
+        bookCatalog.setDescription(catalogChanged.getDescription());
+        bookCatalog.setPublicationDate(LocalDate.parse(catalogChanged.getPublicationDate(), fmt));
+        bookCatalog.setRented(catalogChanged.getRented());
+        bookCatalog.setTitle(catalogChanged.getTitle());
+        bookCatalog.setRentCnt(catalogChanged.getRentCnt());
+        bookCatalogRepository.save(bookCatalog);
+        return bookCatalog;
+    }
+
+}
+```
+
+CatalogChanged의 eventType이 "UPDATE_BOOK"일때 실행시키는 메소드로, 전달받은 CatalogChanged의 도서 id로 BookCatalog를 찾아 수정한다.
 
 ## 단위테스트 수행
 

@@ -70,6 +70,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 
   입고도서 엔티티이다. id, 제목, 설명, 저자, 출판사, IBSN, 출간일 등의 속성등을 가지고 있다.
   또한 표준타입으로 입고 출처인 Source ENUM 클래스가 있다. 
+  
   ```java
   @Entity
   @Table(name = "in_stock_book")
@@ -530,7 +531,7 @@ public class BookProducer {
 ```
 
 도서 서비스에서 호출한 아웃바운드 어댑터, BookProducer이다.
-sendBookCreateEvent와 sendBookDeleteEvent 메소드는 도서 서비스로부터 전달받은 CatalogChanged를 카프카 메세지로 변환하여 이벤트를 전송한다.
+sendBookCreateEvent와 sendBookDeleteEvent 메소드는 도서 서비스로부터 전달받은 CatalogChanged를 카프카 메세지로 변환하여 이벤트를 전송한다. 이때 Topic은 "topic_catalog"로 명명하였다.
 
 
 ## 인바운드 어댑터 개발
