@@ -1,6 +1,6 @@
 # BackEnd개발
 
-## 구현 할 아키텍처 개념도 
+## 구현 할 DEV 아키텍처 개념도 
 ![image](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/dev.jpg)
 
 - 최종운영은 쿠버네티스에 배포하겠지만 로컬에서 개발을 원할하게 진행하기 위한 환경을 잡았다.
@@ -12,19 +12,19 @@
 - 서비스간의 내부구조가 다를 수 있음을 보여주기 위해 대여,도서,카탈로그의 내부 구조는 도메인 모델 중심의 DDD 구조이며, 게시판의 내부구조는 Simple CRUD 구조를 채택했다.
 
 
-## 외부아키텍처구현
+## 외부아키텍처 구현
 - MSA개발환경을 쉽게 구축해 주는 도구인 Jhipster를 사용하였다.
 - Jhipster 콘솔창의 질의응답을 통해 스프링 클라우드,스프링부트기반의 마이크로서비스 개발환경을 쉽게 구축해 준다.
   - [Jhipster를 활용한 MSA 외부아키텍처 구성(게이트웨이,레지스터)](/contents/jhipster_guide.md)
 
-## 내부아키텍처구현
+## 내부아키텍처 구현
 - 백엔드 서비스의 구조를 정의하고 서비스를 생성해 본다.
   - [Jhipster사용하여 백엔드 서비스 프로젝트 구조 생성](/contents/jhipster_guide2.md)
 - Jhipster가 생성한 구조는 **헥사고널 아키텍처 + DDD** 의 기본 사상을 만족하나 DTO의 위치 및 몇가지 수정이 필요해 보인다. 아래와 같이 좀더 바람직하도록 수정하였다.
   - [Package Refactoring](/contents/jhipster_package_ref.md)
 - 헥사고널+트랜젝션스크립트 패키지구조는  게시판 서비스 구현을 통해 추후 살펴보자.
 
-## 백엔드 마이크로서비스 
+## 백엔드 마이크로서비스 구현
 ### 백엔드서비스 구현 전, Configuration 설정
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
