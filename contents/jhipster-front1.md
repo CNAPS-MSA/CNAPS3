@@ -1,3 +1,6 @@
+# Front-End 구현 - SAMPLE(도서대여시스템)
+다음은 Back-End 개발 샘플과 이어지는 Jhipster를 사용한 Front-End 개발 사례이다.
+
 # Vue.js로 client 변경하기
 
 Jhipster로 gateway개발 시 client를 선택할 수 있는데, 기본적으로는 Angular와 react만 제공된다. Vue.js로 개발하기 위해서는 Jhipster 프로젝트를 만들 때 아래와 같이 command를 입력해야한다.
