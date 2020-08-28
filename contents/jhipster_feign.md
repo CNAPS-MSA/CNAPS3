@@ -51,7 +51,7 @@ import java.util.List;
 
 @FeignClient(name= "book", configuration = {FeignConfiguration.class})
 public interface BookClient {
-    @GetMapping("/api/books/findBookInfo/{bookId}")
+    @GetMapping("/api/books/bookInfo/{bookId}")
     ResponseEntity<BookInfoDTO> findBookInfo(@PathVariable("bookId") Long bookId);
 }
 ```
@@ -107,7 +107,7 @@ BookId를 받고, bookService에 도서 정보를 가져오는 메소드 호출�
 
 ### BookResource.java
 ```java
-    @GetMapping("/books/findBookInfo/{bookId}")
+    @GetMapping("/books/bookInfo/{bookId}")
     public ResponseEntity<BookInfoDTO> findBookInfo(@PathVariable("bookId") Long bookId){
         BookInfoDTO bookInfoDTO = bookService.findBookInfo(bookId);
         log.debug(bookInfoDTO.toString());
