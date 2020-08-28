@@ -62,6 +62,7 @@
 - 주요기능
   - 도서검색 기능 최적화를 위해 CQRS패턴을 적용한 서비스로 도서목록 및 검색기능, 인기도서목록 기능 제공  
 - [내부 Business Logic 구현하기 - 1. Catalog 서비스관리 기능](/contents/catalog_businesslogic.md)
+
    
 ### 게시판 서비스 
 - 헥사고널 + Simple CRUD 구조 

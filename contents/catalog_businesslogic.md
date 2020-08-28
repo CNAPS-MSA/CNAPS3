@@ -493,7 +493,7 @@ public class BookCatalogServiceImpl implements BookCatalogService {
 }
 ```
 
-CatalogChanged의 eventType이 "UPDATE_BOOK"일때 실행시키는 메소드로, 전달받은 CatalogChanged의 도서 id로 BookCatalog를 찾아 수정한다.
+CatalogChanged의 eventType이 "UPDATE_BOOK"일때 실행시키는 메소드로, 전달받은 CatalogChanged의 도서 id로 BookCatalog를 찾아 도서정보를 수정한다.
 
 ## 단위테스트 수행
 
