@@ -233,6 +233,7 @@ public class RentedItem implements Serializable {
 …(중략)…
 ```
 **createRentedItem(대여도서 생성 메소드)**
+
    - 대여도서(RentedItem) 생성 시, 연결되어있는 rental의 정보, 대여 도서 정보, 대여 시작 날짜, 반납 날짜가 지정된다. 대여 기간은 총 2주로 설정한다
 
 ### ReturnedItem.java
