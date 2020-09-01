@@ -72,8 +72,8 @@
   - [내부 Business Logic 구현하기 - 1. 게시판 기능(작업중)]
 
 ### 예외 처리(Exception) 구현
-- Rental 과 Book 서비스에서 발생할 수 있는 에러를 처리할 수 있도록 예외처리를 구현한다.
-  - [서비스 내부 에러 관리하기](/contents/service_exception.md)
+- 서비스 내부에서 발생할 수 있는 에러를 처리할 수 있도록 예외처리를 구현한다.
+  - [서비스 내부 에러 관리하기](https://engineering-skcc.github.io/msa/jhipster-exception/)
 - Feign Client 사용 시 발생할 수 있는 외부 서비스의 에러를 처리할 수 있도록 예외처리를 구현한다.
   - [서비스 외부 에러 관리하기 - Feign Exception](/contents/feign_exception.md)
   
