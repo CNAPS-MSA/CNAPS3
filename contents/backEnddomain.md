@@ -75,7 +75,7 @@
 - 서비스 내부에서 발생할 수 있는 에러를 처리할 수 있도록 예외처리를 구현한다.
   - [서비스 내부 에러 관리하기](https://engineering-skcc.github.io/msa/jhipster-exception/)
 - Feign Client 사용 시 발생할 수 있는 외부 서비스의 에러를 처리할 수 있도록 예외처리를 구현한다.
-  - [서비스 외부 에러 관리하기 - Feign Exception](/contents/feign_exception.md)
+  - [서비스 외부 에러 관리하기 - Feign Exception](https://engineering-skcc.github.io/msa/jhipster-feign/)
   
 ## 테스트 시나리오
 1. 사용자 2명 등록한다. USER1,USER2
