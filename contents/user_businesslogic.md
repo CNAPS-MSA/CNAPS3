@@ -219,7 +219,8 @@ UserRepository는 위과 같이 대부분 사용자관리와 관련된 메소드
 AccountResource.javad와 UserResource.java의 용도는 비슷하면서도 다른데, AccountResource.java의 경우 회원가입, 사용자 본인의 정보수정, 사용자 본인의 비밀번호 찾기 등의 요청을 받는 컨트롤러이다.
 UserResource.java는 대부분 관리자에 의한 `사용자 관리` 요청을 중점적으로 받는 컨트롤러로 관리자에 의한 사용자 생성, 정보수정, 사용자 삭제 등이 해당된다. 따라서, UserResource.java에서는 요청을 받을 때에 요청을 보낸 사용자가 ADMIN인지 판단하여 요청을 받아들인다.
 
-그 중 권한관리와 관련된 정보 수정 API를 살펴보자. 
+그 중 권한관리와 관련된 정보 수정 API를 살펴보자.
+
 ### UserResource.java
 
 ```java
@@ -265,9 +266,58 @@ public class UserResource {
 
 ## 외부영역 - 아웃바운드 어댑터 개발
 
-사용자가 신규 등록되면 Rental서비스로 비동기 호출하여 Rental(도서 카드)를 생성하도록 요청한다.
+회원가입을 하여 사용자가 신규 등록되거나 관리자가 사용자를 등록하여 새로운 사용자가 생성되면, Rental서비스로 비동기 호출하여 Rental(도서 카드)를 생성하도록 요청한다.
+따라서, 회원가입 또는 사용자 등록시 호출되는 userService.registerUser에서 kafka를 통해 비동기 호출하여 도서카드를 생성하도록 하였다.
+
+### UserService.java
+```java
+@Service
+@Transactional
+public class UserService {
+    ...(중략)...
+    public User registerUser(UserDTO userDTO, String password) throws InterruptedException, ExecutionException, JsonProcessingException {
+        ...(중략)...
+        User newUser = new User();
+        String encryptedPassword = passwordEncoder.encode(password);
+        newUser.setLogin(userDTO.getLogin().toLowerCase());
+        // new user gets initially a generated password
+        newUser.setPassword(encryptedPassword);
+        newUser.setFirstName(userDTO.getFirstName());
+        newUser.setLastName(userDTO.getLastName());
+        ...(중략)...
+        userRepository.save(newUser);
+        createRental(newUser.getId());
+        this.clearUserCaches(newUser);
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
+    }
+
+    public void createRental(Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
+        gatewayKafkaProducer.createRental(id);
+    }
+}
+```
+
+사용자를 신규 등록한 뒤, createRental 메소드를 호출, gatewayKafkaProducer.createRental을 호출하여 비동기 호출로 Rental 서비스로 도서 카드를 생성하도록 한다.
+
+### GatewayKafkaProducer.java
+
+```java
+@Service
+public class GatewayKafkaProducer {
+  
+    public PublishResult createRental(Long userId) throws ExecutionException, InterruptedException, JsonProcessingException{
+
+        UserIdCreated userIdCreated = new UserIdCreated(userId);
+        String message = objectMapper.writeValueAsString(userIdCreated);
+        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_RENTAL, message)).get();
+        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
 
 
-## 단위테스트 수행
+    }
 
+}
+```
 
+아웃바운드 어댑터인 GatewayKafkaProducer.createRental은 사용자의 Id정보를 받아 UserIdCreated라는 도메인 이벤트를 생성한 뒤 Rental서비스가 구독 중인 Topic과 함께 kafka 메세지를 전송한다.
+전송된 메세지는 Rental 서비스의 인바운드 어댑터를 통해 소비되어 Rental(도서 카드)를 생성한다.
