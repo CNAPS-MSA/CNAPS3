@@ -176,5 +176,5 @@ public class UserService {
 
 기본 예외처리와 Feign Client 관련 예외처리는 아래 페이지를 참고하도록 한다.
 
-[Jhipster와 Spring 기본 예외처리](https://engineering-skcc.github.io/msa/jhipster-exception/)
-[Feign Client의 예외처리](https://engineering-skcc.github.io/msa/jhipster-feign/)
+- [Jhipster와 Spring 기본 예외처리](https://engineering-skcc.github.io/msa/jhipster-exception/)
+- [Feign Client의 예외처리](https://engineering-skcc.github.io/msa/jhipster-feign/)
