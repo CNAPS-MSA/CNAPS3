@@ -52,11 +52,13 @@ npm install -g generator-jhipster
 외에 Git, Docker은 애플리케이션 실행 및 사용환경에 따라 필요한 경우에 설치한다.
 
 - git : https://git-scm.com/
+      : 샘플에서는 코드 버전관리를 위해 사용하였으며, 코드 버전관리를 하고 싶다면 설치하는 것을 권장한다. 
 - Docker : https://www.docker.com/products/docker-desktop
+         : 카프카, mongoDB 등 애플리케이션 동작을 위한 필수 라이브러리 실행을 위해 사용하였다. 반드시 설치 완료 및 실행할 수 있도록 준비해두어야한다.
 
 ## MacOS
 
-Mac을 사용하는 경우 brew를 사용하여 설치할 수 있다. 
+Mac을 사용하는 경우 brew를 사용하여 Jhipster를 설치할 수 있다. 
 
 ```
 brew install jhipster
@@ -74,7 +76,7 @@ Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
 3. 생성한 Microservice에 Entity 생성하기
 4. 생성된 Entity를 gateway가 인식할 수 있도록 gateway에 등록하기
 
-따라서, Sample 프로젝트에서는 book, user, rental 3개의 Microservie를 생성하고 gateway에 등록해 Simple CRUD게시판까지 연결해보자.
+따라서, Sample 프로젝트에서는 book, bookCatalog, rental 3개의 Microservie를 생성하고 gateway에 등록해 Simple CRUD게시판까지 연결해보자.
 
 > 참고 : 개발 환경은 MacOS이며, java 11 사용
 
