@@ -267,7 +267,10 @@ public class UserResource {
 ## 외부영역 - 아웃바운드 어댑터 개발
 
 회원가입을 하여 사용자가 신규 등록되거나 관리자가 사용자를 등록하여 새로운 사용자가 생성되면, Rental서비스로 비동기 호출하여 Rental(도서 카드)를 생성하도록 요청한다.
-따라서, 회원가입 또는 사용자 등록시 호출되는 userService.registerUser에서 kafka를 통해 비동기 호출하여 도서카드를 생성하도록 하였다.
+이때, 사용자가 직접 회원가입하는 경우 userService.registerUser가 호출되고 관리자가 사용자를 생성하는 경우 userService.createUser가 호출된다.
+
+따라서, userService.registerUser와 userService.createUser 두 개의 메소드에서 kafka를 통해 비동기 호출하여 도서카드를 생성하도록 하였다.
+
 
 ### UserService.java
 ```java
@@ -282,8 +285,6 @@ public class UserService {
         newUser.setLogin(userDTO.getLogin().toLowerCase());
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
-        newUser.setFirstName(userDTO.getFirstName());
-        newUser.setLastName(userDTO.getLastName());
         ...(중략)...
         userRepository.save(newUser);
         createRental(newUser.getId());
@@ -292,19 +293,31 @@ public class UserService {
         return newUser;
     }
 
+    public User createUser(UserDTO userDTO) throws InterruptedException, ExecutionException, JsonProcessingException {
+        User user = new User();
+        user.setLogin(userDTO.getLogin().toLowerCase());
+        ...(중략)...
+        user.setPoint(1000);
+        userRepository.save(user);
+        createRental(user.getId());
+        this.clearUserCaches(user);
+        log.debug("Created Information for User: {}", user);
+        return user;
+    }
+
     public void createRental(Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
-        gatewayKafkaProducer.createRental(id);
+        gatewayProducer.createRental(id);
     }
 }
 ```
 
-사용자를 신규 등록한 뒤, createRental 메소드를 호출, gatewayKafkaProducer.createRental을 호출하여 비동기 호출로 Rental 서비스로 도서 카드를 생성하도록 한다.
+사용자를 신규 등록한 뒤, createRental 메소드를 호출, gatewayProducer.createRental을 호출하여 비동기 호출로 Rental 서비스로 도서 카드를 생성하도록 한다.
 
-### GatewayKafkaProducer.java
+### GatewayProducer.java
 
 ```java
 @Service
-public class GatewayKafkaProducer {
+public class GatewayProducer {
   
     public PublishResult createRental(Long userId) throws ExecutionException, InterruptedException, JsonProcessingException{
 
@@ -319,5 +332,5 @@ public class GatewayKafkaProducer {
 }
 ```
 
-아웃바운드 어댑터인 GatewayKafkaProducer.createRental은 사용자의 Id정보를 받아 UserIdCreated라는 도메인 이벤트를 생성한 뒤 Rental서비스가 구독 중인 Topic과 함께 kafka 메세지를 전송한다.
+아웃바운드 어댑터인 GatewayProducer.createRental은 사용자의 Id정보를 받아 UserIdCreated라는 도메인 이벤트를 생성한 뒤 Rental서비스가 구독 중인 Topic과 함께 kafka 메세지를 전송한다.
 전송된 메세지는 Rental 서비스의 인바운드 어댑터를 통해 소비되어 Rental(도서 카드)를 생성한다.

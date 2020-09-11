@@ -83,19 +83,49 @@ Jhipster로 Microservice Application을 개발시 순서는 아래와 같다.
 ## Gateway 만들기
 
 1. gateway 폴더 생성
-2. gateway 폴더를 jhipster 프로젝트로 변경
-
-![image](https://user-images.githubusercontent.com/18453570/81142695-42232300-8fab-11ea-88a2-50a2cf6d900b.png)
+2. gateway 폴더를 jhipster 프로젝트로 설정(프론트엔드를 Vue.js로 개발할 예정이기 때문에 Vue.js기반으로 gateway를 생성하였다.)
 
 ```
 mkdir gateway
 cd gateway
-jhipster
+jhipster --blueprints vuejs --skip-checks
 ```
 
 3. 옵션 선택
 
-![image](https://user-images.githubusercontent.com/18453570/81142883-c2e21f00-8fab-11ea-80eb-dee5b067068a.png)
+```
+? Which *type* of application would you like to create? Microservice gateway
+? [Beta] Do you want to make it reactive with Spring WebFlux? No
+? What is the base name of your application? gateway
+? As you are running in a microservice architecture, on which port would like yo
+ur server to run? It should be unique to avoid port conflicts. 8080
+? What is your default Java package name? com.skcc.gateway
+? Which service discovery server do you want to use? JHipster Registry (uses Eur
+eka, provides Spring Cloud Config support and monitoring dashboards)
+? Which *type* of authentication would you like to use? JWT authentication (stat
+eless, with a token)
+? Which *type* of database would you like to use? SQL (H2, MySQL, MariaDB, Postg
+reSQL, Oracle, MSSQL)
+? Which *production* database would you like to use? MariaDB
+? Which *development* database would you like to use? H2 with in-memory persiste
+nce
+? Do you want to use the Spring cache abstraction? Yes, with the Hazelcast imple
+mentation (distributed cache, for multiple nodes, supports rate-limiting for gat
+eway applications)
+? Do you want to use Hibernate 2nd level cache? Yes
+? Would you like to use Maven or Gradle for building the backend? Maven
+? Which other technologies would you like to use? Asynchronous messages using Ap
+ache Kafka
+? Which *Framework* would you like to use for the client? Vue.js
+? Would you like to use a Bootswatch theme (https://bootswatch.com/)? Default JH
+ipster
+? Would you like to enable internationalization support? Yes
+? Please choose the native language of the application Korean
+? Please choose additional languages to install English
+? Besides JUnit and Jest, which testing frameworks would you like to use? Protra
+ctor
+? Would you like to install other generators from the JHipster Marketplace? No
+```
 
 ---------------------- 옵션 설명 ------------------------
 
