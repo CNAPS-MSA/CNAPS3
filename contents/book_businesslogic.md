@@ -422,7 +422,7 @@ REST 컨트롤러에서 도서 등록/수정/삭제에 대한 클라이언트의
 public interface BookService {
 
 ...(중략)...
-Book createBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException;
+Book registerNewBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException;
 
 Book updateBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException;
 
@@ -441,12 +441,15 @@ public class BookServiceImpl implements BookService {
 
 ...(중략)...
     
+    //도서 등록
     @Override
-    public Book createBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException {
-        Book createdBook = bookRepository.save(book);
-        sendBookCatalogEvent("NEW_BOOK",createdBook.getId());
-        return createdBook;
+    public Book registerNewBook(Book book, Long inStockId)throws InterruptedException, ExecutionException, JsonProcessingException {
+        Book newBook =bookRepository.save(book);
+        inStockBookService.delete(inStockId);
+        sendBookCatalogEvent("NEW_BOOK",newBook.getId()); //send kafka - bookcatalog
+        return newBook;
     }
+
 
     @Override
     public Book updateBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException {
@@ -466,7 +469,7 @@ public class BookServiceImpl implements BookService {
 }
 ```
 
-- 도서 생성 메소드는 createBook으로 컨드롤러에서 전달받은 Book을 저장한 후, sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `NEW_BOOK`이다.
+- 도서 생성 메소드는 registerNewBook으로 컨드롤러에서 전달받은 Book을 저장하고, inStockBookService.delete를 호출하여 해당 입고도서를 삭제한다. 그 다음, sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `NEW_BOOK`이다.
 - 도서 수정 메소드는 updateBook으로 컨드롤러에서 전달받은 Book을 저장한 후, sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `UPDATE_BOOK`이다.
 - 도서 삭제 메소드는 deleteBook으로 sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `DELETE_BOOK`이다. 이후, 컨드롤러에서 전달받은 bookId로 도서를 삭제한다. 
 
