@@ -2,16 +2,16 @@
 
 ## Service 만들기
 
-먼저, 도서대여시스템의 core service 인 book, user, rental 서비스부터 생성한다.
+먼저, 도서대여시스템의 core service 인 book, bookCatalog, rental 서비스부터 생성한다.
 
 이때 service를 만드는 방식은 동일하나, port와 package명을 다르게 해야한다.
 
 - book :
   - port: 8081
   - package : com.skcc.book
-- user :
+- bookCatalog :
   - port : 8082
-  - package : com.skcc.user
+  - package : com.skcc.bookCatalog
 - rental :
   - port : 8083
   - package : com.skcc.rental
@@ -21,36 +21,73 @@
 1. book 폴더 생성
 2. book 폴더를 jhipster 프로젝트로 변경
 
-![image](https://user-images.githubusercontent.com/18453570/81146423-38052280-8fb3-11ea-8397-bd615fa6f08b.png)
-
 ```
 mkdir book
 cd book
 jhipster
 ```
-3. 옵션 선택
+1. 옵션 선택
 
 **port설정과 package 설정을 잊지말자**
 
-![image](https://user-images.githubusercontent.com/18453570/81146788-ec9f4400-8fb3-11ea-90ee-5e3f5a4d860a.png)
+```bash
+? Which *type* of application would you like to create? Microservice application
+? [Beta] Do you want to make it reactive with Spring WebFlux? No
+? What is the base name of your application? book
+? As you are running in a microservice architecture, on which port would like your server to run? It should be unique to avoid port conflicts. 8081
+? What is your default Java package name? com.skcc.book
+? Which service discovery server do you want to use? JHipster Registry (uses Eureka, provides Spring Cloud Config support and monitoring dashboards)
+? Which *type* of authentication would you like to use? JWT authentication (stateless, with a token)
+? Which *type* of database would you like to use? SQL (H2, MySQL, MariaDB, PostgreSQL, Oracle, MSSQL)
+? Which *production* database would you like to use? MariaDB
+? Which *development* database would you like to use? H2 with in-memory persistence
+? Do you want to use the Spring cache abstraction? Yes, with the Hazelcast implementation (distributed cache, for multiple nodes, supports rate-limiting for gateway applications)
+? Do you want to use Hibernate 2nd level cache? Yes
+? Would you like to use Maven or Gradle for building the backend? Maven
+? Which other technologies would you like to use? Asynchronous messages using Apache Kafka
+? Would you like to enable internationalization support? Yes
+? Please choose the native language of the application Korean
+? Please choose additional languages to install English
+? Besides JUnit and Jest, which testing frameworks would you like to use? Cucumber
+? Would you like to install other generators from the JHipster Marketplace? No
+```
 
 -------------------------옵션선택 설명--------------------
 
-### core service 2 : user
+### core service 2 : bookCatalog
 
-core service 1의 book과 같은 방식으로 user service를 생성한다.
+core service 1의 book과 같은 방식으로 bookCatalog service를 생성한다.
 
 **port설정과 package 설정을 잊지말자**
 
 ```
-mkdir user
-cd user
+mkdir bookCatalog
+cd bookCatalog
 jhipster
 ```
 
 - 옵션 선택
 
-![image](https://user-images.githubusercontent.com/18453570/81147097-8c5cd200-8fb4-11ea-98b4-88dfae9d1059.png)
+```bash
+? Which *type* of application would you like to create? Microservice application
+? [Beta] Do you want to make it reactive with Spring WebFlux? No
+? What is the base name of your application? bookCatalog
+? As you are running in a microservice architecture, on which port would like your server to run? It should be unique to avoid port conflicts. 8082
+? What is your default Java package name? com.skcc.bookcatalog
+? Which service discovery server do you want to use? JHipster Registry (uses Eureka, provides Spring Cloud Config support and monitoring dashboards)
+? Which *type* of authentication would you like to use? JWT authentication (stateless, with a token)
+? Which *type* of database would you like to use? MongoDB
+? Which *development* database would you like to use? H2 with in-memory persistence
+? Do you want to use the Spring cache abstraction? Yes, with the Hazelcast implementation (distributed cache, for multiple nodes, supports rate-limiting for gateway applications)
+? Do you want to use Hibernate 2nd level cache? Yes
+? Would you like to use Maven or Gradle for building the backend? Maven
+? Which other technologies would you like to use? Asynchronous messages using Apache Kafka
+? Would you like to enable internationalization support? Yes
+? Please choose the native language of the application Korean
+? Please choose additional languages to install English
+? Besides JUnit and Jest, which testing frameworks would you like to use? Cucumber
+? Would you like to install other generators from the JHipster Marketplace? No
+```
 
 
 ### core service 3 : rental
@@ -65,7 +102,27 @@ cd rental
 jhipster
 ```
 
-![image](https://user-images.githubusercontent.com/18453570/81147568-861b2580-8fb5-11ea-8f0c-545d23d60041.png)
+```bash
+? Which *type* of application would you like to create? Microservice application
+? [Beta] Do you want to make it reactive with Spring WebFlux? No
+? What is the base name of your application? rental
+? As you are running in a microservice architecture, on which port would like your server to run? It should be unique to avoid port conflicts. 8083
+? What is your default Java package name? com.skcc.rental
+? Which service discovery server do you want to use? JHipster Registry (uses Eureka, provides Spring Cloud Config support and monitoring dashboards)
+? Which *type* of authentication would you like to use? JWT authentication (stateless, with a token)
+? Which *type* of database would you like to use? SQL (H2, MySQL, MariaDB, PostgreSQL, Oracle, MSSQL)
+? Which *production* database would you like to use? MariaDB
+? Which *development* database would you like to use? H2 with in-memory persistence
+? Do you want to use the Spring cache abstraction? Yes, with the Hazelcast implementation (distributed cache, for multiple nodes, supports rate-limiting for gateway applications)
+? Do you want to use Hibernate 2nd level cache? Yes
+? Would you like to use Maven or Gradle for building the backend? Maven
+? Which other technologies would you like to use? Asynchronous messages using Apache Kafka
+? Would you like to enable internationalization support? Yes
+? Please choose the native language of the application Korean
+? Please choose additional languages to install English
+? Besides JUnit and Jest, which testing frameworks would you like to use? Cucumber
+? Would you like to install other generators from the JHipster Marketplace? No
+```
 
 ## service 실행시키기
 
@@ -79,19 +136,59 @@ jhipster
 
 1. book
 
-![image](https://user-images.githubusercontent.com/18453570/81148014-69cbb880-8fb6-11ea-93c2-16c1aaa9aa49.png)
+```bash
+2020-09-09 15:11:04.736  INFO 94787 --- [  restartedMain] com.skcc.book.BookApp                    : Started BookApp in 23.549 seconds (JVM running for 24.459)
+2020-09-09 15:11:04.740  INFO 94787 --- [  restartedMain] com.skcc.book.BookApp                    : 
+----------------------------------------------------------
+        Application 'book' is running! Access URLs:
+        Local:          http://localhost:8081/
+        External:       http://192.168.123.6:8081/
+        Profile(s):     [dev, swagger]
+----------------------------------------------------------
+2020-09-09 15:11:04.740  INFO 94787 --- [  restartedMain] com.skcc.book.BookApp                    : 
+----------------------------------------------------------
+        Config Server:  Connected to the JHipster Registry running in Docker
 
-2. user
+```
 
-![image](https://user-images.githubusercontent.com/18453570/81148038-7b14c500-8fb6-11ea-8f54-dc98ec8851a5.png)
+2. bookCatalog
+
+```bash
+2020-09-09 15:11:05.506  INFO 94816 --- [  restartedMain] com.skcc.bookcatalog.BookCatalogApp      : 
+----------------------------------------------------------
+        Application 'bookCatalog' is running! Access URLs:
+        Local:          http://localhost:8082/
+        External:       http://192.168.123.6:8082/
+        Profile(s):     [dev, swagger]
+----------------------------------------------------------
+2020-09-09 15:11:05.507  INFO 94816 --- [  restartedMain] com.skcc.bookcatalog.BookCatalogApp      : 
+----------------------------------------------------------
+        Config Server:  Connected to the JHipster Registry running in Docker
+
+
+```
 
 3. rental
 
-![image](https://user-images.githubusercontent.com/18453570/81148066-88ca4a80-8fb6-11ea-9cb4-797e8061408a.png)
+```bash
+2020-09-09 15:11:03.757  INFO 94779 --- [  restartedMain] com.skcc.rental.RentalApp                : Started RentalApp in 25.853 seconds (JVM running for 26.717)
+2020-09-09 15:11:03.764  INFO 94779 --- [  restartedMain] com.skcc.rental.RentalApp                : 
+----------------------------------------------------------
+        Application 'rental' is running! Access URLs:
+        Local:          http://localhost:8083/
+        External:       http://192.168.123.6:8083/
+        Profile(s):     [dev, swagger]
+----------------------------------------------------------
+2020-09-09 15:11:03.765  INFO 94779 --- [  restartedMain] com.skcc.rental.RentalApp                : 
+----------------------------------------------------------
+        Config Server:  Connected to the JHipster Registry running in Docker
+----------------------------------------------------------
 
-그 다음, localhost:8761에 접속해 Registry를 확인해보면 gateway, book, user, rental 서비스가 등록되어있는 것을 볼 수 있다.
+```
 
-![image](https://user-images.githubusercontent.com/18453570/81148406-2faee680-8fb7-11ea-92dc-22cfcaeee6ae.png)
+그 다음, localhost:8761에 접속해 Registry를 확인해보면 gateway, book, bookCatalog, rental 서비스가 등록되어있는 것을 볼 수 있다.
+
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92838877-45776100-f41a-11ea-9bbb-55264c375b4e.png">
 
 ## 생성한 service에 Entity를 추가하기
 
@@ -123,24 +220,25 @@ entity생성과 변수 설정 완료 후, 추가적인 옵션을 선택할 수 �
 
 ![image](https://user-images.githubusercontent.com/18453570/81157614-1ceddf00-8fc2-11ea-8a41-34def05dcb46.png)
 
-2. user service에 user entity 생성
+1. BookCatalog service에 bookCatalog entity 생성
 
-book service와 마찬가지로 진행한다.
-Entity 생성 시, 변수로는 name과 email을 선언했다.
+도서 서비스와 마찬가지로 진행한다. 엔터티의 속성으로는 도서와 마찬가지로 title, author, description을 선언한다. 여기에 추가로 bookId와 rentCnt를 추가한다. 
 
 ```
-cd user
-jhipster entity user
+cd bookCatalog
+jhipster entity bookCatalog
 ```
 
 3. rental service에 rental entity와 rentalItem entity생성
 
 이번에는 terminal이 아닌 Jhipster Online에서 entity와 relationship을 설정해보았다.
 
-- rental Entity 생성 시, 변수로 userId, rentalCnt,  rentalStatus를 선언하였다. rentalStatus는 rental의 상태를 나타내는 값으로 enum으로 처리했다.
-- rentalItem Entity 생성 시, 변수로 bookId와 rentalItemStatus를 선언하였다. rentalItemStuts는 현재 대출 중인 책의 상태를 나타내는 값으로 enum 처리하였다.
+- rental 엔터티 생성 시, 속성으로는 userId, rentalStatus를 정의한다.
+- rentalStatus는 rental의 상태를 나타내는 값으로 enum으로 처리했다.
+- rentedItem 엔터티 생성 시, 속성으로는 bookId와 bookStatus, rentedDate, dueDate를 정의하였다.
+- rentedDate와 dueDate는 대여한 날짜와 반납할 날짜인데, LocalDate로 처리했다. 
+이때,  rental 과 rentedItem은 일대다(oneToMany)관계인데, 이를 rentedItem과 rental 관계로 바꿔 다대일(ManyToOne)로 설정하였다.
 
-이때, rental 과 rentalItem은 oneToMany관계인데, 이를 rentalItem과 rental 관계로 바꿔 ManyToOne으로 설정하였다.
 
 
 Jhipster Online에 접속해 `Design Entities`을 클릭-> `Create a new JDL model`버튼을 클릭하여 JDL studio에 접속해 아래와 같이 코드를 입력한다.
@@ -149,34 +247,30 @@ Jhipster Online에 접속해 `Design Entities`을 클릭-> `Create a new JDL mod
 entity Rental{
 	id Long,
 	userId Long,
-    rentalItemCnt Integer ,
     rentalStatus RentalStatus
 }
 
-entity RentalItem {
+entity RentedItem {
 	id Long,
     bookId Long,
-    rentalItemStatus RentalItemStatus
+    rentedDate LocalDate,
+    dueDate LocalDate
 }
+
 
 
 enum RentalStatus {
-    OK, RENTALED, OVERDUE
+    RENT_AVAILABLE, RENT_UNAVAILABLE
 }
 
-enum RentalItemStatus{
-	RENTALED, OVERDUE
-}
-
-// defining ManyToOne relationships
-
-
+// defining multiple ManyToOne relationships with comments
 relationship ManyToOne {
-	RentalItem{rental} to Rental
+	RentedItem{rental} to Rental
 }
+
 
 // Set pagination options
-paginate * with pagination 
+paginate * with pagination
 
 // Use Data Transfert Objects (DTO)
 dto * with mapstruct
@@ -197,7 +291,7 @@ jhipster import-jdl ./my-jdl-file.jdl --force
 ## 추가한 entity를 gateway에 등록시키기
 
 마지막으로 지금까지 추가한 entity들을 gateway에 등록시켜야한다.
-book, user, rental, rentalItem을 차례로 등록시킨다.
+book, bookCatalog, rental, rentalItem을 차례로 등록시킨다.
 
 
 ```
@@ -231,13 +325,13 @@ docker-compose -f src/main/docker/jhipster-registry.yml up
 ./mvnw
 ```
 
-book, user, rental 서비스 또한 실행시켜준다.
+book, bookCatalog, rental 서비스 또한 실행시켜준다.
 
 ```
 cd book
 ./mvnw
 
-cd user
+cd bookCatalog
 ./mvnw
 
 cd rental
@@ -250,17 +344,18 @@ cd rental
 
 - localhost:8761에 접속하여 아래 이미지처럼 뜨는지 확인
 
-![image](https://user-images.githubusercontent.com/18453570/81279412-12027f80-9092-11ea-95f5-cfe93233ab99.png)
-
-2. Gateway 확인
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92839942-80c65f80-f41b-11ea-8382-94c58b363c82.png">
+1. Gateway 확인
 
 - localhost:8080에 접속하여 `admin`으로 접속하고, 아래 이미지처럼 뜨는지 확인
 
-![image](https://user-images.githubusercontent.com/18453570/81279558-44ac7800-9092-11ea-9bcc-8a3d574f9b86.png)
-![image](https://user-images.githubusercontent.com/18453570/81279591-4d9d4980-9092-11ea-9eed-8a2b0d79fb2c.png)
-![image](https://user-images.githubusercontent.com/18453570/81279612-555cee00-9092-11ea-857a-9498192eeb25.png)
-![image](https://user-images.githubusercontent.com/18453570/81279633-5beb6580-9092-11ea-8b51-dd705a32d9bc.png)
-![image](https://user-images.githubusercontent.com/18453570/81279659-6443a080-9092-11ea-8636-62698889edd5.png)
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92840162-ba976600-f41b-11ea-83dc-0bb26959b46c.png">
+
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92840177-bec38380-f41b-11ea-9a38-e62de3b0f134.png">
+
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92840195-c2efa100-f41b-11ea-9e8e-d5f6fc5aacf1.png">
+
+<img width="451" alt="image" src="https://user-images.githubusercontent.com/18453570/92840224-cbe07280-f41b-11ea-83ce-eb0507778420.png">
 
 위 이미지처럼 Jhipster가 Fake DB를 repository에 저장하여 화면을 보여준다. 물론, FakeDB는 추후 삭제할 수 있다.
 또, 마지막 rental Items 화면의 경우, 현재 서비스와 서비스끼리의 business logic을 추가하지 않았기 때문에 Rental부분에 빈 영역으로 나와도 정상이다.

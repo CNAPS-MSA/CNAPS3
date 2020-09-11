@@ -12,7 +12,7 @@ Jhipster는 DTO와 Mapper는 Service 패키지에, Kafka는 Web.rest에 구성�
 
 따라서 패키지의 구조 아래 이미지와 같이 수정하였다.
 
-![image](https://user-images.githubusercontent.com/18453570/83114885-8ade7f80-a104-11ea-85ea-063515eca39f.png)
+<img width="178" alt="image" src="https://user-images.githubusercontent.com/18453570/92840345-ef0b2200-f41b-11ea-9759-ab376f2422f0.png">
 
 2. DTO, Mapper를 사용하는 방식
 

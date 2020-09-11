@@ -92,13 +92,13 @@ public class UserService {
 
 먼저, 포인트 적립 기능 구현부터 살펴보자. 
 
-포인트 적립기능은 사용자가 도서를 대여한 뒤, 사용자 서비스를 비동기 호출하여 포인트를 적립하도록 한다. 따라서, GatewayKafkaConsumer인 인바운드 어댑터를 통해 포인트 적립 이벤트를 받는다.
+포인트 적립기능은 사용자가 도서를 대여한 뒤, 사용자 서비스를 비동기 호출하여 포인트를 적립하도록 한다. 따라서, GatewayConsumer인 인바운드 어댑터를 통해 포인트 적립 이벤트를 받는다.
 
-### GatewayKafkaConsumer.java
+### GatewayConsumer.java
 
 ```java
 @Service
-public class GatewayKafkaConsumer {
+public class GatewayConsumer {
     ...(중략)...
     while (!closed.get()){
         ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
