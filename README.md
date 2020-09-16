@@ -69,6 +69,7 @@
 - [FrontEnd 개발](/contents/jhipster-front1.md)
     
 ## SPRINT#N - 통합&배포(CI/CD)
+- [DevOps](/contents/devops.md)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
 
