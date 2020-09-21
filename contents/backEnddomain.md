@@ -94,4 +94,4 @@
 
 ### 동작 확인하기
 - 작성한 테스트 시나리오 대로 백엔드가 제대로 동작하는지 확인해본다.
-  - [Local에서 동작시키기](/contents/backend_lacaltest.md)
+  - [Local에서 동작시키기](/contents/backend_localtest.md)
