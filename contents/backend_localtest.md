@@ -191,8 +191,20 @@ mvnw
    기본 운영자로 로그인 완료 후 관리자 탭으로 이동하여 사옹자 관리 메뉴로 이동한다. 사용자 관리 메뉴화면은 아래와 같다.
    ![image](https://user-images.githubusercontent.com/18453570/94218882-6fec1280-ff20-11ea-90f3-50039be25e72.png)
    2번 시나리오에서 생성한 user1과 user2 정보를 볼 수 있다. 사용자가 회원가입을 하는 경우 `ROLE_USER` 권한만을 가지고 있음을 확인할 수 있다.
-   USER2에게 운영자 권한을 줘야하므로 user2의 우측 수정 버튼을 눌러 아래와 같이 `ROLE_USER`와 `ROLE_ADMIN` 권한 두개를 부여한다.
+   USER2에게 운영자 권한을 줘야하므로 user2의 우측 수정 버튼을 눌러 아래와 같이 `ROLE_USER`와 `ROLE_ADMIN` 권한 두개를 부여한다.(Shift를 누른 상태로 클릭한 뒤 저장을 클릭한다.)
+   결과는 아래 이미지와 같이 user2 권한이 변경되어있음을 알 수 있다.
+   ![image](https://user-images.githubusercontent.com/18453570/94226925-ce6ebc00-ff33-11ea-9eac-9e72fb423685.png)
 4. 운영자가 3권의 도서정보를 등록한뒤 입고처리한다.(2권은 대출가능,1권의 대여중)
+   본래 입고처리 프로세스는 출판사나 도서 구매 업체가 시스템에 입고도서를 등록하면 도서시스템 관리자 도서를 등록하는 프로세스를 갖고 있다. 하지만 샘플에서는 운영자가 출판사나 도서 구매 업체 역할을 대신 한다고 가정하고 진행하도록한다.
+   따라서, 운영자가 입고도서를 등록하고 도서 등록 메뉴를 통해 도서로 등록하도록 한다.
+   먼저, user2로 로그인한다.
+   ![image](https://user-images.githubusercontent.com/18453570/94227028-21e10a00-ff34-11ea-86ea-76061b7e0385.png)
+   로그인 완료 후, 아래 이미지와 같이 상단의 Entities 메뉴에서 InStockBook을 클릭하여 입력 폼을 채운 뒤 저장하여 입고도서를 등록한다.
+   ![image](https://user-images.githubusercontent.com/18453570/94242163-96c23d00-ff50-11ea-81df-f62283987ce2.png)
+   ![image](https://user-images.githubusercontent.com/18453570/94242301-cb35f900-ff50-11ea-82fa-ca3bc02f216b.png)
+   시나리오대로, 총 3권의 책을 등록하였다. 등록을 완료하면 아래 이미지와 같은 화면을 확인할 수 있다.
+   ![image](https://user-images.githubusercontent.com/18453570/94242372-e6a10400-ff50-11ea-961d-a3381eff8c08.png)
+
 5. USER1으로 로그인한다.
 6. USER1이 도서정보를 검색한다.
 7. 대출가능한 도서를 2권 대출한다.
