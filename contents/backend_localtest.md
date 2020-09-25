@@ -13,7 +13,7 @@
     1. 대여중인 도서는 대출할 수 없다.
 7. 대출한 도서중 1권을 반납한다.
 8. 2주가 지난도서는 연체된다.(USER2로 로그인하여 1권을 연체처리한다.)
-9. 연체도서를 반납한다.
+9. USER1으로 다시 로그인하여 연체도서를 반납한다.
 10. USER1이 다시 도서를 대출하려고 하나 시스템은 대출불가 메시지를 보낸다.
 11. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
 12. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
@@ -34,9 +34,17 @@ Docker를 실행하고 로그인을 완료하면 Docker의 상태가 아래와 �
 ![image](https://user-images.githubusercontent.com/18453570/93732288-9ef64180-fc0b-11ea-9f73-54d83ea02275.png)
 
 
+
 설치 및 구동이 완료된 Docker 컨테이너에 Jhipster 레지스트리, Kafka, MongoDB를 설치하고 실행시켜보자. 이때 MariaDB설치를 제외한 이유는 대여, 도서 서비스에 사용된 MariaDB는 in-memory로 설정하였기 때문에 서비스를 구동시키는 것 만으로도 데이터베이스를 사용할 수 있기 떄문이다.
 Jhipster 프로젝트는 기본적으로 Microservice Application이나 Microservice Gateway를 생성하면 선택한 개발환경에 맞게 Docker 파일을 생성해준다.
-Jhipster 레지스트리, Kafka, MongoDB 모두 Jhipster가 생성해준 Docker파일을 활용하여 설치/실행을 진행해보자.
+생성이 완료된 Docker 파일을 살펴보면 port 설정, Docker 이미지 정보 등이 모두 yaml 형식으로 정의되어있다.
+
+Jhipster에서 생성한 Docker 파일을 활용해 컨테이너를 생성 및 실행시킬때 모두 공통적으로 `docker-compose`명령어를 입력한다. docker-compose는 컨테이너를 생성 및 실행하는 명령어입니다. docker-compose는 yaml 형식의 파일을 통해 컨테이너를 생성하고 실행하게 되는데, yaml형식의 파일에는 개발환경 구성와 컨테이너 실행에 필요한 옵션, 의존성 등의 정보가 담긴다.
+즉, docker-compose 명령어와 함께 쓰이는 yaml 파일은 복잡한 도커 실행옵션들을 미리 적어둔 문서라고 볼 수 있다.
+이러한 yaml파일을 docker-compose 명령어로 실행시킴으로써 기존의 사용자가 일일히 도커 실행옵션을 입력할 필요없이 한번에 개발환경 세팅과 컨테이너 생성, 실행을 할 수 있다.
+
+그럼 이제, Jhipster 레지스트리, Kafka, MongoDB 모두 Jhipster가 생성해준 Docker파일을 활용하여 설치/실행을 진행해보자.
+
 
 
 1. Jhipster 레지스트리 실행시키기
@@ -49,7 +57,7 @@ Jhipster 레지스트리, Kafka, MongoDB 모두 Jhipster가 생성해준 Docker�
 2. Kafka 실행시키기
    
    Kafka는 앞서 개발한 모든 서비스에서 실행가능하다. 하지만 모든 서비스에서 실행할 필요 없이 한가지 서비스에서만 Kafka를 실행시켜도 모든 서비스가 Kafka를 이용할 수 있다.
-   따라서, 새로운 커맨드 창을 열어 Gateway 디렉토리로 이동해 아래 커맨드를 입력해 실행시킨다.
+   따라서, 새로운 커맨드 창을 열어 Gateway 디렉토리로 이동해 아래 커맨드를 입력해 실행시킨다. 이때 `-d` 옵션은 백그라운드에서 실행하는 옵션으로 kafka 실행과 DB 실행시 주로 사용된다.
 
     ```bash
     docker-compose -f src/main/docker/kafka.yml up -d
@@ -82,6 +90,8 @@ Jhipster 레지스트리, Kafka, MongoDB 모두 Jhipster가 생성해준 Docker�
    정상적으로 실행 중인 경우 아래 이미지와 같이 컨테이너 이미지가 모두 초록색으로 변경되어있을 것이다.
 
     ![image](https://user-images.githubusercontent.com/18453570/93734320-c3561c00-fc13-11ea-92ac-23522c973f1b.png)
+
+
 
 ## 게이트웨이와 마이크로서비스 동작시키기
 
@@ -157,8 +167,34 @@ Jhipster 레지스트리, Kafka, MongoDB 모두 Jhipster가 생성해준 Docker�
 	Config Server: 	Connected to the JHipster Registry running in Docker
 ----------------------------------------------------------
 ```
+## 시나리오 테스트하기
 
+게이트웨이와 서비스들이 정상적으로 실행되었으면, [http://localhost:8080]으로 접속하여 시나리오대로 테스트를 진행한다.
 
-
-
+1. http://localhost:8080으로 접속한다.
+   정상적으로 접속된 경우 아래 이미지와 같은 화면을 확인 할 수 있다.
+   ![image](https://user-images.githubusercontent.com/18453570/94217423-f1da3c80-ff1c-11ea-9bda-1ba950463b99.png)
+2. 사용자 2명을 등록한다. (USER1,USER2 으로 회원가입)
+   아래 화면은 등록 예시이다. USER1의 아이디는 user1으로, USER2의 아이디는 user2로 등록하였다. 회원가입시 아이디와 이메일은 다른 유저와 중복되지 않아야함을 주의하자.
+    ![image](https://user-images.githubusercontent.com/18453570/94217461-01f21c00-ff1d-11ea-9be7-8efbd62850b5.png)
+3. USER2에게 운영자 권한을 준다.
+   USER2에게 운영자 권한을 주기 위해선 운영자 권한을 가진 계정으로 로그인해야한다. 권한에 따라 접근할 수 있는 메뉴가 다르기 때문이다. 권한 관리는 사용자 관리 메뉴에서 수행할 수 있는데, 사용자 관리 메뉴는 운영자 권한을 가진 사용자만이 접근할 수 있다.
+   기본 생성된 운영자의 아이디와 패스워드는 정보는 아래와 같다.
+   - Id : admin
+   - Pw : admin
+   기본 운영자로 로그인 완료 후 관리자 탭으로 이동하여 사옹자 관리 메뉴로 이동한다. 사용자 관리 메뉴화면은 아래와 같다.
+   ![image](https://user-images.githubusercontent.com/18453570/94218882-6fec1280-ff20-11ea-90f3-50039be25e72.png)
+   2번 시나리오에서 생성한 user1과 user2 정보를 볼 수 있다. 사용자가 회원가입을 하는 경우 `ROLE_USER` 권한만을 가지고 있음을 확인할 수 있다.
+   USER2에게 운영자 권한을 줘야하므로 user2의 우측 수정 버튼을 눌러 아래와 같이 `ROLE_USER`와 `ROLE_ADMIN` 권한 두개를 부여한다.
+4. 운영자가 3권의 도서정보를 등록한뒤 입고처리한다.(2권은 대출가능,1권의 대여중)
+5. USER1으로 로그인한다.
+6. USER1이 도서정보를 검색한다.
+7. 대출가능한 도서를 2권 대출한다.
+    1. 대여중인 도서는 대출할 수 없다.
+8. 대출한 도서중 1권을 반납한다.
+9.  2주가 지난도서는 연체된다.(USER2로 로그인하여 1권을 연체처리한다.)
+10. USER1으로 다시 로그인하여 연체도서를 반납한다.
+11. USER1이 다시 도서를 대출하려고 하나 시스템은 대출불가 메시지를 보낸다.
+12. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
+13. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
 
