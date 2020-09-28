@@ -202,17 +202,53 @@ mvnw
    로그인 완료 후, 아래 이미지와 같이 상단의 Entities 메뉴에서 InStockBook을 클릭하여 입력 폼을 채운 뒤 저장하여 입고도서를 등록한다.
    ![image](https://user-images.githubusercontent.com/18453570/94242163-96c23d00-ff50-11ea-81df-f62283987ce2.png)
    ![image](https://user-images.githubusercontent.com/18453570/94242301-cb35f900-ff50-11ea-82fa-ca3bc02f216b.png)
-   시나리오대로, 총 3권의 책을 등록하였다. 등록을 완료하면 아래 이미지와 같은 화면을 확인할 수 있다.
+   그 결과, 아래 이미지와 같은 화면을 확인할 수 있다.
    ![image](https://user-images.githubusercontent.com/18453570/94242372-e6a10400-ff50-11ea-961d-a3381eff8c08.png)
+   이제 입고처리를 진행해보자.
+   상단의 도서관리 탭에서 도서 등록 메뉴로 이동한다.
+   <img width="897" alt="image" src="https://user-images.githubusercontent.com/18453570/94407734-c8384400-01ae-11eb-836a-2b3c749a384b.png">
+   각 도서마다 등록메뉴를 눌러 입력 폼을 채운 뒤 저장하여 도서를 등록한다. 이때 3권의 입고도서 중 한권은 대여중 처리를 한다. 결과는 아래 이미지와 같다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94407876-05043b00-01af-11eb-9e86-2f7231a7c21d.png">
+5. 로그아웃한 뒤, USER1으로 로그인하여 도서 대여 탭으로 이동하여 도서 정보를 검색한다.
+   검색어를 `JPA`로 입력하면 결과는 아래 이미지와 같다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94408043-3bda5100-01af-11eb-94fe-6cd86833bd2a.png">
+6. 대출가능한 도서를 2권 대출한다.
+   이제 도서 대출을 테스트해보자. 도서대여메뉴에는 등록된 도서 목록이 검색된다. 이때 대여 중인 도서는 대여버튼이 비활성화되어 대여할 수 없다.
+   따라서, 대여가 가능한 나머지 도서 2권을 대여한다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94408326-9a073400-01af-11eb-893a-eaca579b665c.png">
+   대여가 완료되면 아래 이미지와 같이 대여완료 알람이 뜨고 대여버튼이 비활성화된다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94408425-bd31e380-01af-11eb-8129-13ece00bf592.png">
+7. 대출한 도서중 1권을 반납한다.
+   이제 반납기능을 테스트해보자.
+   대여 도서, 반납 도서, 연체 도서 등 사용자의 기록은 상단 메뉴의 Mypage를 통해 확인할 수 있다. 아래 이미지와 같이 Mypage로 이동하면 6번에서 테스트한 두권의 도서가 대여 도서목록에 표시됨을 확인할 수 있다.
+   또한 도서를 대여하면 도서 당 30포인트를 적립할 수 있는데, 잔여 포인트가 1060인 것을 확인할 수 있다.
+   <img width="948" alt="image" src="https://user-images.githubusercontent.com/18453570/94408639-071ac980-01b0-11eb-8c86-7be85c620232.png">
+   위 이미지와 같은 페이지를 확인하였으면 나의 대여 도서 목록에 있는 도서 중 한 권을 반납하기 버튼을 눌러 반납한다.
+8. 2주가 지난도서는 연체된다.(USER2로 로그인하여 1권을 연체처리한다.)
+   이제 연체 기능을 테스트해본다. User1을 로그아웃한 뒤, 관리자 계정인 User2로 로그인하여 User1이 대여한 도서 중 한권을 연체처리해보자.
+   User2로 로그인한 뒤, 도서관리 탭의 대여도서관리 메뉴로 이동한다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94408954-77c1e600-01b0-11eb-81a0-aa67dd31df15.png">
+   대여도서관리 메뉴로 이동하면 User1이 대여 중인 도서 한권의 목록이 보인다. 연체처리 버튼을 눌러 연체처리한다.
+   <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94409041-9627e180-01b0-11eb-9a00-85ac3ca10e9f.png">
+9. USER1으로 다시 로그인하여 연체도서를 반납한다.
+    User2를 로그아웃 후 다시 User1으로 로그인하여 연체도서를 반납한다.
+    Mypage메뉴로 이동하면 아래 이미지와 같이 User2가 연체처리한 도서가 나의 연체 도서 목록에 추가되어있을 것이다.
+    <img width="940" alt="image" src="https://user-images.githubusercontent.com/18453570/94409241-de470400-01b0-11eb-885b-4cc6b72012d7.png">
+    반납하기 버튼을 눌러 아래 이미지와 같이 반납 도서에 두권의 도서 목록이 있는 것을 확인한다.
+    <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94409398-13535680-01b1-11eb-932e-064089ff98b4.png">
+10. USER1이 다시 도서를 대출하려고 하나 시스템은 대출불가 메시지를 보낸다.
+    User1은 대여했던 도서를 모두 반납하였지만, 한 권의 책이 연체처리되었기 때문에 현재 연체상태로 도서를 대여할 수 없다. 연체상태일때 도서를 대여할 수 없는지 테스트해보자.
+    도서 대여 메뉴로 이동하여 대여 가능한 도서를 대여신청하면 아래 이미지와 같이 연체상태이기 때문에 대여를 할 수 없다는 메세지와 함께 대여가 완료되지 않는다.
+    <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94409686-7c3ace80-01b1-11eb-981b-02e4fd44d05f.png">
+11. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
+    연체 상태를 해제하기 위해 다시 Mypage로 이동한다. 그 다음 연체 해제버튼을 클릭하여 연체료를 결제한다.
+    연체료 결제가 완료되면 아래 이미지와 같이 대여 가능 상태가 대여 가능으로 변경되며, 연체료 30포인트를 결제하였기 때문에 잔여 Point는 1030으로, 연체료는 0으로 변경된다.
+    <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94409907-bc01b600-01b1-11eb-8bd2-f71171c22586.png">
+12. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
+    이제 다시 도서 대여를 시도해보자.
+    도서 대여 메뉴로 이동하여 도서 대여버튼을 클릭해 도서 대여를 하면 아래 이미지와 같이 도서가 대여됨을 확인할 수 있다.
+    <img width="960" alt="image" src="https://user-images.githubusercontent.com/18453570/94410023-dd62a200-01b1-11eb-92b0-98e5c08b87f0.png">
+    또한 대여 완료 후, Mypage를 확인해보면 도서 한권을 대여하였기 때문에 30포인트가 적립되어 잔여 Point가 1060이 되었고 나의 대여도서 목록에 해당도서가 추가되어있다.
+    <img width="958" alt="image" src="https://user-images.githubusercontent.com/18453570/94410085-ea7f9100-01b1-11eb-98b1-6ba6dc29421d.png">
 
-5. USER1으로 로그인한다.
-6. USER1이 도서정보를 검색한다.
-7. 대출가능한 도서를 2권 대출한다.
-    1. 대여중인 도서는 대출할 수 없다.
-8. 대출한 도서중 1권을 반납한다.
-9.  2주가 지난도서는 연체된다.(USER2로 로그인하여 1권을 연체처리한다.)
-10. USER1으로 다시 로그인하여 연체도서를 반납한다.
-11. USER1이 다시 도서를 대출하려고 하나 시스템은 대출불가 메시지를 보낸다.
-12. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
-13. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
 
