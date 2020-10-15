@@ -322,9 +322,12 @@ docker-compose -f src/main/docker/jhipster-registry.yml up
 새로운 terminal 창에서 다시 gateway 폴더에 들어가 아래 command를 입력한다.
 
 ```
-./mvnw
+./mvnw //MacOs의 경우
 ```
 
+```
+mvnw //Windows의 경우
+```
 book, bookCatalog, rental 서비스 또한 실행시켜준다.
 
 ```
@@ -373,8 +376,6 @@ Jhipster를 활용해 기본적인 CQRS와 화면구성, package 구조 또한 �
 
 -> [Jhipster Business Logic추가](/contents/jhipster_businesslogic.md)
 
-
-**끝!**
 
 
 

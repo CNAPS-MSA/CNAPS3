@@ -1,0 +1,76 @@
+## Jhister Project에 Lombok 적용시키기
+
+Jhipser에서는 기본적으로 Lombok을 지원하지 않으나, Lombok API를 직접 추가하여 Lombok을 사용할 수 있다.
+
+1. pom.xml 수정
+
+각 마이크로서비스 프로젝트의 pom.xml을 아래와 같이 수정한다.
+
+```xml
+     <junit.utReportFolder>${project.testresult.directory}/test</junit.utReportFolder>
+        <junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>	        
+        <!-- jhipster-needle-maven-property -->	       
+        <lombok.version>1.18.12</lombok.version>
+    </properties>
+
+	    <dependencyManagement>
+
+  <artifactId>metrics-core</artifactId>
+     </dependency>
+        <!-- jhipster-needle-maven-add-dependency -->	       
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+    </dependencies>
+
+
+    <build>	   
+        <version>${jaxb-runtime.version}</version>
+        </path>	                           
+         <!-- jhipster-needle-maven-add-annotation-processor -->	                            
+                <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>${lombok.version}</version>
+        </path>
+    </annotationProcessorPaths>	                        
+</configuration>	                    
+</plugin>	                  
+
+```
+
+위와 같이 수정한 후, 프로젝트를 다시 빌드하면 Lombok사용이 가능하다.
+
+2. Lombok 적용하여 소스코드 수정
+
+기존의 Entity와 DTO에는 getter와 setter 코드가 작성되어있을 것이다.
+이를 삭제하고 아래와 같이 수정하여 사용한다. (Getter, Setter 삭제)
+
+이때 주의할 점은 equals와 hashcode 메소드는 삭제하지 않아야한다.(Jhipster Test code와 충돌 에러)
+간혹 ToString 또한 충돌하는 경우도 있으니 직접 테스트해보며 적용하길 권장한다.
+
+```java
+@Entity
+@Table(name = "book")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Data
+@ToString
+public class Book implements Serializable {
+
+```
+
+또한 DTO의 경우 아래와 같이 적용한다. DTO의 경우 또한 equals와 hashcode, toString 메소드가 충돌하는 경우엔 삭제하지 않았다.
+따라서, 직접 테스트해보며 적용하길 권장한다. 
+
+```java
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+public class RentalDTO implements Serializable {
+
+```
+
+3. Lombok적용시 주의 사항
+
+Lombok은 소스코드를 매우 간결하게 해주며 Powerful한 기능을 갖고 있다. 하지만 그만큼 위험성도 크기 때문에 
