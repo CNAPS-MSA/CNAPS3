@@ -1,5 +1,6 @@
 # 시냅스(CNAPS)방법론 3.0
 > 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
+> Agile 기반의 Cloud / MSA 적용한 신규 시스템 구축 프로젝트를 위한 통합 관리/개발 방법론으로 프로젝트 수행을 위한 공정도와 공정 별 샘플과 산출물을 공유한다.
 
 
 
@@ -7,10 +8,9 @@
 
 
 
+# Cloud / MSA 기반 마이크로서비스 개발 방법론
 
-# 네이티브(NATIVE)공정도
-
-![공정도](https://github.com/cnaps/main/blob/master/img/%EA%B3%B5%EC%A0%95%EB%8F%84.png)  
+![image](https://user-images.githubusercontent.com/18453570/96083152-8f5ed580-0ef7-11eb-8fa4-66c26bfc25fc.png)
 
 # 프렉티스별 주요활동 & 산출물 
 
@@ -46,32 +46,50 @@
 # Cloud Native 핵심프로세스 
 - Natvie 방법론의 핵심 아키텍팅/설계/개발 프로세스를 각 활동들을 설명하며 샘플을 제시한다.
 - 각 활동의 개념등은 SK 주식회사 C&C 기술블로그와 연계하여 설명한다.
-- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등 활동별로 Seemless하 제공한다.
+- 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등 활동별로 Seemless하게 제공한다.
 
 ## Cloud Native 개발공정도
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 - [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
 
-## SPRINT#0 - 아키텍처정의& 마이크로서비스도출 
+## SPRINT#0 - 아키텍처정의& 마이크로서비스도출
+- [Scrum Team 구성](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide03-스크럼팀구성/)
+- [Scrum 환경 구성](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide08-스크럼환경/)
 - [외부아키텍처정의](/contents/outerarchi.md) 
 - [내부아키텍처정의](/contents/innerarchi.md)  
 - [마이크로서비스 도출하기](/contents/ddd.md) 
+- [Product Backlog 도출](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide04-제품백로그도출/)
+- Service Spec 정의 : Update 예정
+- [일감 크기 산정](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide05-일감크기추정/)
+- [Release Planning](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide06-릴리즈계획/)
+- [품질/소통 Planning](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide07-소통&품질/)
+- 테스트 계획 수립 
+- 데이터 이행 계획 수립 
 
-## SPRINT#N - 설계
+## SPRINT #1~N
+- [Sprint Planning](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide11-스프린트계획/)
+- [Daily Scrum Meeting](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide12-스크럼미팅/)
 - BackEnd 설계하기 
   - [내부구조정의](/contents/mspackage.md) 
   - [API설계](/contents/API.md) 
   - [도메인모델링](/contents/domain.md) 
   - [데이터모델링](/contents/data.md) 
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
-## SPRINT#N - 개발
 - [BackEnd 마이크로서비스 개발](/contents/backEnddomain.md) 
 - [FrontEnd 개발](/contents/jhipster-front1.md)
-    
-## SPRINT#N - 통합&배포(CI/CD)
 - [DevOps](/contents/devops.md)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 
+- [Sprint 리뷰](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide13-스프린트리뷰/)
+- [Sprint 회고](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide14-스프린트회고/)
+- [성과측정/분석](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide15-성과측정/)
+- 데이터 이행 프로그램 설계
+- 데이터 이행 리허설
+
+## SPRINT FINAl
+- 통합테스트
+- 성능테스트
+- 데이터 이행
 
 ## 컨텐츠 및 교육교재
   - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
