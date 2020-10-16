@@ -73,4 +73,5 @@ public class RentalDTO implements Serializable {
 
 3. Lombok적용시 주의 사항
 
-Lombok은 소스코드를 매우 간결하게 해주며 Powerful한 기능을 갖고 있다. 하지만 그만큼 위험성도 크기 때문에 
+Lombok은 소스코드를 매우 간결하게 해주며 Powerful한 기능을 갖고 있다. 하지만 그만큼 위험성도 크기 때문에 Jhipster에서는 기본 개발환경 설정에 Lombok을 적용하지 않기도 했다.
+따라서, 필요한 Annotation을 잘 선택하여 적용하는 것이 중요하다.
