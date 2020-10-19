@@ -39,7 +39,7 @@ VM 및 자체컨테이너기반 솔루션
 어플리케이션을 통한 MSA아키텍처 구성
 - [spring cloud](https://spring.io/projects/spring-cloud)
 
-## 사례
+# 사례:도서대여시스템
 
 ## 구현 할 DEV 아키텍처 개념도 
 ![image](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/dev.jpg)
