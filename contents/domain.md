@@ -8,7 +8,7 @@
 * 형식은 자유 (PPT, UML도구 ,화이트보드갭쳐,협업도구,구현후리버스)
 
 ### 1.1 대여(Rental)서비스의 도메인모델
-![image](https://user-images.githubusercontent.com/15258916/96394157-46ab6300-11fc-11eb-8ca2-916c73cf1dff.png)
+![image](https://user-images.githubusercontent.com/15258916/96394365-bfaaba80-11fc-11eb-8e6c-7908c9b69d98.png)
 - 도메인 모델에서는 비지니스 개념을 표현한다. 비지니스 개념은 객체로 표현되고 도메인 주도 설계의 전술적 설계 기법인 어그리게잇, 엔티티, VO, 표준타입 패턴을 적용한다.
 - 위 그림은 그렇게 정의된 대여 서비스의 도메인 모델이다. 대여와 반납의 책임을 가지고 있는 어그리게잇이며 루트 엔티티인 대여카드(Rental) , Rental과 일대다 관계인 엔티티 유형의 대여도서(RentedItem), 엔티티 연체도서(OverdueItem), 엔티티 반납도서(RetrurnItem)로 구성된다. 대여도서(OverdueItem) 와 반납도서(RetrurnItem)은 대여도서(RentedItem)과 마찬가지로 Rental과 일대다관계이다.
 - Rental의 개념은 대여카드이다. 모든 사용자는 대여를 위한 대여카드를 하나씩 보유한다. 대여카드는 대여, 반납, 연체 처리, 연체도서반납,연체해제처리의 책임을 가진다.
