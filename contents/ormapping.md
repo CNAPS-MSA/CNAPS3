@@ -4,6 +4,7 @@
 - 다대일 양방향
 - 일대다 단방향
 
+![manytoone](https://user-images.githubusercontent.com/15258916/96412189-afa6d100-1224-11eb-8da1-988c0cb3465e.png)
 
 메시지와 게스트의 관계는 다대일 단방향 관계이다.
 message.guest 와 같이 참조 가능하지만,   반대로 guest에서는 메시지를 참조하는 필드가 없다. 따라서 메시지와 손님은 다대일 단방향 관계이다. 
@@ -44,6 +45,7 @@ private String mail;
 private Integer age;
 } 
 ```
+![manyyoone2](https://user-images.githubusercontent.com/15258916/96412194-b2092b00-1224-11eb-9bda-b03df60d364a.png)
 
 - 객체 양방향 관계에서 주인은 항상 다쪽이다.
 - 양방향 연관관계는 항상 서로를 참조해야한다. 항상 서로 참조하게 하려면 연관관계 편의 메소드를 작성하는것디 좋은데 setTeam(), addMember() 메소드가 편의 메소드들이다.
@@ -86,6 +88,7 @@ private Team teams;
 public void setTeam(Team team){this.teams = team;//팀의 멤버중에 자기 자신이 없으면 추가if(!teams.getMember().contains(this)){ //양쪽에 작성되어 있기에 무한루프 방지teams.getMember().add(this);
 }}}
 ```
+![onetoone](https://user-images.githubusercontent.com/15258916/96412202-b5041b80-1224-11eb-8e35-7a726d677eca.png)
 
 일대다 관계는 엔티티를 하나이상 참조할 수 있다.(Collection, List, Map, Set)
 본인 테이블에 외래 키가 있으면 엔티티의 저장과 연관관계 처리를 INSERT SQL 한 번으로 끝낼 수 있지만, 다른 테이블에 외래 키가 있기때문에,
