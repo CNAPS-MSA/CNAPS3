@@ -75,3 +75,16 @@ public class RentalDTO implements Serializable {
 
 Lombok은 소스코드를 매우 간결하게 해주며 Powerful한 기능을 갖고 있다. 하지만 그만큼 위험성도 크기 때문에 Jhipster에서는 기본 개발환경 설정에 Lombok을 적용하지 않기도 했다.
 따라서, 필요한 Annotation을 잘 선택하여 적용하는 것이 중요하다.
+
+샘플 코드에서 주로 사용한 어노테이션은 다음과 같다.
+
+- @Data : @ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor 메소드 자동 생성
+- @Getter : Getter 메소드 생성
+- @Setter : Setter 메소드 생성
+- @ToString : ToString 메소드 생성 (Class 내의 필드를 문자열로 변환)
+- @EqualsAndHashCode : 객체 비교 등의 용도로 사용되는 equals()와 hashCode() 생성
+- @AllArgsConstructure : 모든 필드를 포함한 생성자 메소드 생성
+- @NoArgsConstructure : 모든 필드가 포함되지 않은 빈 생성자 메소드 생성
+
+이외의 자세한 사항은 아래 Lombok 공식 홈페이지 자료를 통해 확인해보자.
+> https://projectlombok.org/features/all
