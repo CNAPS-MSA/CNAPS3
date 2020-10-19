@@ -2,7 +2,15 @@
 - [REST API란?](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
 - [REST API성숙도모델](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
 
-# API가 먼저인가 도메인이 먼저인가?
+
+## 1.API설계서    
+ * 마이크로서비스별로 작성
+ * 마이크로서비스에서 외부에 공개된 API를 표현
+ * 양식 자유 (엑셀,PPT,협업도구)
+ * 엑셀작성시 엑셀파일명이 서비스명, Sheet당 1개의 API
+ <img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/apiD.png" width="50%">
+
+### API가 먼저인가 도메인이 먼저인가?
 
 API설계는 프론트 엔드 영역과 백엔드 영역을 연결하는 계약과 같다. 따라서 양쪽이 구현하기에 앞서 미리 정의되는 것이 좋다. 
 그렇다면 벡엔드 엔지니어 입장에서 API설계를 먼저 진행해야 하는 가? 아니면 백엔드의 핵심인 내부 영역의 도메인을 미리 정의해야 할까? 그런 고민이 생긴다.
@@ -16,11 +24,4 @@ API설계는 프론트 엔드 영역과 백엔드 영역을 연결하는 계약�
 그러므로 양쪽의 핵심 설계 영역이 UI설계 ,도메인 모델링이 어느정도 진행된 이후에 API설계를 진행해야 한다. 그런 다음에 API설계 협의에 따라 양쪽 설계 영역은 계속 정제될 것이다.
 구현도 마찬가지이다. 백엔드의 핵심인 내부영역부터 시작해서 외부영역으로 진행되어야 한다.
 
-## 1.API설계서    
- * 마이크로서비스별로 작성
- * 마이크로서비스에서 외부에 공개된 API를 표현
- * 양식 자유 (엑셀,PPT,협업도구)
- * 엑셀작성시 엑셀파일명이 서비스명, Sheet당 1개의 API
- <img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/apiD.png" width="50%">
- 
 
