@@ -77,6 +77,7 @@
  - [FrontEnd 설계하기](https://engineering-skcc.github.io/microservice%20modeling/FrontEnd-modeling/)
 - [BackEnd 마이크로서비스 개발(사례)](/contents/backEnddomain.md) 
 - [FrontEnd 개발](/contents/jhipster-front1.md)
+- [BackEnd & FrontEnd 로컬 테스트](/contents/backend_localtest.md)
 - [DevOps](/contents/devops.md)
 - [지속적통합](/contents/ci.md)
 - [지속적배포](/contents/cd.md) 

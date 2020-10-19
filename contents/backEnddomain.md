@@ -28,6 +28,10 @@
 ### 백엔드서비스 구현 전, Configuration 설정
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
+### 백엔드서비스 구현 전, Lombok 설정
+
+- [백엔드서비스 구현 전, 각 Service에 Lombok을 적용하여 소스코드를 정리해보자.](/contents/jhipster_lombok.md)
+
 ### 대여(Rental)서비스 
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
@@ -92,6 +96,3 @@
 11. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
 12. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
 
-### 동작 확인하기
-- 작성한 테스트 시나리오 대로 백엔드가 제대로 동작하는지 확인해본다.
-  - [Local에서 동작시키기](/contents/backend_localtest.md)
