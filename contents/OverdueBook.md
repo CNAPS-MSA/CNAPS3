@@ -90,8 +90,9 @@ public Rental returnOverdueBooks(Long userid, Long book) throws ExecutionExcepti
 
     rental = rental.returnOverdueBook(book);
 
-    updateBookStatus(book, "AVAILABLE");
-    updateBookCatalog(book, "RETURN_BOOK");
+    rentalProducer.updateBookStatus(book, "AVAILABLE");     
+    rentalProducer.updateBookCatalog(book, "RETURN_BOOK");  
+
 
     return rentalRepository.save(rental);
 }
