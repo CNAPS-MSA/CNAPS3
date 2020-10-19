@@ -65,7 +65,7 @@ public class UserService {
         ..생략..
         newUser.setPoint(1000);
         userRepository.save(newUser);
-        createRental(newUser.getId());
+        gatewayProducer.createRental(newUser.getId());
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -76,7 +76,7 @@ public class UserService {
         ..생략..
         user.setPoint(1000);
         userRepository.save(user);
-        createRental(user.getId());
+        gatewayProducer.createRental(user.getId());
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
