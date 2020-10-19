@@ -44,3 +44,47 @@ private String mail;
 private Integer age;
 } 
 ```
+
+- 객체 양방향 관계에서 주인은 항상 다쪽이다.
+- 양방향 연관관계는 항상 서로를 참조해야한다. 항상 서로 참조하게 하려면 연관관계 편의 메소드를 작성하는것디 좋은데 setTeam(), addMember() 메소드가 편의 메소드들이다.
+- 편의 메소드는 한 곳에서만 작성하거나 양쪽에 다 작성할 수 있는데, 양쪽에 다 작성하면 무한루프에 빠지므로 주의해야한다.
+
+```java
+*** <pre>다대일 양방향[N:1, 1:N] 예제 , 양방향이라 함은 양쪽에서 모두 참조를 호출할 수 있는 비지니스를 의미
+EntityNoArgsConstructor
+@Table(name = "T_TEAM") 
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "TEAM_ID"))})
+public class Team extends AbstractEntity implements AggregateRoot 
+{       
+@Column(name = "TEAM_NAME")
+private String teamName;
+
+@Column(name = "TEAM_DESC")
+private String teamDesc;          
+
+@OneToMany(cascade = CascadeType.ALL, mappedBy = "teams") // @OneToMany의 fetch 기본전략은 LAZY이다.
+private List<Member> member = new ArrayList<>();               
+
+public void addMember(Member m){this.member.add(m);//멤버의 팀이 자기자신이 아니면 멤버에 팀 추가if(m.getTeams() != this){//양쪽에 작성되어 있기에  무한루프 방지
+m.setTeam(this);
+}}}   /** <pre>* 다대일 양방향[N:1, 1:N] 예제 , 양방향이라 함은 양쪽에서 모두 참조를 호출할 수 있는 비지니스를 의미
+
+EntityNoArgsConstructor
+@Table(name = "T_MEMBER")
+public class Member extends AbstractEntity {           
+@Column(name = "MEMBER_NAME")
+private String name;
+
+@Column(name = "AGE")
+private String age;      
+
+@Setter(AccessLevel.NONE)
+@ManyToOne(optional = true,fetch = FetchType.LAZY)// @ManyToOne의 fetch 기본전략은 EAGER이다.
+@JoinColumn(name = "TEAM_ID")       
+private Team teams;              
+
+public void setTeam(Team team){this.teams = team;//팀의 멤버중에 자기 자신이 없으면 추가if(!teams.getMember().contains(this)){ //양쪽에 작성되어 있기에 무한루프 방지teams.getMember().add(this);
+}}}
+```
+
+
