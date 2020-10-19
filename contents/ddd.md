@@ -3,7 +3,7 @@
 - [DDD전략적설계란?](https://engineering-skcc.github.io/microservice%20modeling/ddd-Srategic-design/)
 - [마이크로서비스 도출 Easy Method 이벤트스토밍](https://engineering-skcc.github.io/microservice%20modeling/Event-Storming/)
 - 마이크로서비스내부구조결정가이드
-## 1.마이크로서비스 도출 SAMPLE(도서대여시스템)
+# 사례:도서대여시스템
 사례는 사내 도서대여 시스템(시스템명:티룸)이며 다음과 같은 과정을 거친다. 
 ## 1.요구사항 
 ### 1.1 요구사항 
