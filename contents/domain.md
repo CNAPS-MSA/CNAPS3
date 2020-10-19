@@ -22,10 +22,14 @@
 도서대여 및 도서반납의 비지니스 로직은 도메인 모델에 응집되어 있는 것을 확인할 수 있다. 
 서비스는 그외 흐름제어 및 저장처리, 이벤트 메시지 처리를 담당한다. 
 
-### 2.1 도서(Book)서비스의 도메인모델
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/bookDomainModel.png" width="70%">
+### 2.1 사용자(User)서비스의 도메인모델
+![image](https://user-images.githubusercontent.com/15258916/96394449-013b6580-11fd-11eb-9fb9-556c242fb5d9.png)
 
-### 2.1 카탈로그(Catalog)서비스의 도메인모델
-<img src="https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/catalogDomainModel.png" width="70%">
+
+### 2.2 도서(Book)서비스의 도메인모델
+![image](https://user-images.githubusercontent.com/15258916/96394482-157f6280-11fd-11eb-8cfc-e2fc5e20f918.png)
+
+### 2.3 카탈로그(Catalog)서비스의 도메인모델
+![image](https://user-images.githubusercontent.com/15258916/96394498-1fa16100-11fd-11eb-9795-83ff74670351.png)
 
 
