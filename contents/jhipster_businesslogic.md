@@ -23,8 +23,14 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|POST|
-|Request| |
-|Response| |
+|Request| http://localhost:8080/rentals/scant/rentedItem/10001|
+|Response| {
+  "id": 1,
+  "userId": scant,
+  "rentalStatus": "RENT_AVAILABLE",
+  "lateFee": 0
+}
+|
 
 리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 
 scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 된다는 의미이다.
@@ -33,8 +39,14 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
 |----|------|
 |리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|DELETE|
-|Request| |
-|Response| |
+|Request|http://localhost:8080/rentals/scant/rentedItem/10001 |
+|Response| {
+  "id": 1,
+  "userId": scant,
+  "rentalStatus": "RENT_AVAILABLE",
+  "lateFee": 0
+}
+|
 
 마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
 
@@ -42,8 +54,8 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
 |----|------|
 |리소스URI|/rentals/{userid}/OverdueItem/{book}|
 |Method|POST|
-|Request| |
-|Response| |
+|Request| http://localhost:8080/rentals/scant/overdueItem/10001|
+|Response| code 200|
 
 예를 들면 /rentals/scant/OverdueItem/10001를 post방식으로 호출하므로 
 scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체 등록된다는 의미이다.
@@ -52,13 +64,20 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 |----|------|
 |리소스URI|/rentals/{userid}/OverdueItem/{book}|
 |Method|DELETE|
-|Request| |
-|Response| |
+|Request|http://localhost:8080/rentals/scant/rentedItem/10001 |
+|Response|{
+  "id": 1,
+  "userId": 5,
+  "rentalStatus": "RENT_UNAVAILABLE",
+  "lateFee": 30
+}
+ |
 
 마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
 
 ## 도메인 모델 
-![image](https://user-images.githubusercontent.com/15258916/87246499-d072c400-c488-11ea-9df3-193f5d6b4763.png)
+
+![image](https://user-images.githubusercontent.com/18453570/96416187-a456a400-122a-11eb-9342-0bffaab3dfc9.png)
 
 - 도메인 모델에서는 비지니스 개념을 표현한다. 비지니스 개념은 객체로 표현되고 도메인 주도 설계의 전술적 설계 기법인 어그리게잇, 엔티티, VO, 표준타입 패턴을 적용한다.
 - 위 그림은 그렇게 정의된 대여 서비스의 도메인 모델이다. 대여와 반납의 책임을 가지고 있는 어그리게잇이며 루트 엔티티인 대여카드(Rental) , Rental과 일대다 관계인 엔티티 유형의 대여도서(RentedItem), 엔티티 연체도서(OverdueItem), 엔티티 반납도서(RetrurnItem)로 구성된다. 대여도서(OverdueItem) 와 반납도서(RetrurnItem)은 대여도서(RentedItem)과 마찬가지로 Rental과 일대다관계이다.
@@ -272,7 +291,7 @@ public interface RentalService {
  * 책 대여하기
  *
  * ****/
-Rental rentBooks(Long userId, BookInfoDTO book);
+Rental rentBook(Long userId, Long bookId, String bookTitle);
 ```
 대여 서비스 인터페이스이다. 책 대여 시, 대여 카드를 찾기 위해 대여하는 사용자의 Id와 대여하고자 하는 책의 Id를 받는다.
 
@@ -283,27 +302,28 @@ Rental rentBooks(Long userId, BookInfoDTO book);
 public class RentalServiceImpl implements RentalService {
 …(중략)…
 /**
-* 도서 대여하기
+* 도서대출처리
 *
 * @param userId
 * @param book
 * @return
 */
 @Transactional
-public Rental rentBook(Long userId, BookInfoDTO book) throws InterruptedException, ExecutionException, JsonProcessingException, RentUnavailableException {
-    log.debug("Rent Books by : ", userId, " Book List : ", book);
-    Rental rental = rentalRepository.findByUserId(userId).get();
-    rental.checkRentalAvailable();
-
-    rental = rental.rentBook(book.getId(), book.getTitle());
-    rentalRepository.save(rental);
-
-    updateBookStatus(book.getId(), "UNAVAILABLE"); //send to book service
-    updateBookCatalog(book.getId(), "RENT_BOOK"); //send to book catalog service
-    savePoints(userId); //send to user service
-    return rental;
-
+public Rental rentBook(Long userId, Long bookId, String bookTitle) throws 
+InterruptedException, ExecutionException, JsonProcessingException, RentUnavailableException {
+log.debug("Rent Books by : ", userId, " Book List : ", bookId + bookTitle);
+Rental rental = rentalRepository.findByUserId(userId).get(); 
+rental.checkRentalAvailable();  
+rental = rental.rentBook(bookId, bookTitle); 
+rentalRepository.save(rental); 
+rentalProducer.updateBookStatus(bookId, "UNAVAILABLE"); 
+//send to book service 
+rentalProducer.updateBookCatalog(bookId, "RENT_BOOK"); 
+//send to book catalog service 
+rentalProducer.savePoints(userId); //send to user service 
+return rental;
 }
+
 ```
 도서대여 메소드이다. 
    - 사용자id에 해당하는 대여카드 (Rental)를 찾는다.
@@ -314,26 +334,11 @@ public Rental rentBook(Long userId, BookInfoDTO book) throws InterruptedExceptio
    - 도서 카탈로그 변경 이벤트 처리를 전송한다.
    - 포인트 적립 이벤트 처리를 전송한다. 
 
-비동기 이벤트 처리를 위해 아웃바운드 어댑타를 호출하는 부분은 서비스에 아래와 같이 연계된다. 메시지를 카프카에 직접 던지는 구현부분은 아웃 바운드 어답터 영역에서 살펴보겠다. 
+외부서비스로 이벤트를 전송할 때엔 의존성을 낮추기 위해 비동기로 호출하는데, 비동기 이벤트 처리를 위해 아웃바운드 어댑터를 호출한다. 이때 아웃바운드 어댑터 클래스를 직접 호출하지 않고 아웃바운드 어댑터의 행위가 추상화된 인터페이스(RentalProducer)에 의존함을 주목할 수 있다.
 
-### RentalServiceImpl.java
-```java
-@Override
-public void updateBookStatus(Long bookId, String bookStatus) 
-throws ExecutionException, InterruptedException, JsonProcessingException {
-    rentalProducer.updateBookStatus(bookId, bookStatus);
-}
+메시지를 카프카에 직접 던지는 구현부분은 아웃 바운드 어답터 영역에서 살펴보겠다. 
 
-@Override
-public void savePoints(Long userId) throws ExecutionException, InterruptedException, JsonProcessingException {
-    rentalProducer.savePoints(userId, pointPerBooks);
-}
 
-@Override
-public void updateBookCatalog(Long bookId, String eventType) throws InterruptedException, ExecutionException, JsonProcessingException {
-    rentalProducer.updateBookCatalogStatus(bookId, eventType);
-}
-```
 다음은 반납처리의 서비스 흐름을 살펴보자.
 
 ### RentalService.java
@@ -364,8 +369,9 @@ public Rental returnBook(Long userId, Long bookId) throws ExecutionException, In
     rental = rental.returnbook(bookId);
     rental = rentalRepository.save(rental);
 
-    updateBookStatus(bookId, "AVAILABLE");
-    updateBookCatalog(bookId, "RETURN_BOOK");
+    rentalProducer.updateBookStatus(bookId, "AVAILABLE"); 
+    rentalProducer.updateBookCatalog(bookId, "RETURN_BOOK"); 
+
 
     return rental;
 }
@@ -437,7 +443,7 @@ public ResponseEntity<RentalDTO> rentBooks(@PathVariable("userid") Long userid, 
     BookInfoDTO bookInfoDTO = bookInfoResult.getBody();
     log.debug("book info list", bookInfoDTO.toString());
 
-    Rental rental= rentalService.rentBook(userid, bookInfoDTO);
+    Rental rental= rentalService.rentBook(userid, bookInfoDTO.getId(), bookInfoDTO.getTitle());
     RentalDTO rentalDTO = rentalMapper.toDto(rental);
     return ResponseEntity.ok().body(rentalDTO);
 
@@ -476,7 +482,8 @@ public ResponseEntity returnBooks(@PathVariable("userid") Long userid, @PathVari
 ## 아웃바운드 어댑터 처리 
 이전의 서비스 흐름처리와 API 컨트롤러에서 아웃바운드 어댑터를 이용해서 데이터를 가져오고 보내는 흐름이 있다는 것을 확인했다. 
 즉 도서 대여 API에서 도서정보를 검증하고 상세정보를 요청하기 위해  도서서비스를 향한 아웃바운드 동기호출 아답터를 이용한다. 또한 대여 완료 시 도서서비스에 재고처리를 해야 하고, 카탈로그 서비스에  해당 도서가 대여 중이라는 처리를 해야 한다. 이 두개의 처리는 아웃바운드 아댑터를 통해 비동기 메시지 이벤트를 전송한다.  아래 그림은 그러한 과정을 보여준다. 
-![image](https://user-images.githubusercontent.com/15258916/87247736-8db4ea00-c490-11ea-8748-fa1b5602fffa.png)
+
+![image](https://user-images.githubusercontent.com/18453570/96417111-e3392980-122b-11eb-85cb-8099a0208255.png)
 
 지금부터는 이러한 아웃바운드 어댑터 처리의 구현에 대해 알아보자. 다음 순서로 살펴보겠다. 
 - [Feign 동기 메시지 호출처리](/contents/jhipster_feign.md)
