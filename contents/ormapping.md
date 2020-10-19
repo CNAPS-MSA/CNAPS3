@@ -87,4 +87,33 @@ public void setTeam(Team team){this.teams = team;//팀의 멤버중에 자기 �
 }}}
 ```
 
+일대다 관계는 엔티티를 하나이상 참조할 수 있다.(Collection, List, Map, Set)
+본인 테이블에 외래 키가 있으면 엔티티의 저장과 연관관계 처리를 INSERT SQL 한 번으로 끝낼 수 있지만, 다른 테이블에 외래 키가 있기때문에,
+연관관계 처리를 위한 UPDATE SQL을 추가로 실행해야 한다.
+따라서 일대다 단방향 매핑보다는 다대일 양방향 매핍을 사용하는 것이 좋은 것 같다. 일대다 단뱡향 은 다른 테이블에서 외래키를 관리해야 하기 때문이다.
+
+```java
+</pre>/Entity
+NoArgsConstructor
+@Table(name = "T_STUDENT")
+public class Student extends AbstractEntity{ 
+@Column(name = "STUDENT_NAME")
+private String username;
+} /** <pre>* 일대다 단방향[1:N] 샘플*
+
+@Entity
+@NoArgsConstructor
+@Table(name = "T_SCHOOL")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "SCHOOL_ID"))})
+public class School extends AbstractEntity implements AggregateRoot 
+{ 
+@Column(name = "SCHOOL_NAME")
+private String name; //Student 마다 각각의 외래키를 가지고 있다. 본인이 아닌 다른테이블에 관리
+@JoinColumn(name = "SCHOOL_ID")
+private List<Student> student = new ArrayList<>();
+}
+```
+
+
+
 
