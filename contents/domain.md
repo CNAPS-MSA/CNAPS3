@@ -27,9 +27,9 @@
 
 
 ### 2.2 도서(Book)서비스의 도메인모델
-![image](https://user-images.githubusercontent.com/15258916/96394482-157f6280-11fd-11eb-8cfc-e2fc5e20f918.png)
+![image](https://user-images.githubusercontent.com/15258916/96394638-7c048080-11fd-11eb-9b2f-884d18369c5d.png)
 
 ### 2.3 카탈로그(Catalog)서비스의 도메인모델
-![image](https://user-images.githubusercontent.com/15258916/96394498-1fa16100-11fd-11eb-9795-83ff74670351.png)
+![image](https://user-images.githubusercontent.com/15258916/96394649-81fa6180-11fd-11eb-866b-55a6124aae69.png)
 
 
