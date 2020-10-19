@@ -109,26 +109,25 @@ BookId를 받고, bookService에 도서 정보를 가져오는 메소드 호출�
 ```java
     @GetMapping("/books/bookInfo/{bookId}")
     public ResponseEntity<BookInfoDTO> findBookInfo(@PathVariable("bookId") Long bookId){
-        BookInfoDTO bookInfoDTO = bookService.findBookInfo(bookId);
+        Book book = bookService.findBookInfo(bookId); 
+        BookInfoDTO bookInfoDTO = new BookInfoDTO(bookId, book.getTitle());
         log.debug(bookInfoDTO.toString());
         return ResponseEntity.ok().body(bookInfoDTO);
     }
+
 ```
 
 ### BookServiceImpl.java
 ```java
-@Override
-@Transactional
-public BookInfoDTO findBookInfo(Long bookId) {
-    BookInfoDTO bookInfoDTO = new BookInfoDTO();
-    Book book = bookRepository.findById(bookId).get();
-    bookInfoDTO.setId(book.getId());
-    bookInfoDTO.setTitle(bookRepository.findById(book.getId()).get().getTitle());
-    return bookInfoDTO;
-}
+  @Override
+   @Transactional
+    public Book findBookInfo(Long bookId) {
+       return bookRepository.findById(bookId).get(); 
+    } 
+
 ```
-받은 BookId로 해당 도서를 찾고, BookInfo로 만들어 리스트로 변환시켰다.
-도서서비스에도 BookInfoDTO가 존재해야 한다.
+받은 BookId로 해당 도서를 찾고, RestController에서 Book객체를 전달 DTO인 BookInfo로 만들어 변환한다.
+따라서, 도서서비스에도 BookInfoDTO가 존재해야 한다.
 
 ### BookInfoDTO.java
 
@@ -143,7 +142,6 @@ import lombok.Setter;
 import java.io.Serializable;
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class BookInfoDTO implements Serializable {
     private Long id;
