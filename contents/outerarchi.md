@@ -40,8 +40,6 @@ VM 및 자체컨테이너기반 솔루션
 - [spring cloud](https://spring.io/projects/spring-cloud)
 
 ## 사례
-- 도서대여시스템 구성도
-![도서대여시스템](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ac.jpg)  
 
 ## 구현 할 DEV 아키텍처 개념도 
 ![image](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/dev.jpg)
@@ -64,6 +62,6 @@ VM 및 자체컨테이너기반 솔루션
 - [벡엔드서비스 구현전에 각 service를 gateway의 end-point에 등록해야 한다.](/contents/endpointadd.md)
 
 
-
-- 쿠버네티스 기반
+### 쿠버네티스 기반 최종 도서대여시스템 구성도
+![도서대여시스템](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/ac.jpg)  
  
