@@ -15,8 +15,12 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|/books/bookInfo/{bookId}|
 |Method|GET|
-|Request| |
-|Response| |
+|Request|http://localhost:8080/books/bookInfo/10001 |
+|Response|{  
+"id": 1,
+  "title": "마이크로서비스 패턴"
+}
+|
 
 리소스로 예를 들면 /books/findBookInfo/10001를 GET방식으로 호출하므로 
 10001의 일련번호 서적 정보를 조회한다. 
@@ -25,8 +29,18 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|/in-stock-books|
 |Method|POST|
-|Request|inStockBookDTO|
-|Response| |
+|Request|http://localhost:8080/in-stock-books/inStockBookDTO|
+|Response| {
+  "id": 4,
+  "title": "Example Book",
+  "description": "books",
+  "author": "author",
+  "publisher": "pub1",
+  "isbn": 10,
+  "publicationDate": "2020-10-15",
+  "source": "Donated"
+}
+|
 
 /in-stock-books에 requestBody형식으로 입고 도서 정보를 등록한다.
 
@@ -34,8 +48,20 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|/books/{inStockId}|
 |Method|POST|
-|Request|bookDTO|
-|Response| |
+|Request|http://localhost:8080/books/1001/bookDTO|
+|Response| {
+  "id": 4,
+  "title": "Example Book",
+  "description": "books",
+  "author": "author",
+  "publisher": "pub1",
+  "isbn": 10,
+  "publicationDate": "2020-10-15",
+  "classification": "Arts",
+  "bookStatus": "AVAILABLE",
+  "location": "JEONGJA"
+}
+|
 
 예를 들면 /books/10001를 post방식으로 호출하므로 
 신규도서정보를 requestBody형식으로 받아와 도서를 등록하고, 입고도서 일련번호 10001에 해당하는 도서는 입고도서에서 삭제된다.
@@ -239,84 +265,30 @@ public class BookServiceImpl implements BookService {
 도서정보조회 기능은 Rental 서비스의 도서 대여 기능과 관련된 것으로, Rental 서비스의 동기 호출 응답한다.
 동기호출 매커니즘은 [Feign 동기 메세지 호출처리](/contents/jhipster_feign.md)에서 확인할 수 있다.
 
-도서 정보업데이트 기능은 외부 서비스인 Rental서비스, BookCatalog 서비스와 이벤트를 수신/발신해야하기 때문에 외부 어댑터 개발에서 살펴보자. 
+도서 서비스의 CRUD를 위한 기본 인터페이스는 아래와 같다.
 
-
-## 내부영역 - 레파지토리 개발
-
-레파지토리는 엔티티당 1개식 만든다.
-
-다음은 BookRepository 인터페이스이다. 
+### BookService.java
 
 ```java
-@SuppressWarnings("unused")
-@Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
-}
-```
+public interface BookService {
 
-다음은 InStockBookRepository 인터페이스인데 제목으로 도서찾는 기능을 추가했다. 
+...(중략)...
+//대출도서 등록
+Book registerNewBook(Book book, Long inStockId) 
+throws InterruptedException, ExecutionException, JsonProcessingException;
+//대출도서 수정
+Book updateBook(Book book) 
+throws InterruptedException, ExecutionException, JsonProcessingException;
+//대출도서 삭제
+void delete(Long id) throws InterruptedException, ExecutionException, JsonProcessingException;
 
-```java
-@SuppressWarnings("unused")
-@Repository
-public interface InStockBookRepository extends JpaRepository<InStockBook, Long> {
-    Page<InStockBook> findByTitleContaining(String title, Pageable pageable);
-}
-```
-사용자가 도서의 제목을 모두 입력하지 않아도 조회할 수 있도록 `findByContaining`로 조회하도록 하였다. 
-
-
-## 외부영역 - REST 컨트롤러 개발
-
-프론트에 제공하는 REST API는 다음 기능을 제공해야 한다.  
-
-- 도서정보조회
-- 입고도서등록
-- 도서등록
-- 도서수정
-- 도서삭제
-
-입고도서 등록은 단순히 InstockBook Entity 생성/저장이기 때문에 생략하였다.
-도서 정보조회 API는 GET방식으로 ("/books/bookInfo/{bookId}")으로 선언하였다. 도서 조회 비즈니스로직 처리는 bookService.findBookInfo로 위임하였다.
-도서 등록/수정/삭제는 클라이언트 요청을 받은 후 도서 서비스를 호출하여 위임하였으며, bookCatalog로 이벤트를 전송하기 때문에 아웃바운드 어댑터 개발에서 살펴보도록한다.
-
-### BookResource.java
-
-```java
-@RestController
-@RequestMapping("/api")
-public class BookResource {
-
-    ...(중략)...
-    
-    //도서정보조회
-    @GetMapping("/books/bookInfo/{bookId}")
-    public ResponseEntity<BookInfoDTO> findBookInfo(@PathVariable("bookId") Long bookId){
-        Book book = bookService.findBookInfo(bookId);
-        BookInfoDTO bookInfoDTO = new BookInfoDTO(bookId, book.getTitle());
-        log.debug(bookInfoDTO.toString());
-        return ResponseEntity.ok().body(bookInfoDTO);
-    }   
 }
 
+
 ```
-
-도서 정보 조회 API 처리 흐름을 살펴보면
-- Http Get 방식으로 조회할 도서의 id를 받는다. 
-- 도서 서비스를 호출하여 조회할 도서를 반환 받는다.
-- Rental서비스로 반환할 BookInfoDTO를 생성한다.
-- 도서정보조회 API는 Rental 서비스에서 호출하였기 때문에 Rental 서비스로 요청결과를 반환한다. 
-
-
-## 외부영역 - 아웃바운드 어댑터 개발
- 
-도서서비스는 도서가 등록/수정/삭제 되었을 때, 사용자가 업데이트된 도서 정보를 조회할 수 있도록 Catalog서비스에 도서 정보를 전송해야 한다.
-따라서, 도서 등록/수정/삭제 시 비동기 메시지가 카프카로 전송되게 한다.
-
-도서등록/수정/삭제 기능이 존재하는 BookServiceImpl 서비스에서 도서 등록/수정/삭제시 비동기 호출로 이벤트를 처리하도록 구현해 보자.
-
-우선 도메인이벤트를 만들자.
+도서서비스는 도서가 등록/수정/삭제 되었을 때, 사용자가 업데이트된 도서 정보를 조회할 수 있도록 도서 카탈로그 서비스에 도서 정보를 전송해야 한다. 따라서, 도서 등록/수정/삭제 시 비동기 메시지가 카프카로 전송되게 한다.
+도서 등록/수정/삭제 기능이 존재하는 BookServiceImpl 서비스에서 도서 등록/수정/삭제 시 비동기 호출로 이벤트를 처리하도록 구현해 보자.
+먼저 도서의 변경내역을 담는 도메인이벤트를 만든다.
 
 ### BookChanged.java
 
@@ -328,144 +300,57 @@ public class BookResource {
 public class BookChanged {
 
     private String title;
-
     private String description;
-
     private String author;
-
     private String publicationDate;
-
     private String classification;
-
     private Boolean rented;
-
-    private String eventType;
-
+    private String eventType; 
     private Long rentCnt;
-
     private Long bookId;
-
-
 }
+
 ```
 
-도서 등록/수정/삭제 시 위의 도메인 이벤트를 생성하게 된다. BookChanged는 도서 정보와 어떤 이벤트인지 구분하기 위한 이벤트 타입을 담고 있다. 
+도서 등록/수정/삭제 시 위의 도메인 이벤트를 생성하게 된다. BookChanged는 도서의 정보와 도서 상태 변경이벤트가 어떤 종류인지 구분하기 위한 이벤트 타입을 담고 있다.
+다음은 위 인터페이스의 구현체로 도서 등록/수정/삭제 상세 로직을 담고 있다.
 
-다음은 이 도메인 이벤트를 생성해서 아웃바운드 어댑터를 호출하는 로직이다. 
-
-먼저 클라이언트의 요청이 들어오고 도서 서비스를 호출하는 REST 컨트롤러부터 살펴보자.
-
-### BookResource.java
+### BookServiceImpl.java
 
 ```java
-@RestController
-@RequestMapping("/api")
-public class BookResource {
-  ...(중략)...
 
-  //도서 등록
-    @PostMapping("/books/{inStockId}")
-    public ResponseEntity<BookDTO> registerBook(@RequestBody BookDTO bookDTO, @PathVariable Long inStockId) throws  URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException {
-        if (bookDTO.getId() != null) {
-            throw new BadRequestAlertException("A new book cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Book newBook = bookService.registerNewBook(bookMapper.toEntity(bookDTO), inStockId);
-        BookDTO result = bookMapper.toDto(newBook);
-        return ResponseEntity.created(new URI("/api/books/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-  //도서 정보 수정
-    @PutMapping("/books")
-    public ResponseEntity<BookDTO> updateBook(@RequestBody BookDTO bookDTO) throws URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException {
-        log.debug("REST request to update Book : {}", bookDTO);
-        if (bookDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        Book book = bookService.updateBook(bookMapper.toEntity(bookDTO));
-        BookDTO result = bookMapper.toDto(book);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookDTO.getId().toString()))
-            .body(result);
-    }
-
-  //도서 삭제
-   @DeleteMapping("/books/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
-        log.debug("REST request to delete Book : {}", id);
-        bookService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
-    }
-
-
-}
-```
-
-REST 컨트롤러에서 도서 등록/수정/삭제에 대한 클라이언트의 요청이 들어오면 해당 도서를 등록/수정/삭제하는 로직을 수행한다.
-
-도서 등록의 로직은 다음과 같다.
-- 입고도서 id와 등록할 도서 정보를 담고있는 bookDTO를 받는다. 
-- 도서 서비스를 호출하여 위임한 후 결과를 클라이언트에 반환한다.
-
-도서 수정의 로직은 다음과 같다.
-- 수정할 도서 정보를 담고있는 bookDTO를 받는다.
-- 도서 서비스를 호출하여 위임한 후 결과를 클라이언트에 반환한다.
-
-도서 삭제의 로직은 다음과 같다.
-- 삭제할 도서의 id를 받는다.
-- 도서 서비스를 호출하여 위임한 후 결과를 클라이언트에 반환한다.
-
-### BookService.java
-
-```java
-public interface BookService {
-
-...(중략)...
-Book registerNewBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException;
-
-Book updateBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException;
-
-void delete(Long id) throws InterruptedException, ExecutionException, JsonProcessingException;
-
-}
-```
-컨트롤러에서 호출한 도서 생성/저장/삭제 메소드이다.
-
-### BookServiceImple.java
-
-```java
 @Service
 @Transactional
 public class BookServiceImpl implements BookService {
 
 ...(중략)...
-    
-    //도서 등록
+    //대출도서 등록
     @Override
-    public Book registerNewBook(Book book, Long inStockId)throws InterruptedException, ExecutionException, JsonProcessingException {
-        Book newBook =bookRepository.save(book);
-        inStockBookService.delete(inStockId);
-        sendBookCatalogEvent("NEW_BOOK",newBook.getId()); //send kafka - bookcatalog
+    public Book registerNewBook(Book book, Long inStockId) 
+throws InterruptedException, ExecutionException, JsonProcessingException {
+        Book newBook =bookRepository.save(book);  
+        inStockBookService.delete(inStockId);    
+        sendBookCatalogEvent("NEW_BOOK",newBook.getId()); 
         return newBook;
     }
-
-
+    //대출도서 수정
     @Override
-    public Book updateBook(Book book) throws InterruptedException, ExecutionException, JsonProcessingException {
+    public Book updateBook(Book book) 
+throws InterruptedException, ExecutionException, JsonProcessingException {
         Book updatedBook = bookRepository.save(book);
-        sendBookCatalogEvent("UPDATE_BOOK",book.getId());
+        sendBookCatalogEvent("UPDATE_BOOK",book.getId()); 
         return updatedBook;
     }
 
-    @Override
-    public void delete(Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
+   //대출도서 삭제
+@Override
+    public void delete(Long id)
+ throws InterruptedException, ExecutionException, JsonProcessingException {
         log.debug("Request to delete Book : {}", id);
-        sendBookCatalogEvent("DELETE_BOOK", id);
-        bookRepository.deleteById(id);
+        sendBookCatalogEvent("DELETE_BOOK", id);  
+        bookRepository.deleteById(id); 
     }
 
-    
 }
 ```
 
@@ -473,16 +358,7 @@ public class BookServiceImpl implements BookService {
 - 도서 수정 메소드는 updateBook으로 컨드롤러에서 전달받은 Book을 저장한 후, sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `UPDATE_BOOK`이다.
 - 도서 삭제 메소드는 deleteBook으로 sendBookCatalogEvent를 호출하여 비동기 이벤트를 전송한다. 이때, 이벤트 타입은 `DELETE_BOOK`이다. 이후, 컨드롤러에서 전달받은 bookId로 도서를 삭제한다. 
 
-```java
-public interface BookService {
-
-...(중략)...
-
-void sendBookCatalogEvent(String eventType, Long bookId) throws InterruptedException, ExecutionException, JsonProcessingException;
-
-}
-```
- 도서 Catalog 서비스에 발송할 이벤트를 생성하는 메소드이다. 이벤트 타입과 도서id를 받는다.
+그럼 이제 도서 카탈로그 서비스로 비동기 이벤트를 전송할 때 호출하는 sendBookCatalogEvent메소드를 살펴보자. sendBookCatalogEvent 메소드는 이벤트 타입에 따라 도서 카탈로그 서비스에 이벤트를 발송할 메소드를 구분하기 위한 용도이다.
 
 
 ### BookServiceImpl.java
@@ -529,32 +405,157 @@ Catalog에 전송할 비동기 이벤트를 생성하는 메소드이다.
   - 도서의 생성/수정의 경우 bookProducer.sendBookCreateEvent를 호출하고
   - 도서의 삭제의 경우 bookProducer.sendBookDeleteEvent를 호출한다.
 
-다음은 아웃바운드 어댑터이다.
 
-### BookProducer.java
+## 내부영역 - 레파지토리 개발
+
+레파지토리는 엔티티당 1개식 만든다.
+
+다음은 BookRepository 인터페이스이다. 
+
+```java
+@SuppressWarnings("unused")
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+}
+```
+
+다음은 InStockBookRepository 인터페이스인데 제목으로 도서찾는 기능을 추가했다. 
+
+```java
+@SuppressWarnings("unused")
+@Repository
+public interface InStockBookRepository extends JpaRepository<InStockBook, Long> {
+    Page<InStockBook> findByTitleContaining(String title, Pageable pageable);
+}
+```
+사용자가 도서의 제목을 모두 입력하지 않아도 조회할 수 있도록 `findByContaining`로 조회하도록 하였다. 
+
+
+## 외부영역 - REST 컨트롤러 개발
+
+프론트에 제공하는 REST API는 다음 기능을 제공해야 한다.  
+
+- 도서정보조회
+- 입고도서등록
+- 도서등록
+- 도서수정
+- 도서삭제
+
+입고도서 등록은 단순히 InstockBook Entity 생성/저장이기 때문에 생략하였다.
+도서 정보조회 API는 GET방식으로 ("/books/bookInfo/{bookId}")으로 선언하였다. 도서 조회 비즈니스로직 처리는 bookService.findBookInfo로 위임하였다.
+도서 등록/수정/삭제는 클라이언트 요청을 받은 후 도서 서비스를 호출하여 위임하였다.
+
+### BookResource.java
+
+```java
+@RestController
+@RequestMapping("/api")
+public class BookResource {
+
+    ...(중략)...
+    
+    //도서정보조회
+    @GetMapping("/books/bookInfo/{bookId}")
+    public ResponseEntity<BookInfoDTO> findBookInfo(@PathVariable("bookId") Long bookId){
+        Book book = bookService.findBookInfo(bookId);
+        BookInfoDTO bookInfoDTO = new BookInfoDTO(bookId, book.getTitle());
+        log.debug(bookInfoDTO.toString());
+        return ResponseEntity.ok().body(bookInfoDTO);
+    }   
+}
+
+```
+
+도서 정보 조회 API 처리 흐름을 살펴보면
+- Http Get 방식으로 조회할 도서의 id를 받는다. 
+- 도서 서비스를 호출하여 조회할 도서를 반환 받는다.
+- Rental서비스로 반환할 BookInfoDTO를 생성한다.
+- 도서정보조회 API는 Rental 서비스에서 호출하였기 때문에 Rental 서비스로 요청결과를 반환한다. 
+
+다음은 대여도서 등록, 수정, 삭제 API 이다. 대여도서 등록, 수정, 삭제 API도 RestController에서는 특별한 기능이 없다.
+
+### BookResource.java
+
+```java
+@RestController
+@RequestMapping("/api")
+public class BookResource {
+  ...(중략)...
+
+  //대출도서 정보 등록
+  @PostMapping("/books/{inStockId}")
+  public ResponseEntity<BookDTO> registerBook(@RequestBody BookDTO bookDTO, @PathVariable Long inStockId). throws  URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException
+    {
+        if (bookDTO.getId() != null)
+    {
+       throw new BadRequestAlertException("A new book cannot already have an ID", ENTITY_NAME, "idexists");
+       }
+    Book newBook = bookService.registerNewBook(bookMapper.toEntity(bookDTO), inStockId);
+    BookDTO result = bookMapper.toDto(newBook);
+    return ResponseEntity.created(new URI("/api/books/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+  //대출도서 정보수정
+    @PutMapping("/books")
+    public ResponseEntity<BookDTO> updateBook(@RequestBody BookDTO bookDTO) throws URISyntaxException, InterruptedException, ExecutionException, JsonProcessingException 
+    {
+        log.debug("REST request to update Book : {}", bookDTO);
+        if (bookDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        Book book = bookService.updateBook(bookMapper.toEntity(bookDTO));
+        BookDTO result = bookMapper.toDto(book);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bookDTO.getId().toString()))
+            .body(result);
+    }
+
+  //대출도서 정보 삭제
+   @DeleteMapping("/books/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
+        log.debug("REST request to delete Book : {}", id);
+        bookService.delete(id);
+        return ResponseEntity.noContent()
+        .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME,id.toString())).build();
+    }
+
+}
+
+```
+
+흐름을 간단히 살펴보면REST 컨트롤러에서 도서 등록/수정/삭제에 대한 클라이언트의 요청이 들어오면 해당 앞서 작성한 도서를 등록/수정/삭제하는 서비스의 로직에 위임하여 수행한다.
+- 도서 등록 요청이 들어오면 입고도서 id와 등록할 도서 정보를 담고있는 bookDTO를 받는다. 그 다음, 도서 서비스의 도서 등록 메서드를 호출하여 bookDTO를 넘겨 도서 등록의 책임을 결과를 클라이언트에 반환한다.
+- 도서 수정 요청이 들어오면 수정할 도서 정보를 담고있는 bookDTO를 받아, 도서 서비스를 호출하여 위임한 후 결과를 클라이언트에 반환한다.
+- 도서 삭제 요청도 마찬가지로 삭제할 도서의 Id를 받아 도서 서비스를 호출하여 위임한 후 결과를 클라이언트에 반환한다.
+
+## 외부영역 - 아웃바운드 어댑터 개발
+ 
+이제 도서 카탈로그 서비스로 이벤트를 전송할 때 호출되는 아웃바운드 어댑터인 BookProducerImpl을 살펴보자.
+
+### BookProducerImpl.java
 
 ```java
 
 @Service
-public class BookProducer {
+public class BookProducerImpl implements BookProducer {
     ...(중략)...
-    public PublishResult sendBookCreateEvent(BookChanged bookChanged)throws ExecutionException, InterruptedException, JsonProcessingException{
-
+    public void sendBookCreateEvent(BookChanged bookChanged) throws ExecutionException, InterruptedException, JsonProcessingException{
         String message = objectMapper.writeValueAsString(bookChanged);
-        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
-        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
+        producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
+        
     }
 
-    public PublishResult sendBookDeleteEvent(BookChanged bookDeleteEvent)throws ExecutionException, InterruptedException, JsonProcessingException{
-
+    public void sendBookDeleteEvent(BookChanged bookDeleteEvent) throws ExecutionException, InterruptedException, JsonProcessingException{
         String message = objectMapper.writeValueAsString(bookDeleteEvent);
-        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
-        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
+        producer.send(new ProducerRecord<>(TOPIC_CATALOG, message)).get();
+        
     }
 }
+
 ```
 
-도서 서비스에서 호출한 아웃바운드 어댑터, BookProducer이다.
 sendBookCreateEvent와 sendBookDeleteEvent 메소드는 도서 서비스로부터 전달받은 CatalogChanged를 카프카 메세지로 변환하여 이벤트를 전송한다. 이때 Topic은 "topic_catalog"로 명명하였다.
 
 
