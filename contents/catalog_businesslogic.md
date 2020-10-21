@@ -16,16 +16,62 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|/book-catalogs/top-10|
 |Method|GET|
-|Request| |
-|Response| |
+|Request| http://localhost:8080/api/book-catalogs/top-10 |
+|Response| [
+  {
+    "id": "5f87fbf90863851a02904b54",
+    "title": "마이크로서비스 패턴",
+    "description": "책",
+    "author": "김영한",
+    "publicationDate": "2020-10-15",
+    "classification": "BusinessMoney",
+    "rented": false,
+    "rentCnt": 3,
+    "bookId": 1
+  },
+  {
+    "id": "5f87fc000863851a02904b55",
+    "title": "JPA프로그래밍",
+    "description": "책",
+    "author": "크리스 리처드슨",
+    "publicationDate": "2020-10-15",
+    "classification": "BusinessMoney",
+    "rented": false,
+    "rentCnt": 2,
+    "bookId": 2
+  }
+]
+ |
+
 
 대여 횟수가 많은 순으로 상위 10개의 도서목록을 조회한다.
 
+|API명|도서목록 검색|
+|----|------|
+|리소스URI|/book-catalogs/title/{title}|
+|Method|GET|
+|Request|http://localhost:8080/api/book-catalogs/title/마이크로|
+|Response| [
+  {
+    "id": "5f87fbf90863851a02904b54",
+    "title": "마이크로서비스 패턴",
+    "description": "책",
+    "author": "김영한",
+    "publicationDate": "2020-10-15",
+    "classification": "BusinessMoney",
+    "rented": false,
+    "rentCnt": 3,
+    "bookId": 1
+  }
+]
+
+ |
+
+
 ## 도메인 모델링
 
-BookCatalog 서비스는 도서 정보와 도서 목록 조회를 위한 서비스이다. Book 서비스에서 도서가 등록/수정/삭제 됨에 따라 BookCatalog 또한 등록/수정/삭제된다.
-또한, BookCatalog는 조회와 검색을 위한 서비스인만큼 NoSQL인 MongoDB로 구현하였다.
-
+BookCatalog 서비스는 도서 정보와 도서 목록 조회를 위한 서비스이다. 따라서, 사용자가 도서 조회/검색 시 필요한 속성들만을 가지고 있다. 빠르고 쉽게 도서 정보를 확인할 수 있는 필수 정보인 도서명, 설명, 작가, 출판사 ,대여 여부, 대출횟수등으로 구성된다. 
+BookCatalog는 엔티티이며 어그리게잇이다.
 ## 유스케이스 흐름
 
 ## 내부영역 - 도메인 모델 개발
@@ -241,14 +287,6 @@ public interface BookCatalogService {
 
     //kafka 이벤트 종류별 카테고라이징 처리
     void processCatalogChanged(BookChanged bookChanged);
-    //신규 도서 등록 
-    BookCatalog registerNewBook(BookChanged bookChanged);
-    //도서 삭제
-    void deleteBook(BookChanged bookChanged);
-    //도서 상태 수정
-    BookCatalog updateBookStatus(BookChanged bookChanged);
-    //도서 정보 수정
-    BookCatalog updateBookInfo(BookChanged bookChanged);
 
 }
 ```
@@ -298,21 +336,12 @@ public class BookCatalogServiceImpl implements BookCatalogService {
    ...(중략)...
 
     //신규도서 등록
-    @Override
-    public BookCatalog registerNewBook(CatalogChanged catalogChanged) {
-        System.out.println("register new book");
-        BookCatalog bookCatalog = new BookCatalog();
-        bookCatalog.setBookId(catalogChanged.getBookId());
-        bookCatalog.setAuthor(catalogChanged.getAuthor());
-        bookCatalog.setClassification(catalogChanged.getClassification());
-        bookCatalog.setDescription(catalogChanged.getDescription());
-        bookCatalog.setPublicationDate(LocalDate.parse(catalogChanged.getPublicationDate(), fmt));
-        bookCatalog.setRented(catalogChanged.getRented());
-        bookCatalog.setTitle(catalogChanged.getTitle());
-        bookCatalog.setRentCnt(catalogChanged.getRentCnt());
-        bookCatalog= bookCatalogRepository.save(bookCatalog);
+    private BookCatalog registerNewBook(BookChanged bookChanged) {
+        BookCatalog bookCatalog = BookCatalog.registerNewBookCatalog(bookChanged);
+        bookCatalog= bookCatalogRepository.save(bookCatalog); 
         return bookCatalog;
     }
+
 }
 ```
 
@@ -346,34 +375,26 @@ public class BookCatalogServiceImpl implements BookCatalogService {
    
    ...(중략)...
 
-    //도서 상태 수정
-    @Override
-    public BookCatalog updateBookStatus(BookChanged bookChanged) {
-        BookCatalog bookCatalog = bookCatalogRepository.findByBookId(bookChanged.getBookId());
-        if(catalogChanged.getEventType().equals("RENT_BOOK")) {
-            Long newCnt = bookCatalog.getRentCnt() + (long) 1;
-            bookCatalog.setRentCnt(newCnt);
-            bookCatalog.setRented(true);
-            bookCatalog= bookCatalogRepository.save(bookCatalog);
-        }else if(catalogChanged.getEventType().equals("RETURN_BOOK")){
-            bookCatalog.setRented(false);
-            bookCatalog= bookCatalogRepository.save(bookCatalog);
-
+    //도서 대출 상태 수정
+    private BookCatalog updateBookStatus(BookChanged bookChanged) {
+       BookCatalog bookCatalog = bookCatalogRepository.findByBookId(bookChanged.getBookId()); 
+       if(catalogChanged.getEventType().equals("RENT_BOOK")) {
+          bookCatalog = bookCatalog.rentBook(); 
         }
-        return bookCatalog;
-
+        else if(catalogChanged.getEventType().equals("RETURN_BOOK")){
+          bookCatalog = bookCatalog.returnBook(); 
+        }
+        bookCatalog= bookCatalogRepository.save(bookCatalog); 
+      return bookCatalog;
     }
+
 }
 ```
 
 BookChanged의 eventType이 "RENT_BOOK" 또는 "RETURN_BOOK" 일때 실행시키는 메소드이다.
 처리 흐름은 다음과 같다.
 - 전달받은 BookChanged의 해당 도서 id로 해당 BookCatalog를 찾는다.
-- 이벤트 타입이 "RENT_BOOK"인 경우
-  - 대여 횟수를 +1 하고, 대여 중으로 상태를 수정한다.
-- 이벤트 타입이 "RETURN_BOOK"인 경우
-  - 대여 상태를 대여 가능으로 수정한다.
-- 수정한 bookCatalog를 저장한다.
+- 각 이벤트 타입에 따라 BookCatalog의 rentBook과 returnBook을 호출하여 대여 상태를 변경하고 이를 최종 레파지토리에 저장한다.
 
 ### BookCatalogServiceImpl.java
 
@@ -384,18 +405,11 @@ public class BookCatalogServiceImpl implements BookCatalogService {
    ...(중략)...
 
     //도서 정보 수정
-    @Override
-    public BookCatalog updateBookInfo(BookChanged bookChanged) {
-        BookCatalog bookCatalog = bookCatalogRepository.findByBookId(bookChanged.getBookId());
-        bookCatalog.setAuthor(bookChanged.getAuthor());
-        bookCatalog.setClassification(bookChanged.getClassification());
-        bookCatalog.setDescription(bookChanged.getDescription());
-        bookCatalog.setPublicationDate(LocalDate.parse(bookChanged.getPublicationDate(), fmt));
-        bookCatalog.setRented(bookChanged.getRented());
-        bookCatalog.setTitle(bookChanged.getTitle());
-        bookCatalog.setRentCnt(bookChanged.getRentCnt());
-        bookCatalogRepository.save(bookCatalog);
-        return bookCatalog;
+  public BookCatalog updateBookInfo(BookChanged bookChanged) {
+     BookCatalog bookCatalog = bookCatalogRepository.findByBookId(bookChanged.getBookId());
+     bookCatalog = bookCatalog.updateBookCatalogInfo(bookChanged);
+     bookCatalog = bookCatalogRepository.save(bookCatalog);
+     return bookCatalog;
     }
 
 }
@@ -403,5 +417,69 @@ public class BookCatalogServiceImpl implements BookCatalogService {
 
 BookChanged의 eventType이 "UPDATE_BOOK"일때 실행시키는 메소드로, 전달받은 BookChanged의 도서 id로 BookCatalog를 찾아 도서정보를 수정한다.
 
-## 단위테스트 수행
+위에 살펴본 것처럼 도서 카탈로그 생성,상태 변경,정보수정 책임을 모두 도메인 객체인 BookCatalog에 위임하여 처리하였다. 그럼 BookCatalog내 생성,상태 변경,수정과 관련된 메서드를 살펴보자. 
+
+
+### BookCatlaog.java
+
+```java
+Public class BookCatalog implements Serializable{
+…(중략)…
+
+//신규 도서 생성
+public static BookCatalog registerNewBookCatalog(BookChanged bookChanged){
+        BookCatalog bookCatalog = new BookCatalog();
+        bookCatalog.setBookId(bookChanged.getBookId());
+        bookCatalog.setAuthor(bookChanged.getAuthor());
+        bookCatalog.setClassification(bookChanged.getClassification());
+        bookCatalog.setDescription(bookChanged.getDescription());
+        bookCatalog.setPublicationDate(LocalDate.parse(bookChanged.getPublicationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        bookCatalog.setRented(bookChanged.getRented());
+        bookCatalog.setTitle(bookChanged.getTitle());
+        bookCatalog.setRentCnt(bookChanged.getRentCnt());
+        return bookCatalog;
+    }
+
+}
+
+
+```
+
+위는 신규 도서카탈로그 생성 메서드이다. BookCatalog내부에서 도서 카탈로그를 생성하고, BookChanged에 담긴 내용에 따라 도서 카탈로그 정보를 설정하여 반환한다. 
+
+```java
+//도서 대출 상태 수정. 대출 중으로 수정
+    public BookCatalog rentBook(){
+        this.setRentCnt(this.getRentCnt()+(long)1);
+        this.setRented(true);
+        return this;
+    }
+
+    //도서 대출 상태 수정 , 대출가능으로 수정
+    public BookCatalog returnBook(){
+        this.setRented(false);
+        return this;
+    }
+
+```
+
+위는 도서 상태 수정 시 호출되는 도메인 내부의 메서드이다. 수신한 이벤트 타입이 “RENT_BOOK”인 경우 도서 카탈로그 도메인 내부의 rentBook메서드를 호출한다. rentBook메서드는 대출 횟수를 +1하고 도서 상태를 대출 중으로 수정하여 반환한다.
+이벤트 타입이 “RETURN_BOOK”인 경우 대출 상태를 대출 가능으로 수정하여 반환한다.
+
+```java
+//도서 정보 수정
+    public BookCatalog updateBookCatalogInfo(BookChanged bookChanged){
+        this.setAuthor(bookChanged.getAuthor());
+        this.setClassification(bookChanged.getClassification());
+        this.setDescription(bookChanged.getDescription());
+        this.setPublicationDate(LocalDate.parse(bookChanged.getPublicationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        this.setRented(bookChanged.getRented());
+        this.setTitle(bookChanged.getTitle());
+        this.setRentCnt(bookChanged.getRentCnt());
+        return this;
+    }
+
+```
+위는 도서 정보 수정 시 호출되는 도메인 내부의 메서드이다. BookChanged내용을 받아 해당 내용에 따라 기존의 도서 카탈로그 내용을 수정한 뒤 반환한다.
+
 
