@@ -74,8 +74,27 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|"/users"|
 |Method|PUT|
-|Request|UserDTO|
-|Response| |
+|Request|http://localhost:8080/users/|
+| Response | {                                                  |
+|----------|----------------------------------------------------|
+|          | "id": 5,                                           |
+|          | "login": "user1",                                  |
+|          | "firstName": "string",                             |
+|          | "lastName": "string",                              |
+|          | "email": "user1@sample.com",                       |
+|          | "imageUrl": "string",                              |
+|          | "activated": true,                                 |
+|          | "langKey": "string",                               |
+|          | "createdBy": "anonymousUser",                      |
+|          | "createdDate": "2020-10-15T07:36:59.690910Z",      |
+|          | "lastModifiedBy": "system",                        |
+|          | "lastModifiedDate": "2020-10-15T07:47:47.155223Z", |
+|          | "authorities": [                                   |
+|          | "ROLE_USER",                                       |
+|          | "ROLE_ADMIN"                                       |
+|          | ],                                                 |
+|          | "point": 1120                                      |
+|          | }                                                  |
 
 리소스로 예를 들면 /users를 PUT방식으로 호출하여 requestBody로 UserDTO를 보내 사용자 정보를 수정한다.
 이때, 사용자 역할관리 또한 사용자 정보수정 방식으로 구현되었으며 ADMIN만 위 URI 접근이 허용된다.
@@ -84,8 +103,8 @@ Sample에서 보여줄 기능은 아래와 같다.
 |----|------|
 |리소스URI|"/users/latefee"|
 |Method|PUT|
-|Request|LatefeeDTO|
-|Response| |
+|Request|http://localhost:8080/users/latefee/|
+|Response|code 200|
 
 /users/latefee를 PUT방식으로 호출하여 LatefeeDTO를 받아 사용자의 정보와 연체료 정보를 받아 연체료 결제를 수행한다.
 
@@ -97,8 +116,10 @@ Sample에서 보여줄 기능은 아래와 같다.
 
 ## 유스케이스 흐름
 
-사용자 서비스의 경우, 기본적인 사용자 관리와 포인트 관리 기능을 포함하고 있는데 두 기능 모두 특별한 비즈니스 로직은 없다.
-사용자 관리는 관리자만이 사용자 역할 관리를 수행할 수 있으며, 포인트 관리 기능은 Rental 서비스의 동기/비동기 호출에 의해 적립 또는 결제되기 때문이다.
+사용자 생성 유스케이스 흐름은 사용자가 생성 시 도서카드가 생성되고, 포인트가 부여되는 흐름이다. 사용자는 사용자서비스에서 생성되지만 도서카드는 대출서비스에서 생성된다.
+
+다음 유스케이스 흐름은 포인트 적립,결제이다. 
+포인트 적립은 대출서비스에 대출,반납 시 적립되고 포인트 결제는 대출정지해제를 위해 대출서비스에서 요청된다. 따라서 둘다 대출서비스의 요청에 의해 발생되며 적립은 비동기 호출로 결제는 동기 호출로 요청된다.
 
 ## 내부영역 - 도메인 모델 개발
 
@@ -287,7 +308,7 @@ public class UserService {
         newUser.setPassword(encryptedPassword);
         ...(중략)...
         userRepository.save(newUser);
-        createRental(newUser.getId());
+        gatewayProducer.createRental(newUser.getId());
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -299,38 +320,15 @@ public class UserService {
         ...(중략)...
         user.setPoint(1000);
         userRepository.save(user);
-        createRental(user.getId());
+        gatewayProducer.createRental(user.getId());
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
     }
 
-    public void createRental(Long id) throws InterruptedException, ExecutionException, JsonProcessingException {
-        gatewayProducer.createRental(id);
-    }
 }
 ```
 
-사용자를 신규 등록한 뒤, createRental 메소드를 호출, gatewayProducer.createRental을 호출하여 비동기 호출로 Rental 서비스로 도서 카드를 생성하도록 한다.
-
-### GatewayProducer.java
-
-```java
-@Service
-public class GatewayProducer {
-  
-    public PublishResult createRental(Long userId) throws ExecutionException, InterruptedException, JsonProcessingException{
-
-        UserIdCreated userIdCreated = new UserIdCreated(userId);
-        String message = objectMapper.writeValueAsString(userIdCreated);
-        RecordMetadata metadata = producer.send(new ProducerRecord<>(TOPIC_RENTAL, message)).get();
-        return new PublishResult(metadata.topic(), metadata.partition(), metadata.offset(), Instant.ofEpochMilli(metadata.timestamp()));
+사용자를 신규 등록한 뒤, 아웃바운드 어댑터인  gatewayProducer.createRental을 호출하여 비동기 호출로 Rental 서비스로 도서 카드를 생성하도록 한다.
 
 
-    }
-
-}
-```
-
-아웃바운드 어댑터인 GatewayProducer.createRental은 사용자의 Id정보를 받아 UserIdCreated라는 도메인 이벤트를 생성한 뒤 Rental서비스가 구독 중인 Topic과 함께 kafka 메세지를 전송한다.
-전송된 메세지는 Rental 서비스의 인바운드 어댑터를 통해 소비되어 Rental(도서 카드)를 생성한다.
