@@ -89,7 +89,7 @@
 
 ## SPRINT FINAL
 - 통합테스트
-- 성능테스트
+- [성능테스트](https://engineering-skcc.github.io/performancetest/Cloud-환경-성능부하테스트/)
 - 데이터 이행
 
 ## 컨텐츠 및 교육교재
