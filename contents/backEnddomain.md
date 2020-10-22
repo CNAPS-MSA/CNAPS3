@@ -32,7 +32,7 @@
 
 - [백엔드서비스 구현 전, 각 Service에 Lombok을 적용하여 소스코드를 정리해보자.](/contents/jhipster_lombok.md)
 
-### 대여(Rental)서비스 
+### 대여(Rental)서비스 구현
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
@@ -43,14 +43,14 @@
 - [내부 Business Logic 구현하기 - 2:도서 연체/연체된 도서 반납기능](/contents/OverdueBook.md)
 - [내부 Business Logic 구현하기 - 3:도서 대여불가 해제처리 기능](/contents/releaseOverdue.md)
   
-### Book 서비스
+### Book 서비스 구현
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
   - 도서관리를 위한 서비스로 도서입고처리 및 운영자에게 기본관리기능을 제공한다. 
 - [내부 Business Logic 구현하기 - 1: 도서 관리 기능](/contents/book_businesslogic.md)
  
-### User 서비스
+### User 서비스 구현
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
@@ -59,7 +59,7 @@
  - [내부 Business Logic 구현하기 - 2: 포인트 관리 기능](/contents/user_point.md)
 
     
-### Catalog 서비스
+### Catalog 서비스 구현
 - 내부구조 : 헥사고널 + DDD 구조 + NoSQL DB
 - 외부패턴 : CQRS패턴 적용
 - 저장소처리 : OR매퍼인 Sring DATA 
@@ -81,18 +81,3 @@
 - Feign Client 사용 시 발생할 수 있는 외부 서비스의 에러를 처리할 수 있도록 예외처리를 구현한다.
   - [서비스 외부 에러 관리하기 - Feign Exception](https://engineering-skcc.github.io/msa/jhipster-feign/)
   
-## 테스트 시나리오
-1. 사용자 2명 등록한다. USER1,USER2
-2. USER2에게 운영자 권한을 준다.
-3. 운영자가 3권의 도서정보를 등록한뒤 입고처리한다.(2권은 대출가능,1권의 대여중)
-4. USER으로 로그인한다.
-5. USER1이 도서정보를 검색한다. 
-6. 대출가능한 도서를 2권 대출한다.
-    - 대여중인 도서는 대출할 수 없다.
-7. 대출한 도서중 1권을 반납한다.
-8. 2주가 지난도서는 연체된다.(1권을 연체처리한다.)
-9. 연체도서를 반납한다.
-10. USER1이 다시 도서를 대출하려고 하나 시스템은 대출불가 메시지를 보낸다.
-11. USER1은 연체일자를 확인하고 포인트로 가감하여 연체를 해제한다.
-12. USER1은 다시 대출가능상태가 되고 대출을 수행한다.
-
