@@ -10,7 +10,7 @@
 
 # Cloud / MSA 기반 마이크로서비스 개발 방법론
 
-![image](https://user-images.githubusercontent.com/18453570/96083152-8f5ed580-0ef7-11eb-8fa4-66c26bfc25fc.png)
+![image](https://user-images.githubusercontent.com/18652530/96830176-f0e1ef80-1475-11eb-8301-798117fa9913.png)
 
 # 프렉티스별 주요활동 & 산출물 
 
