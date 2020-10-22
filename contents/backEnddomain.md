@@ -57,6 +57,7 @@
 - 저장소처리 : OR매퍼인 Sring DATA 
 - 주요기능
   - 사용자관리, 포인트관리기능을 제공한다.
+  - frontEnd 기능수행, gateway 기능 
 - [내부 Business Logic 구현하기 - 1: 사용자 관리 기능 ](/contents/user_businesslogic.md)
 - [내부 Business Logic 구현하기 - 2: 포인트 관리 기능](/contents/user_point.md)
 - [소스 코드](https://github.com/CNAPS-MSA/gateway)
@@ -69,7 +70,7 @@
 - 주요기능
   - 도서검색 기능 최적화를 위해 CQRS패턴을 적용한 서비스로 도서목록 및 검색기능, 인기도서목록 기능 제공  
 - [내부 Business Logic 구현하기 - 1. Catalog 서비스관리 기능](/contents/catalog_businesslogic.md)
-- [소스 코드](https://github.com/CNAPS-MSA/usercatalog)
+- [소스 코드](https://github.com/CNAPS-MSA/bookcatalog)
 
    
 ### 게시판 서비스 
