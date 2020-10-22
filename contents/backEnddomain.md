@@ -42,7 +42,8 @@
 - [타서비스 비동기호출처리 : Kafka를 통한 EDA구현](/contents/jhipster_kafka.md)
 - [내부 Business Logic 구현하기 - 2:도서 연체/연체된 도서 반납기능](/contents/OverdueBook.md)
 - [내부 Business Logic 구현하기 - 3:도서 대여불가 해제처리 기능](/contents/releaseOverdue.md)
-  
+- [소스 코드](https://github.com/CNAPS-MSA/rental)
+
 ### Book 서비스 구현
 - 내부구조 : 헥사고널 + DDD 구조
 - 저장소처리 : OR매퍼인 Sring DATA 
@@ -68,6 +69,7 @@
 - 주요기능
   - 도서검색 기능 최적화를 위해 CQRS패턴을 적용한 서비스로 도서목록 및 검색기능, 인기도서목록 기능 제공  
 - [내부 Business Logic 구현하기 - 1. Catalog 서비스관리 기능](/contents/catalog_businesslogic.md)
+- [소스 코드](https://github.com/CNAPS-MSA/usercatalog)
 
    
 ### 게시판 서비스 
@@ -76,6 +78,7 @@
 - 주요기능 
   - 공지사항, 자유게시판, 댓글기능
   - [내부 Business Logic 구현하기 - 1. 게시판 기능(작업중)]
+- [소스 코드] (작업중)
 
 ### 예외 처리(Exception) 구현
 - 서비스 내부에서 발생할 수 있는 에러를 처리할 수 있도록 예외처리를 구현한다.
