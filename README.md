@@ -88,7 +88,7 @@
 - 데이터 이행 리허설
 
 ## SPRINT FINAL
-- 통합테스트
+- [통합테스트](https://engineering-skcc.github.io/msa/마이크로서비스테스트/)
 - [성능테스트](https://engineering-skcc.github.io/performancetest/Cloud-환경-성능부하테스트/)
 - 데이터 이행
 
