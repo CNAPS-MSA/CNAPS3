@@ -59,7 +59,7 @@
 - [내부아키텍처정의](/contents/innerarchi.md)  
 - [마이크로서비스 도출하기](/contents/ddd.md) 
 - [Product Backlog 도출](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide04-제품백로그도출/)
-- Service Spec 정의 : Update 예정
+- [Service Spec 정의](https://engineering-skcc.github.io/msa/ServiceSpec/)
 - [일감 크기 산정](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide05-일감크기추정/)
 - [Release Planning](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide06-릴리즈계획/)
 - [품질/소통 Planning](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide07-소통&품질/)
