@@ -16,7 +16,7 @@ Jhipser에서는 기본적으로 Lombok을 지원하지 않으나, Lombok API를
 	    <dependencyManagement>
 
   <artifactId>metrics-core</artifactId>
-     </dependency>
+     <dependency>
         <!-- jhipster-needle-maven-add-dependency -->	       
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -27,7 +27,7 @@ Jhipser에서는 기본적으로 Lombok을 지원하지 않으나, Lombok API를
 
     <build>	   
         <version>${jaxb-runtime.version}</version>
-        </path>	                           
+        <path>	                           
          <!-- jhipster-needle-maven-add-annotation-processor -->	                            
                 <groupId>org.projectlombok</groupId>
                     <artifactId>lombok</artifactId>
