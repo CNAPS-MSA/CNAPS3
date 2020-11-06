@@ -6,11 +6,14 @@
 1. GCP 콘솔 활면에서 상단의 터미널 아이콘 (그림 10.8 빨간 박스 영역) 을 선택하면 하단에 터미널 창이 열린다. 이제부터 터미널에서 작업을 진행하면 된다.
 <img width="1570" alt="10_6" src="https://user-images.githubusercontent.com/62231786/98325802-02f58d80-2033-11eb-9f18-8e399836dcd7.png">
 2. 소스를 다운받을 폴더를 생성하고 해당 폴더로 이동한다.
+
 ```
 $ mkdir cnaps && cd cnaps
 ```
+
 3.	깃헙에서 소스를 다운로드 받는다.
 - k8s, gateway, book, bookCatalog, rental
+
 ```
 $ git clone https://github.com/CNAPS-MSA/k8s.git
 $ git clone https://github.com/CNAPS-MSA/gateway.git
@@ -18,8 +21,10 @@ $ git clone https://github.com/CNAPS-MSA/book.git
 $ git clone https://github.com/CNAPS-MSA/bookCatalog.git
 $ git clone https://github.com/CNAPS-MSA/rental.git
 ```
+
 4.	도커 이미지를 빌드 후, 컨테이너 레지스트리에 푸시한다.
 - jib 라이브러리를 사용하면 별도의 도커 설치없이 도커 이미지를 빌드하고 컨테이너 레지스트리에 푸시까지 한 번에 수행할 수 있다.
+
 ```
 $ cd gateway
 $ ./mvnw package -Pprod -DskipTests jib:build -Dimage=gcr.io/$PROJECT_ID/gateway:latest
@@ -30,14 +35,18 @@ $ ./mvnw package -Pprod -DskipTests jib:build -Dimage=gcr.io/$PROJECT_ID/bookcat
 $ cd rental
 $ ./mvnw package -Pprod -DskipTests jib:build -Dimage=gcr.io/$PROJECT_ID/rental:latest
 ```
+
 - 콘솔 화면에서 Container Registry 의 이미지 메뉴로 이동하면 아래와 같이 방금 빌드한 도커 이미지가 등록된 것을 확인할 수 있다.
 <img width="1570" alt="10_9" src="https://user-images.githubusercontent.com/62231786/98325811-04bf5100-2033-11eb-91f2-fab906c2c772.png">
+
 ## 지속적 배포
 ### 애플리케이션 배포
 1.	쿠버네티스 설정 파일 폴더로 이동한다.
+
 ```
 $ ~/cnaps/k8s/
 ```
+
 2.	쿠버네티스 설정 파일 수정
 - 쿠버네티스  디플로이먼트 리소스 생성 시, 컨테이너 레지스트리에 등록한 이미지를 내려받을 수 있도록 아래와 같이 수정한다.
 - 아래 4개 파일 모두 프로젝트 ID 부분을 수정해준다.
@@ -45,6 +54,7 @@ $ ~/cnaps/k8s/
     - book-k8s/book-deployment.yml
     - bookcatalog-k8s/bookcatalog-deployment.yml
     - rental-k8s/rental-deployment.yml
+    
 ```
 <변경 전>
 ...
@@ -59,7 +69,9 @@ $ ~/cnaps/k8s/
             image: gcr.io/cnaps-project-286804/gateway
 ...
 ```
+
 3.	이제 쿠버네티스 리소스를 생성하는 쉘 스크립트를 실행한다. 해당 스크립트를 실행하면 각 서비스 설정 파일을 기반으로 리소스가 생성된다.
+
 ```
 $ ./kubectl-apply.sh -f
 configmap/application-config created
@@ -92,8 +104,10 @@ deployment.apps/rental-mariadb created
 service/rental-mariadb created
 service/rental created
 ```
-5.	쿠버네티스 리소스 상태 확인
+
+4.	쿠버네티스 리소스 상태 확인
 - 쿠버네티스 리소스 전체 조회를 한다. 해당 명령어로 서비스가 정상적으로 기동이 되었는지 확인할 수 있다. 모든 서비스가 아래와 같이 STATUS 항목이 모둔 Running 이면 정상적으로 기동된 것이다.
+
 ```
 $ kubectl get all
 NAME                                      READY   STATUS    RESTARTS   AGE
@@ -150,34 +164,46 @@ NAME                                   READY   AGE
 statefulset.apps/bookcatalog-mongodb   1/1     33m
 statefulset.apps/jhipster-registry     2/2     34m
 ```
+
 - 쿠버네티스 클러스터에 배포가 완료되면 아래 그림과 같은 모습이다. 애플리케이션은 게이트웨이 서비스를 통해 외부 네트워크와 통신하게 된다.
 <img width="1569" alt="10_11" src="https://user-images.githubusercontent.com/62231786/98325814-05f07e00-2033-11eb-854e-c814f26d1838.png">
+
 ### 오토스케일링
 위 그림을 보면 레지스트리를 제외한 나머지 서비스들은 모두 1개의 파드만 생성되어있다. 만약 도서 카탈로그의 서비스의 사용량이 증가하여 인스턴스를 늘리고 싶을 때는 어떻게 해야할까? 쿠버네티스에서는 간단하게 명령어를 통해 오토스케일링을 할 수 있다.<br>
+
 1.	오토스케일링 명령어를 수행한다.
+
 ```
 $ kubectl scale deployment bookcatalog --replicas=3
 ```
+
 2.	오토스케일링 결과를 확인한다.
 - 파드가 총 3개로 생성된 것을 확인할 수 있다.
+
 ```
 $ kubectl get pod | grep bookcatalog
 bookcatalog-675954cd6b-bzpvx   1/1     Running           0          4s
 bookcatalog-675954cd6b-kz8c6   1/1     Running           1          2m48s
 bookcatalog-675954cd6b-vn7hk   1/1     Running           0          5s
 bookcatalog-mongodb-0          1/1     Running           0          3m49s
+
 ```
+
 ### 서비스 확인
 1.	게이트웨이 서비스 리소스를 조회한다.
+
 ```
 $ kubectl get service/gateway
 NAME      TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)          AGE
 gateway   LoadBalancer   10.3.241.6   34.xx.xx.xxx   8080:31348/TCP   10m
 ```
+
 2.	웹 브라우저에서 1번에서 확인한 EXTERNAL-IP 에 접속한다. 포트까지 포함하여 http://EXTERNAL-IP:8080 로 접속하면 된다. 아래와 같이 게이트웨이 화면이 뜨면 애플리케이션이 정상적으로 배포된 것이다.
 <img width="1569" alt="10_12" src="https://user-images.githubusercontent.com/62231786/98325815-05f07e00-2033-11eb-9318-e9c58d057d7a.png">
+
 ### 서비스 삭제
 1.	쿠버네티스 클러스터에 생성한 리소스를 모두 삭제한다. 해당 리소스를 삭제하지 않고 두면 과금일 발생할 수 있어 실습 후에는 반드시 삭제한다.
+
 ```
 $ kubectl delete all --all
 pod "book-7f896fc975-cbw2t" deleted
@@ -216,7 +242,9 @@ deployment.apps "rental-mariadb" deleted
 statefulset.apps "bookcatalog-mongodb" deleted
 statefulset.apps "jhipster-registry" deleted
 ```
+
 2.	쿠버네티스 클러스터도 삭제한다.
+
 ```
 $ gcloud container clusters delete cnaps-cluster
 ```
