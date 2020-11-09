@@ -92,8 +92,8 @@
 - 데이터 이행
 
 ## 컨텐츠 및 교육교재
-- [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
-- [마이크로서비스 모델링](https://engineering-skcc.github.io/categories/#microservice-modeling)
+- [기술블로그 : MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
+- [전사교육과정: 마이크로서비스 모델링:(준비중)]
   - 마이크로로시스템 개념 및 MSA 패턴이해:교육교재 1 
   - 이벤트스토밍을 활용한 마이크로서비스 설계: 교육교재 2
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
