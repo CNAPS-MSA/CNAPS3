@@ -2,12 +2,6 @@
 > 시냅스 방법론 3.0 의 공정 및 주요 산출물, 샘플코드를 공유한다.
 > Agile 기반의 Cloud / MSA 적용한 신규 시스템 구축 프로젝트를 위한 통합 관리/개발 방법론으로 프로젝트 수행을 위한 공정도와 공정 별 샘플과 산출물을 공유한다.
 
-
-
-# SW Moderization 공정도
-
-
-
 # Cloud / MSA 기반 마이크로서비스 개발 방법론
 
 ![image](https://user-images.githubusercontent.com/18652530/96830176-f0e1ef80-1475-11eb-8301-798117fa9913.png)
