@@ -24,9 +24,7 @@ Sample에서 보여줄 기능은 아래와 같다.
 |리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|POST|
 |Request| http://localhost:8080/rentals/scant/rentedItem/10001|
-|Response| 
-{  <br>
-  "id": 1, <br>
+|Response| {  <br> "id": 1, <br>
   "userId": scant, <br>
   "rentalStatus": "RENT_AVAILABLE", <br>
   "lateFee": 0 <br>
