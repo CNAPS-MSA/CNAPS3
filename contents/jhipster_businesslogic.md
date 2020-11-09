@@ -25,15 +25,12 @@ Sample에서 보여줄 기능은 아래와 같다.
 |Method|POST|
 |Request| http://localhost:8080/rentals/scant/rentedItem/10001|
 |Response| 
-```java
-{
-  "id": 1,
-  "userId": scant,
-  "rentalStatus": "RENT_AVAILABLE",
-  "lateFee": 0
-}
-```
-|
+{  <\br>
+  "id": 1, <\br>
+  "userId": scant, <\br>
+  "rentalStatus": "RENT_AVAILABLE", <\br>
+  "lateFee": 0 <\br>
+}|
 
 리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 
 scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 된다는 의미이다.
