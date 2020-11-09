@@ -42,10 +42,11 @@
 - 각 활동의 개념등은 SK 주식회사 C&C 기술블로그와 연계하여 설명한다.
 - 샘플은 '사내도서대여시스템'을 주제로 아키텍팅/설계/개발/배포등 활동별로 Seemless하게 제공한다.
 
-## Cloud Native 개발공정도
+## Cloud Native - DEV 개발공정도
+CNAPS3.0의 개발공정만 별도로 표시한 공정도이다.
 ![설계/개발공정도](https://github.com/CNAPS-MSA/CNAPS3/blob/master/img/agileP.png)  
 - [핵심프로세스설명:애자일기반 마이크로서비스 개발프로세스](https://engineering-skcc.github.io/agile/microservice-agile/)
-
+ 
 ## SPRINT#0 - 아키텍처정의& 마이크로서비스도출
 - [Scrum Team 구성](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide03-스크럼팀구성/)
 - [Scrum 환경 구성](https://engineering-skcc.github.io/agile-quickguide/Agile-QuickGuide08-스크럼환경/)
