@@ -34,15 +34,7 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
 |리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|DELETE|
 |Request|http://localhost:8080/rentals/scant/rentedItem/10001 |
-|Response| 
-```java{
-  "id": 1,
-  "userId": scant,
-  "rentalStatus": "RENT_AVAILABLE",
-  "lateFee": 0
-}
-``` 
-|
+|Response| {<br>"id": 1,<br>"userId": scant,<br>"rentalStatus": "RENT_AVAILABLE",<br>"lateFee": 0 <br>}|
 
 마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
 
@@ -61,13 +53,7 @@ scant라는 사용자의 대여 카드에 10001의 일련번호 서적이 연체
 |리소스URI|/rentals/{userid}/OverdueItem/{book}|
 |Method|DELETE|
 |Request|http://localhost:8080/rentals/scant/rentedItem/10001 |
-|Response|{
-  "id": 1,
-  "userId": 5,
-  "rentalStatus": "RENT_UNAVAILABLE",
-  "lateFee": 30
-}
- |
+|Response|{<br>"id": 1,<br>"userId": 5,<br>"rentalStatus": "RENT_UNAVAILABLE",<br>"lateFee": 30}|
 
 마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
 
