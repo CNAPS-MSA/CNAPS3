@@ -92,20 +92,10 @@
 - 데이터 이행
 
 ## 컨텐츠 및 교육교재
-  - [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
-    - [마이크로서비스 개념](https://engineering-skcc.github.io/categories/#microservice-%EA%B0%9C%EB%85%90)
-    - [마이크로서비스 Outer 아키텍처](https://engineering-skcc.github.io/categories/#microservice-outer-achitecture)
-    - [마이크로서비스 Inner 아키텍처](https://engineering-skcc.github.io/categories/#microservice-inner-achitecture)
-  - [마이크로서비스 모델링](https://engineering-skcc.github.io/categories/#microservice-modeling)
-    - 교육교재 
-  - 마이크로서비스 모델링 
-    - 도메인주도설계
-      - [전략적설계](https://engineering-skcc.github.io/microservice%20modeling/ddd-Srategic-design/)
-      - [전술적설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-domainModeling/)
-    - [API설계](https://engineering-skcc.github.io/microservice%20modeling/BackEnd-modeling-API/)
-    - [이벤트스토밍](https://engineering-skcc.github.io/microservice%20modeling/Event-Storming/)
-    - 교육교재
+- [MSA개념 및 주요패턴](https://engineering-skcc.github.io/tags/microservice/)
+- [마이크로서비스 모델링](https://engineering-skcc.github.io/categories/#microservice-modeling)
+  - 마이크로로시스템 개념 및 MSA 패턴이해:교육교재 1 
+  - 이벤트스토밍을 활용한 마이크로서비스 설계: 교육교재 2
   - Workflowy (실습 스크립트 LookUp): https://workflowy.com/#/217cf1148297
    
-- [백업 : 도서대여시스템](/contents/sample.md)
 
