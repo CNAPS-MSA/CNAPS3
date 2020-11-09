@@ -24,12 +24,15 @@ Sample에서 보여줄 기능은 아래와 같다.
 |리소스URI|/rentals/{userid}/rentedItem/{book}|
 |Method|POST|
 |Request| http://localhost:8080/rentals/scant/rentedItem/10001|
-|Response| {
+|Response| 
+```java
+{
   "id": 1,
   "userId": scant,
   "rentalStatus": "RENT_AVAILABLE",
   "lateFee": 0
 }
+```
 |
 
 리소스로 예를 들면 /rentals/scant/rentedItem/10001를 post방식으로 호출하므로 
@@ -47,7 +50,7 @@ scant라는 사용자의 대여카드에 10001의 일련번호 서적이 대여 
   "rentalStatus": "RENT_AVAILABLE",
   "lateFee": 0
 }
-```
+``` 
 |
 
 마찬가지로 같은 리소스에 delete방식으로 호출하므로 대여가 취소되는 반납처리임을 알 수 있다.
