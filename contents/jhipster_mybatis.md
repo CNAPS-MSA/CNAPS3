@@ -178,12 +178,13 @@ public class DatabaseConfiguration {
     }
 
 
-    @Bean
+     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.skcc.board.domain"); //모델이 위치하는 패키지
-        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:mybatis-mapper/**/*.xml")); //mapper.xml의 위치 설정
+        sqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml"));
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.skcc.board.domain");
+        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:mybatis-mapper/**/*.xml"));
         return sqlSessionFactoryBean.getObject();
     }
 
@@ -214,6 +215,7 @@ public class DatabaseConfiguration {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
+        sqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml")); //mybatis 설정파일 위치
         sqlSessionFactoryBean.setTypeAliasesPackage("com.skcc.board.domain"); //모델이 위치하는 패키지
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:mybatis-mapper/**/*.xml")); //mapper.xml의 위치 설정
         return sqlSessionFactoryBean.getObject();
@@ -224,8 +226,38 @@ public class DatabaseConfiguration {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
     ```
+    먼저, setConfigLocation은 mybatis의 설정파일 위치를 설정해준다. mybatis 설정파일의 내용은 다음과 같다.
 
-    여기서 setMapperLocation의 기본 위치는 src/main/resource/이다. 샘플에서는 resource 폴더에 mybatis-mapper라는 폴더를 생성하여 SQL쿼리문을 담고 있는 xml 파일을 관리할 예정이다. 따라서 path를 위 코드와 같이 작성하였다.
+    java에서는 생성날짜라는 속성을 추가하는 경우 카멜케이스로 createdDate와 같이 작성하지만, SQL의 경우 created_date로 작성한다.
+    mybatis는 이와 같이 java와 SQL 작성법이 다른 경우, SQL 칼럼 명을 자동으로 카멜케이스로 변경해주는 설정을 할 수 있다.
+    설정파일의 위치는 resource/config 폴더 아래 위치하며, mybatis-config.xml이라는 파일을 생성하여 아래 코드를 입력한다.
+
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+    <configuration>
+        <settings>
+            <setting name="mapUnderscoreToCamelCase" value="true"/>
+            <setting name="callSettersOnNulls" value="true"/>
+            <setting name="jdbcTypeForNull" value="NULL"/>
+        </settings>
+    </configuration>
+
+    ```
+    
+    위와같이 설정파일을 만들고 설정파일의 위치를 입력시켜주면, 이후 SQL로 테이블을 만들었을 때 SQL문법으로 칼럼을 작성하였어도 java동작시에는 카멜케이스로 자동인식시킨다. 
+
+    또한, application.yml에서도 아래 내용을 추가하여 위와 같은 설정을 해줘야한다.
+    resource/config 폴더 내의 application.yml 가장 하단에 아래와 같은 코드를 입력해준다.
+    ```yml
+    mybatis:
+    config-location: classpath:config/mybatis-config.xml
+    configuration:
+    map-underscore-to-camel-case: true
+    ```
+    두번째로, setMapperLocation의 기본 위치는 src/main/resource/이다. 샘플에서는 resource 폴더에 mybatis-mapper라는 폴더를 생성하여 SQL쿼리문을 담고 있는 xml 파일을 관리할 예정이다. 따라서 path를 위 코드와 같이 작성하였다.
+
 
 ## 도메인 모델 개발
 
@@ -250,24 +282,38 @@ public class Board {
 
 ## DB 세팅을 위한 스크립트 작성
 
-H2 in-memory DB를 사용할 때, board라는 테이블이 없으면 에러가 발생할 것이다. 따라서, src/main/resource 폴더에 schema.xml파일을 생성한 뒤 스크립트를 작성하여 기본 board 테이블을 생성하자.
+H2 in-memory DB를 사용할 때, board라는 테이블이 없으면 에러가 발생할 것이다. 따라서, src/main/resource 폴더에 schema.xml파일을 생성한 뒤 스크립트를 작성하여 기본 board와 comment 테이블을 생성하자.
 
 작성한 스크립트 파일은 애플리케이션을 동작시킬 때 실행되어 테이블을 생성한다.
 이때 스크립트 파일은 H2 SQL 문법에 맞추어 작성하였다.
 
 ```sql
-drop table if exists board;
-
+drop table if exists board cascade ;
+drop table if exists comment;
 create table board
 (
     id bigint auto_increment primary key not null,
     title varchar(255),
     content varchar(1000),
-    writer varchar(50) not null,
-    createdDate varchar(50) not null,
-    category varchar(255) not null,
+    writer_name varchar(50) not null,
+    writer_id bigint not null,
+    created_date varchar(50) not null,
+    category varchar(25) not null,
     hit integer
 );
+
+create table comment
+(
+    id bigint auto_increment primary key not null,
+    content varchar(500),
+    writer_id bigint not null,
+    writer_name varchar(50) not null ,
+    created_date varchar(50) not null,
+    board_id bigint not null,
+    foreign key (board_id) references board (id)
+    on delete cascade
+);
+
 
 
 ```
@@ -306,14 +352,14 @@ public interface BoardMapper {
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.skcc.board.repository.BoardMapper">
     <select id="selectBoardById" resultType="Board">
-        SELECT * FROM board WHERE id = #{id}
+        SELECT board.id, board.title, board.content, board.writer_name, board.writer_id, board.created_date, board.category, board.hit FROM board WHERE id = #{id}
     </select>
     <select id="selectAllBoard" resultType="Board">
-        SELECT * FROM board
+        SELECT board.id, board.title, board.content,  board.writer_name, board.writer_id,  board.created_date, board.category, board.hit FROM board
     </select>
-    <insert id="insertBoard" parameterType="Board">
-        INSERT INTO board ( title, content, writer, createdDate, category, hit)
-        VALUES ( #{title}, #{content}, #{writer}, #{createdDate}, #{category}, #{hit})
+    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="id" parameterType="Board">
+        INSERT INTO board ( title, content, writer_name, writer_id, created_date, category, hit)
+        VALUES (#{title}, #{content}, #{writerName},#{writerId}, #{createdDate}, #{category}, #{hit})
     </insert>
 </mapper>
 ```
@@ -321,7 +367,11 @@ public interface BoardMapper {
 namespace는 XML파일과 연동될 mapperInterface의 위치를 작성한다.
 
 그 다음, 해당 인터페이스에서 제공할 메소드에 따라 쿼리를 작성한다. 
-id는 인터페이스의 메소드 명이며 parameterType이나 resultType 또한 메소드의 파라미터나 리턴타입에 맞게 작성한다. 
+
+id는 인터페이스의 메소드 명(반드시 일치해야한다.)이며 parameterType이나 resultType 또한 메소드의 파라미터나 리턴타입에 맞게 작성한다. 
+
+원래 parameterType이나 resultType도 namespace와 마찬가지로 package까지 적어주어야 하지만, 위에서 typeAliases를 걸어주었기 때문에 클래스명 만으로도 선언이 가능하다.
+
 
 다음으로 서비스 레이어를 작성해보자.
 
